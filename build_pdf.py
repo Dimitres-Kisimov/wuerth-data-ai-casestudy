@@ -1,0 +1,267 @@
+"""Build the executive one-pager PDF for the Wuerth Data & AI case study.
+
+Independent, public-info-only analysis. Not affiliated with Wuerth. No internal
+Wuerth data or systems used. All portfolio metrics are on SYNTHETIC data.
+
+Usage:
+    python build_pdf.py
+Writes deliverables/wuerth_data_ai_casestudy.pdf (multi-panel, executive).
+"""
+
+import os
+import sys
+
+# Windows-console-safe stdout (ASCII markers used anyway, but be defensive).
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
+
+OUT_DIR = "deliverables"
+OUT_PATH = os.path.join(OUT_DIR, "wuerth_data_ai_casestudy.pdf")
+
+INK = "#1a1a1a"
+MUTED = "#555555"
+ACCENT = "#c8102e"  # a neutral red, not a logo asset
+RULE = "#cccccc"
+
+DISCLAIMER = (
+    "DISCLAIMER: Independent analysis based on PUBLIC information only. NOT "
+    "affiliated with, endorsed by, or reviewed by the Wuerth Group. No internal, "
+    "confidential, or proprietary Wuerth data or systems were used. Wuerth-scale "
+    "figures are public and approximate. All portfolio performance numbers are "
+    "measured on SYNTHETIC / self-generated data and demonstrate method only -- "
+    "they are not claims about Wuerth's real business."
+)
+
+
+def _wrap(text, width):
+    words, lines, cur = text.split(), [], ""
+    for w in words:
+        if len(cur) + len(w) + 1 <= width:
+            cur = (cur + " " + w).strip()
+        else:
+            lines.append(cur)
+            cur = w
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def new_page(pdf):
+    fig = plt.figure(figsize=(8.27, 11.69))  # A4 portrait
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.axis("off")
+    return fig, ax
+
+
+def disclaimer_band(ax, y=0.965):
+    ax.add_patch(
+        plt.Rectangle((0.06, y - 0.075), 0.88, 0.075, transform=ax.transAxes,
+                      facecolor="#fdeaec", edgecolor=ACCENT, lw=0.8, zorder=0)
+    )
+    lines = _wrap(DISCLAIMER, 92)
+    ax.text(0.075, y - 0.011, "\n".join(lines), transform=ax.transAxes,
+            fontsize=6.6, color="#7a1420", va="top", family="DejaVu Sans")
+
+
+def cover(pdf):
+    fig, ax = new_page(pdf)
+    ax.text(0.06, 0.90, "Data & AI Case Study", fontsize=30, fontweight="bold",
+            color=INK, transform=ax.transAxes)
+    ax.text(0.06, 0.855, "Mapped to two Wuerth internship roles",
+            fontsize=14, color=MUTED, transform=ax.transAxes)
+    ax.plot([0.06, 0.94], [0.835, 0.835], color=ACCENT, lw=2,
+            transform=ax.transAxes)
+
+    disclaimer_band(ax, y=0.80)
+
+    intro = (
+        "This is my independent case study. I mapped the requirements of two "
+        "Wuerth Data & AI internship postings to work I have already built and "
+        "measured in my own portfolio. The euro and accuracy figures throughout "
+        "are on synthetic data and exist to prove the methods work and are "
+        "measurable -- not to forecast Wuerth outcomes."
+    )
+    ax.text(0.06, 0.685, "\n".join(_wrap(intro, 86)), fontsize=10,
+            color=INK, va="top", transform=ax.transAxes)
+
+    roles = [
+        ("Job #1  --  (Agentic) Automation with Low-code Platforms",
+         ("Agentic AI workflows, low-code (n8n / Power Automate), connecting "
+          "systems & APIs, document automation, ROI, rapid prototyping.")),
+        ("Job #2  --  Data & AI Analytics",
+         ("BI / Power BI, KPI dashboards, forecasting & predictive analytics, "
+          "Python & SQL, data modelling, turning data into decisions.")),
+    ]
+    y = 0.57
+    for title, body in roles:
+        ax.add_patch(plt.Rectangle((0.06, y - 0.085), 0.88, 0.095,
+                     transform=ax.transAxes, facecolor="#f5f5f5",
+                     edgecolor=RULE, lw=0.8))
+        ax.text(0.075, y - 0.005, title, fontsize=11, fontweight="bold",
+                color=ACCENT, va="top", transform=ax.transAxes)
+        ax.text(0.075, y - 0.035, "\n".join(_wrap(body, 82)), fontsize=8.8,
+                color=INK, va="top", transform=ax.transAxes)
+        y -= 0.125
+
+    who = (
+        "Wuerth (public profile, approximate): a large family-owned German-HQ "
+        "group in assembly/fastening and industrial MRO distribution -- ~400+ "
+        "companies in 80+ countries, ~87,000 employees, ~EUR 20B+ revenue, a "
+        "catalogue in the millions of articles, multi-channel (field sales, "
+        "branches, e-commerce, e-procurement/EDI, ORSY inventory systems). A "
+        "business that runs on assortment, pricing, availability, logistics, and "
+        "high-volume transactional documents -- a natural fit for applied Data & AI."
+    )
+    ax.text(0.06, 0.30, "Who Wuerth is (public info)", fontsize=12,
+            fontweight="bold", color=INK, transform=ax.transAxes)
+    ax.text(0.06, 0.275, "\n".join(_wrap(who, 88)), fontsize=8.8, color=MUTED,
+            va="top", transform=ax.transAxes)
+
+    ax.text(0.06, 0.04, "Dimitres Kisimov  |  2026  |  MIT licensed  |  "
+            "all metrics on synthetic data", fontsize=8, color=MUTED,
+            transform=ax.transAxes)
+    pdf.savefig(fig)
+    plt.close(fig)
+
+
+def opportunity_page(pdf):
+    fig, ax = new_page(pdf)
+    disclaimer_band(ax, y=0.985)
+    ax.text(0.06, 0.885, "Opportunity map (summary)", fontsize=18,
+            fontweight="bold", color=INK, transform=ax.transAxes)
+    ax.text(0.06, 0.86, "Wuerth business area (public-info) -> Data/AI approach "
+            "-> repo + measured result (synthetic)", fontsize=8.5, color=MUTED,
+            transform=ax.transAxes)
+
+    rows = [
+        ["Area (public-info)", "Approach", "Repo", "Result (synthetic)"],
+        ["Procurement / assortment", "MILP vs greedy", "revops-optimizer",
+         "MILP > greedy; ~EUR160k/yr"],
+        ["Pricing & margin", "Elasticity + leakage", "sales-kpi-analytics",
+         "EUR2.6M leakage lever"],
+        ["Inventory / replenishment", "Newsvendor + forecast",
+         "distributor-intel-platform", "MASE 0.376 (< naive)"],
+        ["Sales KPIs & analytics", "KPIs + rolling-origin CV",
+         "sales-kpi-analytics", "MASE < 1; exec PDF"],
+        ["Logistics / routing", "OR-Tools CP-SAT VRP", "route-optimizer",
+         "4.6% / 31% savings"],
+        ["E-procurement automation", "Agentic + n8n low-code",
+         "agentic-automation-lab", "~EUR625k/yr modelled"],
+        ["Document processing", "Agentic RFQ/invoice extract", "doc-extract-agent",
+         "~EUR145k/yr modelled"],
+        ["Customer retention", "Decline classifier", "revops-optimizer",
+         "ROC-AUC 0.99"],
+    ]
+    _draw_table(ax, rows, top=0.815, bottom=0.06,
+                col_x=[0.06, 0.31, 0.55, 0.78], col_w=[0.25, 0.24, 0.23, 0.18],
+                header_bg="#222222")
+    pdf.savefig(fig)
+    plt.close(fig)
+
+
+def skillmap_page(pdf, job_title, subtitle, rows):
+    fig, ax = new_page(pdf)
+    disclaimer_band(ax, y=0.985)
+    ax.text(0.06, 0.885, job_title, fontsize=15, fontweight="bold",
+            color=INK, transform=ax.transAxes)
+    ax.text(0.06, 0.862, subtitle, fontsize=8.5, color=MUTED,
+            transform=ax.transAxes)
+    header = ["Requirement", "Repo / artifact", "Proof (synthetic)"]
+    _draw_table(ax, [header] + rows, top=0.83, bottom=0.05,
+                col_x=[0.06, 0.40, 0.68], col_w=[0.33, 0.27, 0.26],
+                header_bg=ACCENT, fs=7.4)
+    pdf.savefig(fig)
+    plt.close(fig)
+
+
+def _draw_table(ax, rows, top, bottom, col_x, col_w, header_bg, fs=8.0):
+    n = len(rows)
+    rh = (top - bottom) / n
+    for i, row in enumerate(rows):
+        y = top - i * rh
+        is_head = i == 0
+        if is_head:
+            ax.add_patch(plt.Rectangle((0.06, y - rh), 0.88, rh,
+                         transform=ax.transAxes, facecolor=header_bg,
+                         edgecolor="none", zorder=1))
+        elif i % 2 == 0:
+            ax.add_patch(plt.Rectangle((0.06, y - rh), 0.88, rh,
+                         transform=ax.transAxes, facecolor="#f4f4f4",
+                         edgecolor="none", zorder=0))
+        for cx, cw, cell in zip(col_x, col_w, row):
+            color = "white" if is_head else INK
+            weight = "bold" if is_head else "normal"
+            lines = _wrap(str(cell), max(10, int(cw * 150)))
+            ax.text(cx, y - rh / 2 + (len(lines) - 1) * 0.006,
+                    "\n".join(lines), transform=ax.transAxes, fontsize=fs,
+                    color=color, va="center", fontweight=weight)
+    ax.plot([0.06, 0.94], [top, top], color=RULE, lw=0.6, transform=ax.transAxes)
+    ax.plot([0.06, 0.94], [bottom, bottom], color=RULE, lw=0.6,
+            transform=ax.transAxes)
+
+
+JOB1_ROWS = [
+    ["Build AI-agent workflows", "agentic-automation-lab", "agentic tool-use loops"],
+    ["Low-code (n8n / Power Automate)", "agentic-automation-lab: n8n/rfq_intake_agent.json",
+     "RFQ-intake agent; ~EUR625k/yr"],
+    ["Visual / flow-based building", "agent-flow-studio", "flow builder; ~EUR47k/yr"],
+    ["Connecting systems / APIs", "agentic-automation-lab connector layer",
+     "agents call external APIs"],
+    ["Process automation (back-office)", "doc-extract-agent", "RFQ/invoice -> structured"],
+    ["Document intake / understanding", "doc-extract-agent", "extract + validate; ~EUR145k/yr"],
+    ["Rapid prototyping", "agent-flow-studio + agentic-automation-lab",
+     "runnable prototypes"],
+    ["Show automation ROI", "automation-roi-explorer", "EUR383k/yr net modelled"],
+    ["Python engineering", "all automation repos", "Python throughout"],
+    ["Stakeholder communication", "automation-roi-explorer", "business-readable ROI views"],
+]
+
+JOB2_ROWS = [
+    ["BI / Power BI", "revops-optimizer: powerbi/DAX_measures.md", "DAX pack + 3-page report"],
+    ["KPI dashboards / metrics", "sales-kpi-analytics", "KPI layer + exec PDF"],
+    ["Predictive analytics / forecasting", "sales-kpi-analytics: rolling-origin CV",
+     "MASE < 1 vs seasonal-naive"],
+    ["Forecasting rigour", "distributor-intel-platform", "MASE 0.376"],
+    ["Python for analytics", "sales-kpi-analytics, revops-optimizer", "end-to-end pipelines"],
+    ["SQL / data modelling", "sales-kpi-analytics SQL set", "spend analysis queries"],
+    ["Excel-level tabular analysis", "sales-kpi-analytics", "spend breakdowns"],
+    ["Optimization / prescriptive", "revops-optimizer MILP + newsvendor", "~EUR160k/yr uplift"],
+    ["Elasticity / statistical modelling", "revops-optimizer predict layer",
+     "elasticity; ROC-AUC 0.99"],
+    ["Data into business decisions", "sales-kpi-analytics", "EUR2.6M leakage lever"],
+    ["Logistics / ops analytics", "route-optimizer", "4.6% / 31% savings"],
+    ["Present to decision-makers", "revops-optimizer exec deck", "exec narrative deck"],
+]
+
+
+def main():
+    os.makedirs(OUT_DIR, exist_ok=True)
+    with PdfPages(OUT_PATH) as pdf:
+        cover(pdf)
+        opportunity_page(pdf)
+        skillmap_page(pdf, "Job #1 -- (Agentic) Automation with Low-code",
+                      "Every posting requirement -> repo + artifact + measured "
+                      "proof (all synthetic data).", JOB1_ROWS)
+        skillmap_page(pdf, "Job #2 -- Data & AI Analytics",
+                      "Every posting requirement -> repo + artifact + measured "
+                      "proof (all synthetic data).", JOB2_ROWS)
+        d = pdf.infodict()
+        d["Title"] = "Wuerth Data & AI Case Study (independent, public-info)"
+        d["Author"] = "Dimitres Kisimov"
+        d["Subject"] = "Independent Data & AI opportunity map + skill evidence"
+
+    size = os.path.getsize(OUT_PATH)
+    print(f"[OK] wrote {OUT_PATH} ({size} bytes, {size / 1024:.1f} KB)")
+    if size < 10 * 1024:
+        print("[WARN] PDF smaller than 10 KB")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
