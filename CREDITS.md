@@ -19,9 +19,16 @@ external assets.
   (`revops-optimizer`, `sales-kpi-analytics`, `distributor-intelligence-platform`,
   `agentic-automation-lab`, `agent-flow-studio`, `doc-extract-agent`,
   `automation-roi-explorer`, `route-optimizer`, `bio-efficient-ai`,
-  `ml-models-lab`) are measured on **synthetic / self-generated data** and are
-  labelled as such throughout. They demonstrate method and are not claims about
-  Würth's real business.
+  `ml-models-lab`, `logistics-flow-studio`, `logistics-digital-twin`,
+  `supply-network-opt`, `market-basket-analysis`, `portfolio-ops`) are measured
+  on **synthetic / self-generated data** and are labelled as such throughout.
+  They demonstrate method and are not claims about Würth's real business.
+- The one real-data project, `retail-analytics-real`, uses the public UCI
+  Online Retail II dataset (**CC BY 4.0**); it is **in progress** and no results
+  from it are cited anywhere in this case study.
+- Standards named in `logistics-flow-studio` (ASR A1.8, DIN 15185, EN 15512,
+  EPAL/DIN EN 13698, VDI 2510/3564, DGUV) are referenced as design guidance and
+  framed "aligned to, **not** a certification".
 
 ## Tools
 - PDF generated with **matplotlib** (`PdfPages`).

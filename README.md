@@ -1,6 +1,6 @@
 # Data & AI Case Study — mapped to two Würth internship roles
 
-> **DISCLAIMER — read this first.** This is an **independent** case study I put together on my own. It is based **only on publicly available information** about the Würth Group (company website, public press, general industry knowledge). It is **not affiliated with, endorsed by, or reviewed by Würth**, and it uses **no internal, confidential, or proprietary Würth data or systems** of any kind. Every figure attributed to Würth's scale (number of companies, employees, revenue, ORSY installations, article counts) is **public and approximate** and is labelled as such — I have not invented internal Würth numbers. Every performance number in my own portfolio is measured on **synthetic / self-generated data**, and I say so each time it appears. The point of this repo is to show *how I think and what I can build*, not to claim results on Würth's real business.
+> **DISCLAIMER — read this first.** This is an **independent** case study I put together on my own. It is based **only on publicly available information** about the Würth Group (company website, public press, general industry knowledge). It is **not affiliated with, endorsed by, or reviewed by Würth**, and it uses **no internal, confidential, or proprietary Würth data or systems** of any kind. Every figure attributed to Würth's scale (number of companies, employees, revenue, ORSY installations, article counts) is **public and approximate** and is labelled as such — I have not invented internal Würth numbers. Every performance number in my own portfolio is measured on **synthetic / self-generated data** unless explicitly labelled otherwise, and I say so each time it appears (the one real-data project, `retail-analytics-real`, is in progress and I cite no results from it). The point of this repo is to show *how I think and what I can build*, not to claim results on Würth's real business.
 
 Hi — I'm Dimitres. I built this repository to answer one question honestly: *if I did a Data & AI internship at Würth, what could I actually contribute, and where's the evidence?*
 
@@ -38,13 +38,21 @@ A distributor at this scale lives or dies on a handful of quantitative levers, e
 
 ## How this repo demonstrates fit for **both** postings
 
-I've built two complementary bodies of work, which is exactly why I can speak to both roles:
+The portfolio behind this case study is now **16+ repositories** (all at [github.com/Dimitres-Kisimov](https://github.com/Dimitres-Kisimov)). I've built three complementary bodies of work, which is exactly why I can speak to both roles:
 
 **Analytics side (Job #2)** — forecasting, KPIs, optimization, BI:
 - `revops-optimizer` — assortment (MILP), newsvendor inventory, elasticity pricing, a **Power BI / DAX** pack and an exec deck; ~**€160k/yr** modelled uplift *(synthetic data)*.
 - `sales-kpi-analytics` — KPI metrics, **forecasting with rolling-origin CV and MASE**, SQL, a **€2.6M** discount-leakage lever *(synthetic data)*.
-- `distributor-intelligence-platform` — the engines composed into one platform; **MASE 0.376** forecasting, **25% km** routing saving, MILP vs. greedy assortment *(synthetic data)*.
+- `distributor-intelligence-platform` — the engines composed into one platform; **MASE 0.376** forecasting, **25% km** routing saving, MILP vs. greedy assortment, **€136,972/yr** modelled uplift, 24 tests, Docker, CI *(synthetic data)*.
 - `route-optimizer` — OR-Tools CP-SAT vehicle routing vs. heuristics, **4.6% / 31%** savings *(synthetic data)*.
+- `market-basket-analysis` — Apriori + FP-growth implemented from scratch and cross-checked for **exact equality**; **224 frequent itemsets, 254 rules, top lift 2.41**, 3 customer segments, cross-sell recommendations with labelled estimates; 18 tests *(synthetic data)*.
+- `ml-models-lab` — small models, measured properly: a global forecaster at **MASE 0.987 / RMSSE 0.948** that beats both seasonal-naive (1.080/1.062) *and* Holt-Winters (1.101/1.019); a SKU text classifier at **macro-F1 0.963**; an anomaly autoencoder at **PR-AUC 0.963 vs PCA 0.951** — a narrow win I report honestly, recommending PCA as the default; churn at **PR-AUC 0.653** with Platt calibration taking ECE from 0.197 to **0.021**; elasticity endogeneity bias corrected from **+1.52 to +0.03** (profit regret 0.89%) *(synthetic data)*.
+- `retail-analytics-real` — **in progress**: the real-data counterpart, on UCI Online Retail II (~1M genuinely messy rows, CC BY 4.0) — a documented cleaning pipeline, RFM, and leakage-safe rolling-origin forecasting. Real data this time, so I cite no results until they're measured.
+
+**Logistics & operations side (new, and central to a distribution business)** — warehouse and network optimization:
+- `logistics-flow-studio` (WarehouseTwin) — a game-like **warehouse digital twin** as an installable offline PWA: a canvas layout editor (racks, docks, conveyors, push/pull stations), an EUR1–EUR6 pallet catalog, DIN 15185-informed aisle checks, deterministic simulation, and an offline heuristic AI advisor that explains its suggestions. A/B strategy comparison shows **ABC 80/20 beating random slotting by ~26%** on pick travel, and the one-click layout optimizer measured **−49.8% pick travel** on the demo layout *(synthetic data)*. The German-standards panel (ASR A1.8, DIN 15185, EN 15512, EPAL/DIN EN 13698, VDI 2510/3564, DGUV) is framed "aligned to, **not** a certification"; a depth pass (all storage systems, material-flow chains, push/pull dynamics, zone/batch/wave picking, a clearly disclaimed Würth-style illustrative preset) is in progress.
+- `logistics-digital-twin` — container packing with FFD + CP-SAT (fill **2.0% → 30.2%**, **56 containers saved**, CP-SAT proves the heuristic optimal on the checked instance), slotting via linear assignment (**−44.2% pick travel**, reshuffle break-even ~0.7 days), and a hand-rolled discrete-event simulation of modern vs. legacy processes (**cycle time −76.1%**, picker travel **−66.5%**); 24 tests *(synthetic data)*.
+- `supply-network-opt` — a capacitated facility-location MILP that opens **3 of 8 DCs** at **−21.2% total cost** vs. a greedy baseline ($83,550 on the instance), min-cost flow cross-checked **LP == graph solver to $0.00**, and multi-echelon safety stock with risk pooling (**−65.7%** network / **−80.1%** centralized); 19 tests *(synthetic data)*.
 
 **Automation side (Job #1)** — agentic workflows, low-code, document processing:
 - `agentic-automation-lab` — agentic tool-use loops **plus an n8n low-code RFQ-intake agent workflow** *(synthetic data)*.
@@ -52,7 +60,7 @@ I've built two complementary bodies of work, which is exactly why I can speak to
 - `doc-extract-agent` — agentic extraction of RFQ / invoice documents into structured data *(synthetic data)*.
 - `automation-roi-explorer` — an automation ROI dashboard *(synthetic data)*.
 
-Supporting research/method work: `bio-efficient-ai` (a small research PoC with an honestly cited paper) and `ml-models-lab` (method specs for small models).
+Supporting research/method work: `bio-efficient-ai` (a small research PoC with an honestly cited paper). And on how I keep this maintained: `portfolio-ops` holds the audit scorecards, ranked backlog, KPI methodology, and security review that I run across the whole portfolio.
 
 > All uplift/€ figures above are **modelled on synthetic data** to demonstrate method and are **not** claims about Würth. On real Würth data the numbers would be different — validating that is exactly the internship work.
 
@@ -73,13 +81,18 @@ Supporting research/method work: `bio-efficient-ai` (a small research PoC with a
 python build_pdf.py           # writes deliverables/wuerth_data_ai_casestudy.pdf
 
 # Web version: just open web/index.html in any browser (no internet needed).
+
+# Smoke tests (CI runs these too, plus ruff):
+python -m pytest -q           # PDF builds > 10 KB, web page stays self-contained,
+                              # disclaimer present in README + web page
 ```
 
 ## Honesty notes
 
 - Independent analysis, **public info only**, **not affiliated with Würth**.
 - No internal Würth data or systems were used or accessed.
-- All portfolio metrics are on **synthetic data** and demonstrate method, not guaranteed business outcomes.
+- All portfolio metrics cited here are on **synthetic data** and demonstrate method, not guaranteed business outcomes. The one real-data project (`retail-analytics-real`, UCI Online Retail II under CC BY 4.0) is labelled **in progress** and contributes no results yet.
+- Standards references in `logistics-flow-studio` are framed "aligned to, **not** a certification".
 - No superlatives — I don't claim to "beat everyone" or "guarantee" anything. This is honest, reproducible work.
 
 — Dimitres Kisimov, 2026
