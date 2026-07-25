@@ -33,7 +33,7 @@
 
 ## 6. Validation on real distributions
 
-- **The gap.** A ROC-AUC of 0.99 or MASE of 0.376 on synthetic data is *not* evidence of real-world performance — synthetic data can be too clean/separable.
+- **The gap.** A ROC-AUC of 0.99 or MASE of 0.38 on synthetic data is *not* evidence of real-world performance — synthetic data can be too clean/separable.
 - **How I'd approach it.** Proper backtesting on real history, out-of-time validation, calibration checks, and comparison against the *current* process (not just a naive baseline) before any go-live decision.
 
 ## 7. Integration with existing systems (ORSY, ERP, EDI)

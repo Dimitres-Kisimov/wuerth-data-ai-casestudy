@@ -145,7 +145,7 @@
       <h3>Newsvendor + forecasting</h3>
       <p class="muted">Service-vs-holding trade-off; demand forecasting drives replenishment.
       <code>distributor-intelligence-platform</code>, <code>ml-models-lab</code>.</p>
-      <span class="metric">MASE 0.376 &middot; global forecaster MASE 0.987 / RMSSE 0.948, beats seasonal-naive and Holt-Winters (synthetic)</span>
+      <span class="metric">MASE 0.38 &middot; global forecaster MASE 0.987 / RMSSE 0.948, beats seasonal-naive and Holt-Winters (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Sales KPIs &amp; analytics</div>
@@ -157,9 +157,9 @@
     <div class="card">
       <div class="area">Logistics / routing</div>
       <h3>Vehicle routing (CP-SAT)</h3>
-      <p class="muted">Capacitated routing via OR-Tools CP-SAT vs. heuristics.
-      <code>route-optimizer</code>.</p>
-      <span class="metric">4.6% / 31% savings &middot; 25% km saved (synthetic)</span>
+      <p class="muted">Capacitated routing via OR-Tools CP-SAT vs. heuristics; plus the routing engine
+      in the platform. <code>route-optimizer</code>, <code>distributor-intelligence-platform</code>.</p>
+      <span class="metric">4.6% / 31% savings &middot; 25% km saved in the platform routing demo (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">E-procurement automation</div>
@@ -190,7 +190,7 @@
       AI advisor with explained suggestions; plus slotting + discrete-event sim + container packing.
       <code>logistics-flow-studio</code> (WarehouseTwin), <code>logistics-digital-twin</code>.
       Standards panel framed "aligned to, not a certification".</p>
-      <span class="metric">Optimizer &minus;49.8% pick travel &middot; ABC ~26% &gt; random &middot; slotting &minus;44.2% &middot; DES cycle &minus;76.1% &middot; fill 2.0% &rarr; 30.2% (synthetic)</span>
+      <span class="metric">Optimizer &minus;48.6% pick travel &middot; ABC ~21% &gt; random &middot; slotting &minus;44.2% &middot; DES cycle &minus;76.1% &middot; fill 2.0% &rarr; 30.2% (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Supply-network design (new)</div>
@@ -237,7 +237,7 @@
       <tr><td>BI / Power BI</td><td><code>revops-optimizer/powerbi/DAX_measures.md</code></td><td>DAX pack + 3-page report</td></tr>
       <tr><td>KPI dashboards / metrics</td><td><code>sales-kpi-analytics</code></td><td>KPI layer + exec PDF</td></tr>
       <tr><td>Predictive analytics / forecasting</td><td><code>sales-kpi-analytics</code> rolling-origin CV; <code>ml-models-lab</code> global forecaster</td><td>MASE &lt; 1 vs seasonal-naive; MASE 0.987 / RMSSE 0.948 vs seasonal-naive (1.080/1.062) and Holt-Winters (1.101/1.019)</td></tr>
-      <tr><td>Forecasting rigour</td><td><code>distributor-intelligence-platform</code></td><td>MASE 0.376</td></tr>
+      <tr><td>Forecasting rigour</td><td><code>distributor-intelligence-platform</code></td><td>MASE 0.38 (9 rolling folds)</td></tr>
       <tr><td>Python for analytics</td><td><code>sales-kpi-analytics</code>, <code>revops-optimizer</code></td><td>end-to-end pipelines</td></tr>
       <tr><td>SQL / data modelling</td><td><code>sales-kpi-analytics</code> SQL set</td><td>spend analysis queries</td></tr>
       <tr><td>Excel-level tabular analysis</td><td><code>sales-kpi-analytics</code></td><td>spend breakdowns</td></tr>
@@ -246,7 +246,7 @@
       <tr><td>Data into business decisions</td><td><code>sales-kpi-analytics</code>; <code>market-basket-analysis</code></td><td>€2.6M leakage lever; cross-sell recs from 254 rules (top lift 2.41), 3 segments</td></tr>
       <tr><td>Market-basket / cross-sell</td><td><code>market-basket-analysis</code></td><td>Apriori + FP-growth from scratch, exact equality cross-check; 224 itemsets, 254 rules; 18 tests</td></tr>
       <tr><td>Classification / anomaly detection</td><td><code>ml-models-lab</code></td><td>SKU classifier macro-F1 0.963; anomaly AE PR-AUC 0.963 vs PCA 0.951 (narrow win; PCA recommended default)</td></tr>
-      <tr><td>Warehouse / intralogistics</td><td><code>logistics-flow-studio</code> (WarehouseTwin); <code>logistics-digital-twin</code></td><td>optimizer &minus;49.8% pick travel (demo layout); ABC 80/20 ~26% &gt; random; slotting &minus;44.2% (break-even ~0.7 days); DES cycle &minus;76.1%, travel &minus;66.5%; 24 tests</td></tr>
+      <tr><td>Warehouse / intralogistics</td><td><code>logistics-flow-studio</code> (WarehouseTwin); <code>logistics-digital-twin</code></td><td>optimizer &minus;48.6% pick travel (demo layout; pinned in the repo's <code>docs/MEASUREMENTS.md</code>); ABC 80/20 ~21% &gt; random; slotting &minus;44.2% (break-even ~0.7 days); DES cycle &minus;76.1%, travel &minus;66.5%; 24 tests</td></tr>
       <tr><td>Logistics / ops analytics</td><td><code>route-optimizer</code>; <code>supply-network-opt</code></td><td>4.6% / 31% savings; safety stock &minus;65.7% / &minus;80.1%; 19 tests</td></tr>
       <tr><td>Real, messy data (in progress; real, not synthetic)</td><td><code>retail-analytics-real</code> - UCI Online Retail II (~1M rows, CC BY 4.0)</td><td>in progress: cleaning pipeline, RFM, leakage-safe forecasting - no results cited yet</td></tr>
       <tr><td>Present to decision-makers</td><td><code>revops-optimizer</code> exec deck</td><td>exec narrative deck</td></tr>
@@ -268,7 +268,7 @@
     Independent, public-info-only analysis &middot; not affiliated with Würth &middot; no internal
     Würth data/systems used &middot; all cited metrics on synthetic data (the one real-data project
     is in progress, no results cited). Portfolio (16+ repos):
-    <a href="https://github.com/Dimitres-Kisimov">github.com/Dimitres-Kisimov</a>. MIT licensed,
+    <a href="https://github.com/Dimikissimov">github.com/Dimikissimov</a>. MIT licensed,
     &copy; 2026 Dimitres Kisimov. This page is hand-written, self-contained, and uses only system
     fonts - no external assets and no network requests (the single link above is a plain anchor, not
     a loaded resource).
