@@ -11,15 +11,15 @@ Writes deliverables/wuerth_data_ai_casestudy.pdf (multi-panel, executive).
 import os
 import sys
 
-# Windows-console-safe stdout (ASCII markers used anyway, but be defensive).
-if hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-
 import matplotlib
 
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
+import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.backends.backend_pdf import PdfPages  # noqa: E402
+
+# Windows-console-safe stdout (ASCII markers used anyway, but be defensive).
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 OUT_DIR = "deliverables"
 OUT_PATH = os.path.join(OUT_DIR, "wuerth_data_ai_casestudy.pdf")
@@ -35,7 +35,8 @@ DISCLAIMER = (
     "confidential, or proprietary Wuerth data or systems were used. Wuerth-scale "
     "figures are public and approximate. All portfolio performance numbers are "
     "measured on SYNTHETIC / self-generated data and demonstrate method only -- "
-    "they are not claims about Wuerth's real business."
+    "they are not claims about Wuerth's real business. The one real-data project "
+    "(retail-analytics-real) is in progress and contributes no results yet."
 )
 
 
@@ -61,7 +62,7 @@ def new_page(pdf):
 
 def disclaimer_band(ax, y=0.965):
     ax.add_patch(
-        plt.Rectangle((0.06, y - 0.075), 0.88, 0.075, transform=ax.transAxes,
+        plt.Rectangle((0.06, y - 0.085), 0.88, 0.085, transform=ax.transAxes,
                       facecolor="#fdeaec", edgecolor=ACCENT, lw=0.8, zorder=0)
     )
     lines = _wrap(DISCLAIMER, 92)
@@ -83,9 +84,11 @@ def cover(pdf):
     intro = (
         "This is my independent case study. I mapped the requirements of two "
         "Wuerth Data & AI internship postings to work I have already built and "
-        "measured in my own portfolio. The euro and accuracy figures throughout "
-        "are on synthetic data and exist to prove the methods work and are "
-        "measurable -- not to forecast Wuerth outcomes."
+        "measured in my own portfolio (now 16+ repositories, including two "
+        "warehouse-logistics flagships and a supply-network optimizer). The euro "
+        "and accuracy figures throughout are on synthetic data (the one real-data "
+        "project is in progress, with no results cited) and exist to prove the "
+        "methods work and are measurable -- not to forecast Wuerth outcomes."
     )
     ax.text(0.06, 0.685, "\n".join(_wrap(intro, 86)), fontsize=10,
             color=INK, va="top", transform=ax.transAxes)
@@ -141,12 +144,15 @@ def opportunity_page(pdf):
 
     rows = [
         ["Area (public-info)", "Approach", "Repo", "Result (synthetic)"],
-        ["Procurement / assortment", "MILP vs greedy", "revops-optimizer",
-         "MILP > greedy; ~EUR160k/yr"],
-        ["Pricing & margin", "Elasticity + leakage", "sales-kpi-analytics",
-         "EUR2.6M leakage lever"],
+        ["Procurement / assortment / cross-sell", "MILP vs greedy; Apriori/FP-growth",
+         "revops-optimizer, market-basket-analysis",
+         "MILP > greedy; 254 rules, top lift 2.41"],
+        ["Pricing & margin", "Elasticity + leakage; endogeneity fix",
+         "sales-kpi-analytics, ml-models-lab",
+         "EUR2.6M leakage lever; bias +1.52 -> +0.03"],
         ["Inventory / replenishment", "Newsvendor + forecast",
-         "distributor-intel-platform", "MASE 0.376 (< naive)"],
+         "distributor-intel-platform, ml-models-lab",
+         "MASE 0.376; MASE 0.987 / RMSSE 0.948 (beats naive + Holt-Winters)"],
         ["Sales KPIs & analytics", "KPIs + rolling-origin CV",
          "sales-kpi-analytics", "MASE < 1; exec PDF"],
         ["Logistics / routing", "OR-Tools CP-SAT VRP", "route-optimizer",
@@ -155,8 +161,18 @@ def opportunity_page(pdf):
          "agentic-automation-lab", "~EUR625k/yr modelled"],
         ["Document processing", "Agentic RFQ/invoice extract", "doc-extract-agent",
          "~EUR145k/yr modelled"],
-        ["Customer retention", "Decline classifier", "revops-optimizer",
-         "ROC-AUC 0.99"],
+        ["Customer retention", "Decline + churn classifiers",
+         "revops-optimizer, ml-models-lab",
+         "ROC-AUC 0.99; churn ECE 0.197 -> 0.021"],
+        ["Warehouse / intralogistics (new)", "Digital twin + slotting + DES + packing",
+         "logistics-flow-studio, logistics-digital-twin",
+         "-49.8% pick travel; slotting -44.2%; fill 2.0% -> 30.2%"],
+        ["Supply-network design (new)", "Facility MILP + flows + safety stock",
+         "supply-network-opt",
+         "-21.2% cost vs greedy; stock -65.7% / -80.1%"],
+        ["Real data (in progress)", "Cleaning + RFM + leakage-safe CV",
+         "retail-analytics-real",
+         "in progress; no results cited (real data)"],
     ]
     _draw_table(ax, rows, top=0.815, bottom=0.06,
                 col_x=[0.06, 0.31, 0.55, 0.78], col_w=[0.25, 0.24, 0.23, 0.18],
@@ -194,7 +210,7 @@ def _draw_table(ax, rows, top, bottom, col_x, col_w, header_bg, fs=8.0):
             ax.add_patch(plt.Rectangle((0.06, y - rh), 0.88, rh,
                          transform=ax.transAxes, facecolor="#f4f4f4",
                          edgecolor="none", zorder=0))
-        for cx, cw, cell in zip(col_x, col_w, row):
+        for cx, cw, cell in zip(col_x, col_w, row, strict=True):
             color = "white" if is_head else INK
             weight = "bold" if is_head else "normal"
             lines = _wrap(str(cell), max(10, int(cw * 150)))
@@ -215,8 +231,8 @@ JOB1_ROWS = [
      "agents call external APIs"],
     ["Process automation (back-office)", "doc-extract-agent", "RFQ/invoice -> structured"],
     ["Document intake / understanding", "doc-extract-agent", "extract + validate; ~EUR145k/yr"],
-    ["Rapid prototyping", "agent-flow-studio + agentic-automation-lab",
-     "runnable prototypes"],
+    ["Rapid prototyping", "agent-flow-studio, agentic-automation-lab, logistics-flow-studio",
+     "runnable prototypes incl. an installable offline PWA"],
     ["Show automation ROI", "automation-roi-explorer", "EUR383k/yr net modelled"],
     ["Python engineering", "all automation repos", "Python throughout"],
     ["Stakeholder communication", "automation-roi-explorer", "business-readable ROI views"],
@@ -225,17 +241,31 @@ JOB1_ROWS = [
 JOB2_ROWS = [
     ["BI / Power BI", "revops-optimizer: powerbi/DAX_measures.md", "DAX pack + 3-page report"],
     ["KPI dashboards / metrics", "sales-kpi-analytics", "KPI layer + exec PDF"],
-    ["Predictive analytics / forecasting", "sales-kpi-analytics: rolling-origin CV",
-     "MASE < 1 vs seasonal-naive"],
+    ["Predictive analytics / forecasting",
+     "sales-kpi-analytics; ml-models-lab global forecaster",
+     "MASE < 1; MASE 0.987 / RMSSE 0.948 beats naive + Holt-Winters"],
     ["Forecasting rigour", "distributor-intel-platform", "MASE 0.376"],
     ["Python for analytics", "sales-kpi-analytics, revops-optimizer", "end-to-end pipelines"],
     ["SQL / data modelling", "sales-kpi-analytics SQL set", "spend analysis queries"],
     ["Excel-level tabular analysis", "sales-kpi-analytics", "spend breakdowns"],
-    ["Optimization / prescriptive", "revops-optimizer MILP + newsvendor", "~EUR160k/yr uplift"],
-    ["Elasticity / statistical modelling", "revops-optimizer predict layer",
-     "elasticity; ROC-AUC 0.99"],
-    ["Data into business decisions", "sales-kpi-analytics", "EUR2.6M leakage lever"],
-    ["Logistics / ops analytics", "route-optimizer", "4.6% / 31% savings"],
+    ["Optimization / prescriptive",
+     "revops-optimizer; supply-network-opt; logistics-digital-twin",
+     "~EUR160k/yr; -21.2% cost vs greedy; fill 2.0% -> 30.2% (CP-SAT proof)"],
+    ["Elasticity / statistical modelling", "revops-optimizer; ml-models-lab",
+     "ROC-AUC 0.99; elasticity bias +1.52 -> +0.03; churn ECE 0.197 -> 0.021"],
+    ["Data into business decisions", "sales-kpi-analytics; market-basket-analysis",
+     "EUR2.6M leakage lever; cross-sell recs, top lift 2.41"],
+    ["Market-basket / cross-sell", "market-basket-analysis",
+     "Apriori + FP-growth from scratch; 224 itemsets, 254 rules; 18 tests"],
+    ["Classification / anomaly detection", "ml-models-lab",
+     "SKU macro-F1 0.963; AE PR-AUC 0.963 vs PCA 0.951 (PCA default)"],
+    ["Warehouse / intralogistics",
+     "logistics-flow-studio (WarehouseTwin); logistics-digital-twin",
+     "-49.8% pick travel; ABC ~26% > random; slotting -44.2%; DES -76.1% / -66.5%"],
+    ["Logistics / ops analytics", "route-optimizer; supply-network-opt",
+     "4.6% / 31% savings; safety stock -65.7% / -80.1%"],
+    ["Real, messy data (in progress)", "retail-analytics-real (UCI Online Retail II, real data)",
+     "cleaning + RFM + leakage-safe CV; no results cited yet"],
     ["Present to decision-makers", "revops-optimizer exec deck", "exec narrative deck"],
 ]
 
