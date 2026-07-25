@@ -39,5 +39,6 @@ external assets.
   linked.
 
 ## License
-Released under the MIT License — see [`LICENSE`](LICENSE). Copyright (c) 2026
-Dimitres Kisimov.
+© 2026 Dimitres Kisimov — all rights reserved; published for portfolio review
+only. See [`LICENSE`](LICENSE). Third-party libraries remain under their own
+licenses.
