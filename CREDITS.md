@@ -24,8 +24,11 @@ external assets.
   on **synthetic / self-generated data** and are labelled as such throughout.
   They demonstrate method and are not claims about Würth's real business.
 - The one real-data project, `retail-analytics-real`, uses the public UCI
-  Online Retail II dataset (**CC BY 4.0**); it is **in progress** and no results
-  from it are cited anywhere in this case study.
+  Online Retail II dataset (**CC BY 4.0**, 1,067,371 raw rows — cited, not
+  redistributed); it is **completed and published**, and every number cited
+  from it in this case study is measured on that real data and labelled
+  *(real data)* — including the honest headline that the seasonal-naive
+  baseline won its forecast comparison.
 - Standards named in `logistics-flow-studio` (ASR A1.8, DIN 15185, EN 15512,
   EPAL/DIN EN 13698, VDI 2510/3564, DGUV) are referenced as design guidance and
   framed "aligned to, **not** a certification".

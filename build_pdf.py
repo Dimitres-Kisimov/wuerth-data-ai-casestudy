@@ -1,7 +1,9 @@
 """Build the executive one-pager PDF for the Wuerth Data & AI case study.
 
 Independent, public-info-only analysis. Not affiliated with Wuerth. No internal
-Wuerth data or systems used. All portfolio metrics are on SYNTHETIC data.
+Wuerth data or systems used. All portfolio metrics are on SYNTHETIC data except
+retail-analytics-real, which is measured on real UCI Online Retail II data
+(CC BY 4.0) and labelled REAL DATA wherever cited.
 
 Usage:
     python build_pdf.py
@@ -33,10 +35,11 @@ DISCLAIMER = (
     "DISCLAIMER: Independent analysis based on PUBLIC information only. NOT "
     "affiliated with, endorsed by, or reviewed by the Wuerth Group. No internal, "
     "confidential, or proprietary Wuerth data or systems were used. Wuerth-scale "
-    "figures are public and approximate. All portfolio performance numbers are "
-    "measured on SYNTHETIC / self-generated data and demonstrate method only -- "
-    "they are not claims about Wuerth's real business. The one real-data project "
-    "(retail-analytics-real) is in progress and contributes no results yet."
+    "figures are public and approximate. All portfolio performance numbers are on "
+    "SYNTHETIC / self-generated data unless labelled REAL DATA, and demonstrate "
+    "method only -- they are not claims about Wuerth's real business. The one "
+    "real-data project (retail-analytics-real) is completed: measured on public "
+    "UCI Online Retail II data (CC BY 4.0) and labelled REAL DATA where cited."
 )
 
 
@@ -86,9 +89,10 @@ def cover(pdf):
         "Wuerth Data & AI internship postings to work I have already built and "
         "measured in my own portfolio (now 16+ repositories, including two "
         "warehouse-logistics flagships and a supply-network optimizer). The euro "
-        "and accuracy figures throughout are on synthetic data (the one real-data "
-        "project is in progress, with no results cited) and exist to prove the "
-        "methods work and are measurable -- not to forecast Wuerth outcomes."
+        "and accuracy figures throughout are on synthetic data (except "
+        "retail-analytics-real, measured and labelled on real public data) and "
+        "exist to prove the methods work and are measurable -- not to forecast "
+        "Wuerth outcomes."
     )
     ax.text(0.06, 0.685, "\n".join(_wrap(intro, 86)), fontsize=10,
             color=INK, va="top", transform=ax.transAxes)
@@ -127,8 +131,8 @@ def cover(pdf):
             va="top", transform=ax.transAxes)
 
     ax.text(0.06, 0.04, "Dimitres Kisimov  |  2026  |  MIT licensed  |  "
-            "all metrics on synthetic data", fontsize=8, color=MUTED,
-            transform=ax.transAxes)
+            "metrics on synthetic data unless labelled real data", fontsize=8,
+            color=MUTED, transform=ax.transAxes)
     pdf.savefig(fig)
     plt.close(fig)
 
@@ -139,11 +143,11 @@ def opportunity_page(pdf):
     ax.text(0.06, 0.885, "Opportunity map (summary)", fontsize=18,
             fontweight="bold", color=INK, transform=ax.transAxes)
     ax.text(0.06, 0.86, "Wuerth business area (public-info) -> Data/AI approach "
-            "-> repo + measured result (synthetic)", fontsize=8.5, color=MUTED,
-            transform=ax.transAxes)
+            "-> repo + measured result (synthetic unless noted)", fontsize=8.5,
+            color=MUTED, transform=ax.transAxes)
 
     rows = [
-        ["Area (public-info)", "Approach", "Repo", "Result (synthetic)"],
+        ["Area (public-info)", "Approach", "Repo", "Result (synthetic -- labelled if real)"],
         ["Procurement / assortment / cross-sell", "MILP vs greedy; Apriori/FP-growth",
          "revops-optimizer, market-basket-analysis",
          "MILP > greedy; 254 rules, top lift 2.41"],
@@ -170,9 +174,9 @@ def opportunity_page(pdf):
         ["Supply-network design (new)", "Facility MILP + flows + safety stock",
          "supply-network-opt",
          "-21.2% cost vs greedy; stock -65.7% / -80.1%"],
-        ["Real data (in progress)", "Cleaning + RFM + leakage-safe CV",
+        ["Real data (completed)", "Cleaning + RFM + leakage-safe CV",
          "retail-analytics-real",
-         "in progress; no results cited (real data)"],
+         "real data: seasonal-naive wins CV, MASE 1.094; Champions 25% -> 69.0%"],
     ]
     _draw_table(ax, rows, top=0.815, bottom=0.06,
                 col_x=[0.06, 0.31, 0.55, 0.78], col_w=[0.25, 0.24, 0.23, 0.18],
@@ -188,7 +192,7 @@ def skillmap_page(pdf, job_title, subtitle, rows):
             color=INK, transform=ax.transAxes)
     ax.text(0.06, 0.862, subtitle, fontsize=8.5, color=MUTED,
             transform=ax.transAxes)
-    header = ["Requirement", "Repo / artifact", "Proof (synthetic)"]
+    header = ["Requirement", "Repo / artifact", "Proof (synthetic unless noted)"]
     _draw_table(ax, [header] + rows, top=0.83, bottom=0.05,
                 col_x=[0.06, 0.40, 0.68], col_w=[0.33, 0.27, 0.26],
                 header_bg=ACCENT, fs=7.4)
@@ -264,8 +268,10 @@ JOB2_ROWS = [
      "-48.6% pick travel; ABC ~21% > random; slotting -44.2%; DES -76.1% / -66.5%"],
     ["Logistics / ops analytics", "route-optimizer; supply-network-opt",
      "4.6% / 31% savings; safety stock -65.7% / -80.1%"],
-    ["Real, messy data (in progress)", "retail-analytics-real (UCI Online Retail II, real data)",
-     "cleaning + RFM + leakage-safe CV; no results cited yet"],
+    ["Real, messy data (completed)",
+     "retail-analytics-real (UCI Online Retail II, 1,067,371 real rows, CC BY 4.0)",
+     "real data: 94.0% rows kept; GBP 19.6M revenue; Champions 25% -> 69.0%; "
+     "seasonal-naive wins CV, MASE 1.094"],
     ["Present to decision-makers", "revops-optimizer exec deck", "exec narrative deck"],
 ]
 
@@ -280,7 +286,7 @@ def main():
                       "proof (all synthetic data).", JOB1_ROWS)
         skillmap_page(pdf, "Job #2 -- Data & AI Analytics",
                       "Every posting requirement -> repo + artifact + measured "
-                      "proof (all synthetic data).", JOB2_ROWS)
+                      "proof (synthetic data unless labelled real data).", JOB2_ROWS)
         d = pdf.infodict()
         d["Title"] = "Wuerth Data & AI Case Study (independent, public-info)"
         d["Author"] = "Dimitres Kisimov"

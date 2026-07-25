@@ -84,9 +84,11 @@
     <strong>not affiliated with, endorsed by, or reviewed by Würth</strong>, and it uses
     <strong>no internal, confidential, or proprietary Würth data or systems</strong>. All
     Würth-scale figures are public and approximate. Every performance number below is measured on
-    <strong>synthetic / self-generated data</strong> and demonstrates method only - it is not a
-    claim about Würth's real business. The one real-data project (<code>retail-analytics-real</code>)
-    is in progress and contributes no results yet.
+    <strong>synthetic / self-generated data</strong> unless explicitly labelled <strong>real
+    data</strong>, and demonstrates method only - it is not a claim about Würth's real business.
+    The one real-data project (<code>retail-analytics-real</code>) is completed and published: its
+    numbers are measured on the public UCI Online Retail II dataset (CC BY 4.0) and labelled
+    real data wherever cited.
   </div>
 
   <p class="lead">
@@ -123,7 +125,8 @@
 
   <h2>Opportunity map</h2>
   <p class="muted">Each Würth business area (public-info problem category) &rarr; the Data/AI
-  approach &rarr; the portfolio repo and measured result. All results on synthetic data.</p>
+  approach &rarr; the portfolio repo and measured result. All results on synthetic data unless
+  labelled real data.</p>
   <div class="cards">
     <div class="card">
       <div class="area">Procurement / assortment / cross-sell</div>
@@ -201,12 +204,16 @@
       <span class="metric">3 of 8 DCs, &minus;21.2% cost vs greedy &middot; LP == graph to $0.00 &middot; stock &minus;65.7% / &minus;80.1% (synthetic)</span>
     </div>
     <div class="card">
-      <div class="area">Real data (in progress)</div>
+      <div class="area">Real data (completed)</div>
       <h3>Retail analytics on real rows</h3>
-      <p class="muted">The real-data counterpart: UCI Online Retail II (~1M genuinely messy rows,
-      CC BY 4.0) - documented cleaning pipeline, RFM, leakage-safe rolling-origin forecasting.
-      <code>retail-analytics-real</code>.</p>
-      <span class="metric">In progress - no results cited until measured (real data)</span>
+      <p class="muted">The completed real-data counterpart: UCI Online Retail II (1,067,371 genuinely
+      messy real rows, 2009-2011, CC BY 4.0). The cleaning pipeline logs every step - 94.0% of rows
+      retained, 22.77% missing CustomerID flagged (kept for revenue, excluded from customer
+      analytics), returns separated (3.65% of gross value), £19,643,862 revenue analyzed. RFM:
+      5,852 customers, 10 segments. 20/20 tests on a committed real-data fixture; 6 QA'd figures;
+      exec PDF + Excel. Honest forecasting headline: the naive baseline won.
+      <a href="https://github.com/Dimitres-Kisimov/retail-analytics-real"><code>retail-analytics-real</code></a>.</p>
+      <span class="metric">Seasonal-naive wins CV: MASE 1.094 vs Holt-Winters 1.187 &middot; Champions 25% of customers &rarr; 69.0% of revenue (real data)</span>
     </div>
   </div>
 
@@ -248,7 +255,7 @@
       <tr><td>Classification / anomaly detection</td><td><code>ml-models-lab</code></td><td>SKU classifier macro-F1 0.963; anomaly AE PR-AUC 0.963 vs PCA 0.951 (narrow win; PCA recommended default)</td></tr>
       <tr><td>Warehouse / intralogistics</td><td><code>logistics-flow-studio</code> (WarehouseTwin); <code>logistics-digital-twin</code></td><td>optimizer &minus;48.6% pick travel (demo layout; pinned in the repo's <code>docs/MEASUREMENTS.md</code>); ABC 80/20 ~21% &gt; random; slotting &minus;44.2% (break-even ~0.7 days); DES cycle &minus;76.1%, travel &minus;66.5%; 24 tests</td></tr>
       <tr><td>Logistics / ops analytics</td><td><code>route-optimizer</code>; <code>supply-network-opt</code></td><td>4.6% / 31% savings; safety stock &minus;65.7% / &minus;80.1%; 19 tests</td></tr>
-      <tr><td>Real, messy data (in progress; real, not synthetic)</td><td><code>retail-analytics-real</code> - UCI Online Retail II (~1M rows, CC BY 4.0)</td><td>in progress: cleaning pipeline, RFM, leakage-safe forecasting - no results cited yet</td></tr>
+      <tr><td>Real, messy data (real, not synthetic)</td><td><code>retail-analytics-real</code> - UCI Online Retail II (1,067,371 rows, CC BY 4.0); 20/20 tests on a committed real-data fixture; exec PDF + Excel</td><td>real data: 94.0% of rows retained (every cleaning step logged), 22.77% missing CustomerID flagged, returns 3.65% of gross value, £19,643,862 analyzed; RFM 5,852 customers / 10 segments, Champions 25% &rarr; 69.0% of revenue; 5-fold rolling-origin CV - seasonal-naive wins (MASE 1.094 vs Holt-Winters 1.187, lag-features 1.590), reported plainly</td></tr>
       <tr><td>Present to decision-makers</td><td><code>revops-optimizer</code> exec deck</td><td>exec narrative deck</td></tr>
     </tbody>
   </table>
@@ -259,15 +266,17 @@
     My portfolio proves I can build and measure the methods; it does not prove they work on Würth's
     real data yet. A real deployment would additionally need real-data integration, GDPR/security,
     MLOps and drift monitoring, scale handling, human-in-the-loop oversight for agentic actions, and
-    validation on real distributions. I have started closing the real-data gap myself
-    (<code>retail-analytics-real</code>, in progress), and the rest is exactly what I would want to
+    validation on real distributions. I have closed the first stretch of the real-data gap myself
+    (<code>retail-analytics-real</code> - completed, measured, and honest enough to report that the
+    naive baseline won its forecast comparison), and the rest is exactly what I would want to
     spend an internship on - see <code>docs/AREAS_FOR_IMPROVEMENT.md</code>.
   </p>
 
   <footer>
     Independent, public-info-only analysis &middot; not affiliated with Würth &middot; no internal
-    Würth data/systems used &middot; all cited metrics on synthetic data (the one real-data project
-    is in progress, no results cited). Portfolio (16+ repos):
+    Würth data/systems used &middot; all cited metrics on synthetic data except
+    <code>retail-analytics-real</code>, whose results are measured on real UCI Online Retail II
+    data (CC BY 4.0) and labelled as such. Portfolio (16+ repos):
     <a href="https://github.com/Dimikissimov">github.com/Dimikissimov</a>. MIT licensed,
     &copy; 2026 Dimitres Kisimov. This page is hand-written, self-contained, and uses only system
     fonts - no external assets and no network requests (the single link above is a plain anchor, not

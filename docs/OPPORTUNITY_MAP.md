@@ -1,12 +1,12 @@
 # Opportunity Map — Würth business areas × my portfolio
 
-> **DISCLAIMER.** Independent analysis based on **public information only**. **Not affiliated with or endorsed by Würth.** No internal/confidential Würth data or systems were used. Würth-scale figures are **public and approximate**. Every performance number below is measured on **synthetic / self-generated data** in my own repositories and is labelled *(synthetic)* — none is a claim about Würth's real business. The one real-data project mentioned (`retail-analytics-real`) is **in progress** and contributes no results yet.
+> **DISCLAIMER.** Independent analysis based on **public information only**. **Not affiliated with or endorsed by Würth.** No internal/confidential Würth data or systems were used. Würth-scale figures are **public and approximate**. Every performance number below is measured on **synthetic / self-generated data** in my own repositories and is labelled *(synthetic)* — none is a claim about Würth's real business. The one exception, `retail-analytics-real`, is **completed and published**: its numbers are measured on real public data (UCI Online Retail II, CC BY 4.0) and labelled *(real data)* wherever they appear — still not a claim about Würth.
 
 This map answers: *for each part of a distribution business like Würth's, what is the public-info problem category, what Data/AI approach fits, and which repo of mine (with a concrete measured result) already demonstrates that capability?*
 
 I deliberately lead with **categories of opportunity** rather than invented Würth numbers. The euro figures are from my synthetic demos and exist to show the *method works and is measurable*, not to forecast Würth outcomes.
 
-*Updated July 2026:* areas 9 and 10 are new — warehouse/intralogistics and supply-network design — backed by three finished projects (`logistics-flow-studio`, `logistics-digital-twin`, `supply-network-opt`), and area 1 gains cross-sell evidence from `market-basket-analysis`.
+*Updated July 2026:* areas 9 and 10 are new — warehouse/intralogistics and supply-network design — backed by three finished projects (`logistics-flow-studio`, `logistics-digital-twin`, `supply-network-opt`), area 1 gains cross-sell evidence from `market-basket-analysis`, and area 4 gains **completed real-data evidence** from `retail-analytics-real`.
 
 ---
 
@@ -35,8 +35,9 @@ I deliberately lead with **categories of opportunity** rather than invented Wür
 
 - **Public-info problem category.** Field sales, branches, and e-commerce generate transaction data that must become decisions branch/field managers can act on.
 - **Data/AI approach.** KPI metric layer + forecasting with **rolling-origin cross-validation** and MASE; BI dashboards (Power BI/DAX); exec reporting.
-- **Demonstrated by.** `sales-kpi-analytics` (KPIs, forecasting, SQL, exec PDF) and `revops-optimizer` (Power BI / DAX pack + exec deck). `retail-analytics-real` is the **in-progress real-data counterpart** (UCI Online Retail II, ~1M genuinely messy rows, CC BY 4.0): documented cleaning pipeline, RFM, leakage-safe rolling-origin forecasting — no results cited until measured.
+- **Demonstrated by.** `sales-kpi-analytics` (KPIs, forecasting, SQL, exec PDF) and `revops-optimizer` (Power BI / DAX pack + exec deck). `retail-analytics-real` is the **completed real-data counterpart** (UCI Online Retail II, 1,067,371 genuinely messy real rows, 2009–2011, CC BY 4.0): documented cleaning pipeline, RFM, leakage-safe rolling-origin forecasting — published with measured results, 20/20 tests on a committed real-data fixture, 6 QA'd figures, exec PDF + Excel deliverables.
 - **Measured result *(synthetic)*.** Rolling-origin CV with **MASE < 1 vs seasonal-naive**; a 3-page Power BI report pack + DAX measures; exec review PDF *(synthetic)*.
+- **Measured result *(real data — `retail-analytics-real`)*.** Cleaning logs every step: **94.0% of rows retained**, **22.77% missing CustomerID** flagged (kept for revenue, excluded from customer analytics), cancellations separated as a returns frame (**3.65%** of gross value), **£19,643,862** revenue analyzed. RFM: **5,852 identified customers, 10 segments** — Champions are **25% of customers carrying 69.0% of identified revenue**. Forecasting (5-fold rolling-origin CV, leakage-safe): the honest headline is that **seasonal-naive wins** — MASE **1.094** vs Holt-Winters **1.187** and lag-features **1.590** — with only one seasonal cycle of training data. Reported plainly, not hidden.
 
 ## 5. Logistics / routing
 
@@ -85,12 +86,12 @@ I deliberately lead with **categories of opportunity** rather than invented Wür
 
 ## Summary table
 
-| # | Würth area (public-info) | Data/AI approach | Repo(s) | Measured result *(synthetic)* |
+| # | Würth area (public-info) | Data/AI approach | Repo(s) | Measured result *(synthetic unless noted)* |
 |---|--------------------------|------------------|---------|-------------------------------|
 | 1 | Procurement / assortment / cross-sell | MILP vs. greedy; Apriori/FP-growth | revops-optimizer, distributor-intelligence-platform, market-basket-analysis | MILP > greedy; part of €136,972/yr platform uplift; 254 rules, top lift 2.41 |
 | 2 | Pricing & margin | Elasticity + Lerner; leakage; endogeneity fix | revops-optimizer, sales-kpi-analytics, ml-models-lab | €2.6M leakage lever; elasticity bias +1.52 → +0.03 |
 | 3 | Inventory / replenishment | Newsvendor + forecasting + safety stock | revops-optimizer, distributor-intelligence-platform, ml-models-lab, supply-network-opt | MASE 0.38; MASE 0.987 / RMSSE 0.948 (beats naive + Holt-Winters); safety stock −65.7% / −80.1% |
-| 4 | Sales KPIs & analytics | KPIs + rolling-origin CV + Power BI | sales-kpi-analytics, revops-optimizer (+ retail-analytics-real, in progress, real data) | MASE < 1; DAX pack + exec PDF |
+| 4 | Sales KPIs & analytics | KPIs + rolling-origin CV + Power BI | sales-kpi-analytics, revops-optimizer (+ retail-analytics-real, real data) | MASE < 1; DAX pack + exec PDF; *real data:* seasonal-naive wins CV (MASE 1.094 vs HW 1.187), £19.6M analyzed, Champions 25% → 69.0% of revenue |
 | 5 | Logistics / routing | OR-Tools CP-SAT VRP | route-optimizer, distributor-intelligence-platform | 4.6% / 31% savings; 25% km saved |
 | 6 | E-procurement automation | Agentic + n8n low-code | agentic-automation-lab, agent-flow-studio, automation-roi-explorer | ~€625k / ~€47k / €383k net /yr |
 | 7 | Document processing | Agentic RFQ/invoice extraction | doc-extract-agent | ~€145k/yr |
@@ -98,4 +99,4 @@ I deliberately lead with **categories of opportunity** rather than invented Wür
 | 9 | Warehouse / intralogistics | Digital twin + slotting + DES + packing | logistics-flow-studio, logistics-digital-twin | −48.6% pick travel (optimizer); ABC ~21% > random; slotting −44.2%; DES −76.1% cycle / −66.5% travel; fill 2.0% → 30.2% |
 | 10 | Supply-network design | Facility MILP + min-cost flow + safety stock | supply-network-opt | −21.2% cost vs greedy; LP == graph to $0.00; −65.7% / −80.1% stock |
 
-All euro/dollar and accuracy figures are **modelled on synthetic data** and demonstrate method; they are **not** predictions about Würth. `retail-analytics-real` (real data) is in progress and contributes no results yet.
+All euro/dollar and accuracy figures are **modelled on synthetic data** and demonstrate method; they are **not** predictions about Würth. The exception is `retail-analytics-real`: its figures are **measured on real data** (UCI Online Retail II, CC BY 4.0), labelled as such — including the honest one, that the seasonal-naive baseline won its forecast comparison — and they are still not predictions about Würth.
