@@ -2,6 +2,8 @@
 
 > **DISCLAIMER — read this first.** This is an **independent** case study I put together on my own. It is based **only on publicly available information** about the Würth Group (company website, public press, general industry knowledge). It is **not affiliated with, endorsed by, or reviewed by Würth**, and it uses **no internal, confidential, or proprietary Würth data or systems** of any kind. Every figure attributed to Würth's scale (number of companies, employees, revenue, ORSY installations, article counts) is **public and approximate** and is labelled as such — I have not invented internal Würth numbers. Every performance number in my own portfolio is measured on **synthetic / self-generated data** unless explicitly labelled otherwise, and I say so each time it appears (the one real-data exception, `retail-analytics-real`, is measured on the public UCI Online Retail II dataset — CC BY 4.0 — and is labelled **real data** everywhere its numbers appear). The point of this repo is to show *how I think and what I can build*, not to claim results on Würth's real business.
 
+**Deutsche Zusammenfassung:** eine deutschsprachige Kurzfassung (Disclaimer zuerst, Kernidee, stärkste Belege, das Real-Daten-Projekt) steht in [`docs/ZUSAMMENFASSUNG_DE.md`](docs/ZUSAMMENFASSUNG_DE.md).
+
 Hi — I'm Dimitres. I built this repository to answer one question honestly: *if I did a Data & AI internship at Würth, what could I actually contribute, and where's the evidence?*
 
 I applied to two postings and this case study speaks to both:
@@ -71,6 +73,7 @@ Supporting research/method work: `bio-efficient-ai` (a small research PoC with a
 
 | File | What it is |
 |------|-----------|
+| [`docs/ZUSAMMENFASSUNG_DE.md`](docs/ZUSAMMENFASSUNG_DE.md) | German executive summary (Deutsche Zusammenfassung) — disclaimer first, core idea, strongest evidence, the real-data project; every number sourced from the English docs. |
 | [`docs/OPPORTUNITY_MAP.md`](docs/OPPORTUNITY_MAP.md) | Each Würth business area → the public-info problem category → the Data/AI approach → the exact portfolio repo + measured (synthetic) result that demonstrates it. |
 | [`docs/JOB_SKILL_MAP.md`](docs/JOB_SKILL_MAP.md) | Two tables, one per posting: every major requirement bullet → repo + file/artifact + the number that proves it. |
 | [`docs/AREAS_FOR_IMPROVEMENT.md`](docs/AREAS_FOR_IMPROVEMENT.md) | Honest, living list of what a *real* Würth deployment would additionally need (real data, GDPR/security, MLOps, scale, human-in-the-loop) and how I'd approach each. |
