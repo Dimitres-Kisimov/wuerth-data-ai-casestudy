@@ -1,0 +1,38 @@
+# Deutsche Zusammenfassung — Data-&-AI-Fallstudie zu zwei Würth-Praktikumsstellen
+
+> **HINWEIS — bitte zuerst lesen.** Dies ist eine **unabhängige Analyse auf Basis öffentlicher Informationen**. Sie ist **nicht mit Würth verbunden**, nicht von Würth beauftragt, geprüft oder freigegeben, und es wurden **keine internen, vertraulichen oder proprietären Daten oder Systeme von Würth** verwendet. Alle Angaben zur Größenordnung der Würth-Gruppe sind **öffentlich und ungefähr**. Jede Leistungszahl aus meinem Portfolio ist auf **synthetischen bzw. selbst erzeugten Daten** gemessen und so gekennzeichnet — mit einer Ausnahme: `retail-analytics-real` ist auf dem öffentlichen Datensatz UCI Online Retail II (CC BY 4.0) gemessen und überall als **echte Daten** gekennzeichnet. Keine dieser Zahlen ist eine Aussage über das reale Geschäft von Würth.
+
+Ich bin Dimitres Kisimov. Dieses Repository beantwortet eine Frage: *Wenn ich ein Data-&-AI-Praktikum bei Würth machen würde — was könnte ich konkret beitragen, und wo ist der Beleg?* Ich habe mich auf zwei Stellen beworben: **Job #1 — Praktikum Data & AI: (Agentic) Automation mit Low-code Plattformen** und **Job #2 — Praktikum Data & AI Analytics**.
+
+## Wer Würth ist (öffentliches Bild)
+
+Die Würth-Gruppe ist ein großes, familiengeführtes Unternehmen mit deutschem Hauptsitz für Montage- und Befestigungsmaterial und industriellen MRO-Handel. Öffentlich und ungefähr: **rund 400+ Gesellschaften in über 80 Ländern**, in der Größenordnung von **~87.000 Beschäftigten** und **~20+ Mrd. € Jahresumsatz**, ein Katalog mit **Artikeln im Millionenbereich**, ein bewusst mehrkanaliger Vertrieb (Außendienst, Niederlassungen, E-Commerce, E-Procurement/EDI) sowie die **ORSY**-Systemfamilie für Lager- und Regalbewirtschaftung. Nichts davon sind meine Daten — es ist das öffentliche Bild eines Handelsgeschäfts, das von Sortiment, Preisen, Verfügbarkeit, Logistik und einem hohen Volumen transaktionaler Dokumente lebt.
+
+## Die Kernidee
+
+Statt Kompetenzen zu behaupten, habe ich **jede wesentliche Anforderung beider Stellenausschreibungen auf ein bereits gebautes und gemessenes Projekt** aus meinem Portfolio (19+ Repositories) abgebildet. Die Substanz steht in zwei englischen Detaildokumenten: [`OPPORTUNITY_MAP.md`](OPPORTUNITY_MAP.md) ordnet zwölf Geschäftsfelder eines Distributionsgeschäfts (Sortiment, Preis und Marge, Bestand, Vertriebskennzahlen, Routing, Automatisierung, Lager, Netzwerkdesign, Energie, Qualitätsprüfung u. a.) jeweils dem passenden Data-/AI-Ansatz und einem gemessenen Ergebnis zu; [`JOB_SKILL_MAP.md`](JOB_SKILL_MAP.md) ordnet jede Anforderungszeile beider Ausschreibungen dem Repository, dem konkreten Artefakt und der Zahl zu, die den Punkt belegt.
+
+## Die stärksten Belege (Auswahl)
+
+| Projekt | Nachweis | Gemessene Zahl |
+|---|---|---|
+| `retail-analytics-real` | Analytics-Pipeline auf UCI Online Retail II (1.067.371 rohe, real verschmutzte Transaktionszeilen, 2009–2011): protokollierte Bereinigung, RFM-Segmentierung, leakage-sichere rollierende Prognose-CV; 20/20 Tests | 94,0 % der Zeilen behalten; 19.643.862 £ Umsatz analysiert; 5.852 identifizierte Kunden in 10 Segmenten — Champions: 25 % der Kunden tragen 69,0 % des identifizierten Umsatzes *(echte Daten)* |
+| `distributor-intelligence-platform` | Prognose-, Routing- und Sortiments-Engines in einer Plattform; 24 Tests, Docker, CI | Prognose MASE 0,38 über 9 rollierende Folds; 25 % km im Routing-Demo eingespart; 136.972 €/Jahr modellierter Effekt *(synthetisch)* |
+| `energy-demand-forecast` | Day-ahead-Lastprognose plus Peak-Shaving-Batteriedispatch als lineares Programm, von Grund auf mit numpy/scipy; 19 Tests | Regression MASE 0,497 (gewinnt 14/14 CV-Folds gegen Seasonal-Naive); Monatsspitze 368,2 → 291,1 kW (−20,9 %); ~11.100 €/Jahr bei einem AUSDRÜCKLICH ANGENOMMENEN Tarif von 12 €/kW-Monat *(synthetisch)* |
+| `supply-network-opt` | Kapazitiertes Facility-Location-MILP gegen eine Greedy-Baseline; Min-Cost-Flow mit unabhängiger Gegenprüfung; 19 Tests | Öffnet 3 von 8 Distributionszentren bei −21,2 % Gesamtkosten gegenüber Greedy; LP == Graph-Solver bis auf 0,00 $ gegengeprüft *(synthetisch)* |
+| `logistics-flow-studio` + `logistics-digital-twin` | Lager-Digitalzwilling als installierbare Offline-PWA (Layout-Editor, deterministische Simulation) plus Slotting und ereignisdiskrete Simulation; 24 Tests | Layout-Optimierer −48,6 % Pickweg auf dem Demo-Layout (reproduzierbar dokumentiert); Slotting per linearer Zuordnung −44,2 % Pickweg; Zykluszeit modern vs. alt −76,1 % *(synthetisch)* |
+| `agentic-automation-lab` | Agentische Tool-Use-Loops plus ein importierbarer n8n-Low-code-Workflow für RFQ-Eingang (Job #1) | Modellierter Automatisierungsnutzen ~625.000 €/Jahr *(synthetisch)* |
+
+Alle Zahlen sind den englischen Detaildokumenten dieses Repositorys entnommen; die €-/£-Beträge sind modellierte bzw. gemessene Werte der jeweiligen Projekte — keine Prognosen über Würth.
+
+## Das eine Projekt auf echten Daten — und warum die verlorene Prognose dazugehört
+
+`retail-analytics-real` ist das abgeschlossene, veröffentlichte Gegenstück auf **echten Daten**. Sein Prognose-Ergebnis ist bewusst unglamourös: Unter 5-fach rollierender, leakage-sicherer Cross-Validation **gewinnt die naive saisonale Baseline** — MASE 1,094 gegenüber Holt-Winters (1,187) und einem Lag-Features-Modell (1,590). Mit nur einem Saisonzyklus Trainingsdaten ist „gleiche Woche letztes Jahr" ehrlich schwer zu schlagen, und ich berichte das offen, statt es zu verstecken. Dieselbe Regel gilt im übrigen Portfolio: In `energy-demand-forecast` verliert Holt-Winters gegen die naive Baseline (berichtet, nicht versteckt), und die Batterie amortisiert sich unter den genannten Annahmen nicht (10+ Jahre einfache Amortisation — der Business Case sagt das ausdrücklich); in `quality-anomaly-vision` empfiehlt die vorab registrierte Entscheidungsregel PCA statt des tiefen Modells, weil dessen Vorsprung (ROC-AUC 0,779 gegenüber 0,772) innerhalb der vorab festgelegten 0,02-Marge liegt. Wer solche Ergebnisse offen berichtet, macht die übrigen Zahlen prüfbarer und glaubwürdiger.
+
+## Weiterführende Dokumente und Live-Links
+
+- **Detaildokumente (Englisch):** [`OPPORTUNITY_MAP.md`](OPPORTUNITY_MAP.md) (Geschäftsfelder × Portfolio), [`JOB_SKILL_MAP.md`](JOB_SKILL_MAP.md) (Anforderung → Repo → Zahl), [`AREAS_FOR_IMPROVEMENT.md`](AREAS_FOR_IMPROVEMENT.md) (was ein realer Einsatz zusätzlich bräuchte: echte Daten, DSGVO/Sicherheit, MLOps, Skalierung, Human-in-the-Loop).
+- **Executive-PDF (eine Seite):** [`deliverables/wuerth_data_ai_casestudy.pdf`](../deliverables/) — Offline-Webfassung: [`web/index.html`](../web/index.html).
+- **Live und installierbar:** die Quantum-Explainer-PWA unter [dimitres-kisimov.github.io/quantum-explainer](https://dimitres-kisimov.github.io/quantum-explainer/) (Prototyping-/Vermittlungs-Nachweis, kein Datenprojekt) — das vollständige Portfolio (19+ Repositories) unter [github.com/Dimitres-Kisimov](https://github.com/Dimitres-Kisimov).
+
+— Dimitres Kisimov, 2026
