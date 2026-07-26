@@ -87,12 +87,13 @@ def cover(pdf):
     intro = (
         "This is my independent case study. I mapped the requirements of two "
         "Wuerth Data & AI internship postings to work I have already built and "
-        "measured in my own portfolio (now 16+ repositories, including two "
-        "warehouse-logistics flagships and a supply-network optimizer). The euro "
-        "and accuracy figures throughout are on synthetic data (except "
-        "retail-analytics-real, measured and labelled on real public data) and "
-        "exist to prove the methods work and are measurable -- not to forecast "
-        "Wuerth outcomes."
+        "measured in my own portfolio (now 19+ repositories, including two "
+        "warehouse-logistics flagships, a supply-network optimizer, an energy "
+        "forecasting + peak-shaving study, a visual quality-inspection study, "
+        "and a live installable quantum-explainer PWA). The euro and accuracy "
+        "figures throughout are on synthetic data (except retail-analytics-real, "
+        "measured and labelled on real public data) and exist to prove the "
+        "methods work and are measurable -- not to forecast Wuerth outcomes."
     )
     ax.text(0.06, 0.685, "\n".join(_wrap(intro, 86)), fontsize=10,
             color=INK, va="top", transform=ax.transAxes)
@@ -130,9 +131,9 @@ def cover(pdf):
     ax.text(0.06, 0.275, "\n".join(_wrap(who, 88)), fontsize=8.8, color=MUTED,
             va="top", transform=ax.transAxes)
 
-    ax.text(0.06, 0.04, "Dimitres Kisimov  |  2026  |  MIT licensed  |  "
-            "metrics on synthetic data unless labelled real data", fontsize=8,
-            color=MUTED, transform=ax.transAxes)
+    ax.text(0.06, 0.04, "Dimitres Kisimov  |  2026  |  all rights reserved "
+            "(portfolio review)  |  metrics on synthetic data unless labelled "
+            "real data", fontsize=8, color=MUTED, transform=ax.transAxes)
     pdf.savefig(fig)
     plt.close(fig)
 
@@ -174,6 +175,15 @@ def opportunity_page(pdf):
         ["Supply-network design (new)", "Facility MILP + flows + safety stock",
          "supply-network-opt",
          "-21.2% cost vs greedy; stock -65.7% / -80.1%"],
+        ["Energy management / facilities (new)", "Load forecast (rolling CV) + peak-shaving LP",
+         "energy-demand-forecast",
+         "MASE 0.497, 14/14 folds (Holt-Winters loses to naive, reported); "
+         "peak -20.9%; ~EUR11,100/yr at ASSUMED tariff; battery does not pay back "
+         "on these assumptions"],
+        ["Quality inspection (new)", "Clean-only anomaly detection; pre-registered rule",
+         "quality-anomaly-vision",
+         "AE 0.779 vs PCA 0.772 ROC-AUC -- inside 0.02 margin, PCA recommended; "
+         "TPR 0.407 vs 0.393 @ 5% FPR"],
         ["Real data (completed)", "Cleaning + RFM + leakage-safe CV",
          "retail-analytics-real",
          "real data: seasonal-naive wins CV, MASE 1.094; Champions 25% -> 69.0%"],
@@ -237,6 +247,10 @@ JOB1_ROWS = [
     ["Document intake / understanding", "doc-extract-agent", "extract + validate; ~EUR145k/yr"],
     ["Rapid prototyping", "agent-flow-studio, agentic-automation-lab, logistics-flow-studio",
      "runnable prototypes incl. an installable offline PWA"],
+    ["Prototyping + education (hype-free)",
+     "quantum-explainer -- LIVE: dimitres-kisimov.github.io/quantum-explainer",
+     "hand-written simulator ~300 lines, zero deps; 42 physics assertions + "
+     "57 structural checks pass"],
     ["Show automation ROI", "automation-roi-explorer", "EUR383k/yr net modelled"],
     ["Python engineering", "all automation repos", "Python throughout"],
     ["Stakeholder communication", "automation-roi-explorer", "business-readable ROI views"],
@@ -249,6 +263,11 @@ JOB2_ROWS = [
      "sales-kpi-analytics; ml-models-lab global forecaster",
      "MASE < 1; MASE 0.987 / RMSSE 0.948 beats naive + Holt-Winters"],
     ["Forecasting rigour", "distributor-intel-platform", "MASE 0.38 (9 rolling folds)"],
+    ["Energy forecasting + optimization",
+     "energy-demand-forecast (forecasters + LP from scratch; 19 tests)",
+     "MASE 0.497 / MAPE 4.8%, 14/14 folds (Holt-Winters loses to naive, reported); "
+     "peak 368.2 -> 291.1 kW (-20.9%); ~EUR11,100/yr at ASSUMED EUR12/kW-month; "
+     "timer baseline EUR0; battery does not pay back on these assumptions"],
     ["Python for analytics", "sales-kpi-analytics, revops-optimizer", "end-to-end pipelines"],
     ["SQL / data modelling", "sales-kpi-analytics SQL set", "spend analysis queries"],
     ["Excel-level tabular analysis", "sales-kpi-analytics", "spend breakdowns"],
@@ -263,6 +282,10 @@ JOB2_ROWS = [
      "Apriori + FP-growth from scratch; 224 itemsets, 254 rules; 18 tests"],
     ["Classification / anomaly detection", "ml-models-lab",
      "SKU macro-F1 0.963; AE PR-AUC 0.963 vs PCA 0.951 (PCA default)"],
+    ["Visual quality inspection (vision)",
+     "quality-anomaly-vision (3 detectors, pre-registered rule; 15 tests)",
+     "AE ROC-AUC 0.779 vs PCA 0.772 -- inside 0.02 margin, PCA recommended; "
+     "TPR 0.407 vs 0.393 @ 5% FPR; texture-breaks hard for all (best 0.609)"],
     ["Warehouse / intralogistics",
      "logistics-flow-studio (WarehouseTwin); logistics-digital-twin",
      "-48.6% pick travel; ABC ~21% > random; slotting -44.2%; DES -76.1% / -66.5%"],
