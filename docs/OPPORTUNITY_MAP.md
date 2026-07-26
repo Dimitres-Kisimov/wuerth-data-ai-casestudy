@@ -6,7 +6,7 @@ This map answers: *for each part of a distribution business like Würth's, what 
 
 I deliberately lead with **categories of opportunity** rather than invented Würth numbers. The euro figures are from my synthetic demos and exist to show the *method works and is measurable*, not to forecast Würth outcomes.
 
-*Updated July 2026:* areas 9 and 10 are new — warehouse/intralogistics and supply-network design — backed by three finished projects (`logistics-flow-studio`, `logistics-digital-twin`, `supply-network-opt`), area 1 gains cross-sell evidence from `market-basket-analysis`, and area 4 gains **completed real-data evidence** from `retail-analytics-real`.
+*Updated July 2026:* areas 9 and 10 are new — warehouse/intralogistics and supply-network design — backed by three finished projects (`logistics-flow-studio`, `logistics-digital-twin`, `supply-network-opt`), area 1 gains cross-sell evidence from `market-basket-analysis`, and area 4 gains **completed real-data evidence** from `retail-analytics-real`. *Second update:* areas 11 and 12 are new — energy management (`energy-demand-forecast`) and quality inspection (`quality-anomaly-vision`) — both carrying the same honest-losses framing as area 4: the energy repo reports that Holt-Winters loses to the naive baseline and that the battery does not pay for itself at the assumed tariff, and the vision repo's pre-registered rule recommends PCA over the deep model.
 
 ---
 
@@ -82,6 +82,22 @@ I deliberately lead with **categories of opportunity** rather than invented Wür
 - **Demonstrated by.** `supply-network-opt` (19 tests).
 - **Measured result *(synthetic)*.** Facility-location MILP opens **3 of 8 DCs** at **−21.2% total cost** vs greedy (**$83,550** on the instance); min-cost flow cross-checked **LP == graph solver to $0.00**; safety stock with risk pooling **−65.7%** (network) / **−80.1%** (centralized) *(synthetic)*.
 
+## 11. Energy management / facility operations *(new)*
+
+- **Public-info problem category.** A group operating warehouses, production companies, and branch sites across 80+ countries (public, approximate) pays industrial electricity tariffs where a monthly **demand charge** is set by the single highest hourly load — a few peak hours per month price the whole month. Forecasting site load and shifting the peak is a direct, recurring cost lever.
+- **Data/AI approach.** Day-ahead load forecasting under rolling-origin CV (temperature + calendar regression vs seasonal-naive vs Holt-Winters, MASE-scored), then battery dispatch against the monthly peak formulated as a **linear program** — with the ROI framed on labelled assumptions rather than a sales pitch.
+- **Demonstrated by.** `energy-demand-forecast` (forecasters and the LP written from scratch on numpy/scipy; 19 tests).
+- **Measured result *(synthetic)*.** Regression at **MASE 0.497 / MAPE 4.8%**, winning **14/14 CV folds** vs seasonal-naive (**1.369 / 17.6%**); the LP cuts the mean monthly peak **368.2 → 291.1 kW (−20.9%)**, worth **~EUR 11,100/yr at an ASSUMED EUR 12/kW-month tariff**, while a fixed evening-timer baseline saves **EUR 0** — on this site, *when* to discharge is the entire product *(synthetic)*.
+- **Honesty note.** Two losses reported, not hidden: **Holt-Winters loses to the seasonal-naive baseline** (MASE 3.040 vs 1.369) — a real lesson in method-to-problem fit — and at an assumed EUR 120,000–180,000 battery cost the demand-charge saving alone is a **10+ year simple payback: the battery does not pay for itself on these assumptions**, and the repo's business case says so instead of inflating the tariff until it does.
+
+## 12. Quality inspection *(new)*
+
+- **Public-info problem category.** An assembly/fastening products group lives on product quality — in its own production companies and in incoming-goods QA, surface-defect screening (scratches, pits, texture irregularities) is a classic vision task where the real question is *when a neural network actually earns its keep over simpler methods*.
+- **Data/AI approach.** Three anomaly detectors trained on **clean images only** (local statistics, PCA reconstruction, small conv autoencoder), one shared image-level scoring rule fixed before results were seen, and a **pre-registered complexity rule** deciding the recommendation; ROC/PR/IoU metrics implemented from scratch.
+- **Demonstrated by.** `quality-anomaly-vision` (15 tests).
+- **Measured result *(synthetic)*.** Conv autoencoder ROC-AUC **0.779** vs PCA **0.772** vs local statistics 0.687 — the AE's 0.007 lead is inside the pre-registered 0.02 margin, so **PCA reconstruction is the recommendation**: it also wins the screening operating point (**TPR 0.407 vs 0.393 at 5% FPR**) and localization (**mean IoU 0.207**) *(synthetic)*.
+- **Honesty note.** The one defect class that splits the field is stated plainly: texture-breaks are hard for every method (best ROC-AUC **0.609**, autoencoder only — if they dominated a real defect mix, the recommendation could legitimately flip), and training the autoencoder longer made it **worse** (0.779 → 0.738 at 30 epochs). This is the same pre-registered-rule honesty as the `ml-models-lab` anomaly study: the rule picked the simpler method, and that's a feature.
+
 ---
 
 ## Summary table
@@ -98,5 +114,7 @@ I deliberately lead with **categories of opportunity** rather than invented Wür
 | 8 | Customer retention | Decline / churn classifiers + calibration | revops-optimizer, ml-models-lab | ROC-AUC 0.99; churn PR-AUC 0.653, ECE 0.197 → 0.021 |
 | 9 | Warehouse / intralogistics | Digital twin + slotting + DES + packing | logistics-flow-studio, logistics-digital-twin | −48.6% pick travel (optimizer); ABC ~21% > random; slotting −44.2%; DES −76.1% cycle / −66.5% travel; fill 2.0% → 30.2% |
 | 10 | Supply-network design | Facility MILP + min-cost flow + safety stock | supply-network-opt | −21.2% cost vs greedy; LP == graph to $0.00; −65.7% / −80.1% stock |
+| 11 | Energy management / facilities | Load forecasting (rolling-origin CV) + peak-shaving LP | energy-demand-forecast | MASE 0.497, 14/14 folds (HW loses to naive, reported); peak −20.9%; ~EUR 11,100/yr at ASSUMED tariff; battery does not pay back on these assumptions |
+| 12 | Quality inspection | Clean-only anomaly detection; pre-registered rule | quality-anomaly-vision | AE 0.779 vs PCA 0.772 ROC-AUC — inside the 0.02 margin, PCA recommended; TPR 0.407 vs 0.393 @ 5% FPR |
 
 All euro/dollar and accuracy figures are **modelled on synthetic data** and demonstrate method; they are **not** predictions about Würth. The exception is `retail-analytics-real`: its figures are **measured on real data** (UCI Online Retail II, CC BY 4.0), labelled as such — including the honest one, that the seasonal-naive baseline won its forecast comparison — and they are still not predictions about Würth.

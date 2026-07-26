@@ -204,6 +204,29 @@
       <span class="metric">3 of 8 DCs, &minus;21.2% cost vs greedy &middot; LP == graph to $0.00 &middot; stock &minus;65.7% / &minus;80.1% (synthetic)</span>
     </div>
     <div class="card">
+      <div class="area">Energy management / facilities (new)</div>
+      <h3>Load forecasting + peak shaving</h3>
+      <p class="muted">Day-ahead load forecasting under rolling-origin CV (temperature + calendar
+      regression vs seasonal-naive vs Holt-Winters), then battery dispatch against the monthly
+      demand-charge peak as a linear program - methods from scratch on numpy/scipy.
+      <code>energy-demand-forecast</code> (19 tests). Honest losses reported: Holt-Winters loses to
+      the naive baseline (MASE 3.040 vs 1.369), and at an assumed EUR 120k-180k battery cost the
+      saving is a 10+ year simple payback - the battery does not pay for itself on these
+      assumptions, and the repo says so.</p>
+      <span class="metric">Regression MASE 0.497 / MAPE 4.8%, 14/14 folds &middot; peak 368.2 &rarr; 291.1 kW (&minus;20.9%) &middot; ~€11,100/yr at an ASSUMED €12/kW-month tariff &middot; timer baseline €0 (synthetic)</span>
+    </div>
+    <div class="card">
+      <div class="area">Quality inspection (new)</div>
+      <h3>Surface-defect screening</h3>
+      <p class="muted">Three detectors trained on clean images only (local statistics, PCA
+      reconstruction, small conv autoencoder), one scoring rule fixed in advance, and a
+      pre-registered complexity rule for the recommendation. <code>quality-anomaly-vision</code>
+      (15 tests). The autoencoder's 0.007 ROC-AUC lead is inside the pre-registered 0.02 margin,
+      so PCA is recommended over the deep model; texture-breaks stay hard for every method (best
+      AUC 0.609), stated plainly.</p>
+      <span class="metric">AE 0.779 vs PCA 0.772 ROC-AUC &rarr; PCA recommended &middot; TPR 0.407 vs 0.393 @ 5% FPR &middot; mean IoU 0.207 (synthetic)</span>
+    </div>
+    <div class="card">
       <div class="area">Real data (completed)</div>
       <h3>Retail analytics on real rows</h3>
       <p class="muted">The completed real-data counterpart: UCI Online Retail II (1,067,371 genuinely
@@ -229,6 +252,7 @@
       <tr><td>Process automation (back-office)</td><td><code>doc-extract-agent</code></td><td>RFQ/invoice &rarr; structured</td></tr>
       <tr><td>Document intake / understanding</td><td><code>doc-extract-agent</code></td><td>extract + validate; ~€145k/yr</td></tr>
       <tr><td>Rapid prototyping</td><td><code>agent-flow-studio</code>, <code>agentic-automation-lab</code>, <code>logistics-flow-studio</code></td><td>runnable prototypes; a full installable offline PWA</td></tr>
+      <tr><td>Prototyping + education (explaining tech without hype)</td><td><code>quantum-explainer</code> - live &amp; installable at dimitres-kisimov.github.io/quantum-explainer (plain-text address; this page loads nothing external)</td><td>hand-written state-vector simulator (~300 lines, zero dependencies); 42 physics assertions + 57 structural/offline checks pass; no frameworks, no build step, no network calls</td></tr>
       <tr><td>Show automation ROI</td><td><code>automation-roi-explorer</code></td><td>€383k/yr net modelled</td></tr>
       <tr><td>Python engineering</td><td>all automation repos</td><td>Python throughout</td></tr>
       <tr><td>Stakeholder communication</td><td><code>automation-roi-explorer</code></td><td>business-readable ROI views</td></tr>
@@ -245,6 +269,7 @@
       <tr><td>KPI dashboards / metrics</td><td><code>sales-kpi-analytics</code></td><td>KPI layer + exec PDF</td></tr>
       <tr><td>Predictive analytics / forecasting</td><td><code>sales-kpi-analytics</code> rolling-origin CV; <code>ml-models-lab</code> global forecaster</td><td>MASE &lt; 1 vs seasonal-naive; MASE 0.987 / RMSSE 0.948 vs seasonal-naive (1.080/1.062) and Holt-Winters (1.101/1.019)</td></tr>
       <tr><td>Forecasting rigour</td><td><code>distributor-intelligence-platform</code></td><td>MASE 0.38 (9 rolling folds)</td></tr>
+      <tr><td>Energy forecasting + optimization</td><td><code>energy-demand-forecast</code> - forecasters + peak-shaving LP from scratch (numpy/scipy); 19 tests</td><td>regression MASE 0.497 / MAPE 4.8%, 14/14 CV folds vs seasonal-naive (1.369 / 17.6%); Holt-Winters loses to the naive baseline (3.040 / 37.6%), reported; LP cuts mean monthly peak 368.2 &rarr; 291.1 kW (&minus;20.9%), ~€11,100/yr at an ASSUMED €12/kW-month tariff, timer baseline €0; at an assumed €120k-180k battery cost: 10+ year simple payback - the battery does not pay for itself on these assumptions</td></tr>
       <tr><td>Python for analytics</td><td><code>sales-kpi-analytics</code>, <code>revops-optimizer</code></td><td>end-to-end pipelines</td></tr>
       <tr><td>SQL / data modelling</td><td><code>sales-kpi-analytics</code> SQL set</td><td>spend analysis queries</td></tr>
       <tr><td>Excel-level tabular analysis</td><td><code>sales-kpi-analytics</code></td><td>spend breakdowns</td></tr>
@@ -253,6 +278,7 @@
       <tr><td>Data into business decisions</td><td><code>sales-kpi-analytics</code>; <code>market-basket-analysis</code></td><td>€2.6M leakage lever; cross-sell recs from 254 rules (top lift 2.41), 3 segments</td></tr>
       <tr><td>Market-basket / cross-sell</td><td><code>market-basket-analysis</code></td><td>Apriori + FP-growth from scratch, exact equality cross-check; 224 itemsets, 254 rules; 18 tests</td></tr>
       <tr><td>Classification / anomaly detection</td><td><code>ml-models-lab</code></td><td>SKU classifier macro-F1 0.963; anomaly AE PR-AUC 0.963 vs PCA 0.951 (narrow win; PCA recommended default)</td></tr>
+      <tr><td>Visual quality inspection (vision)</td><td><code>quality-anomaly-vision</code> - 3 detectors trained on clean images only, one pre-fixed scoring rule, metrics from scratch; 15 tests</td><td>conv AE ROC-AUC 0.779 vs PCA 0.772 vs local stats 0.687 - inside the pre-registered 0.02 margin, so PCA recommended over the deep model; PCA wins TPR 0.407 vs 0.393 @ 5% FPR and mean IoU 0.207; texture-breaks hard for all (best AUC 0.609); training the AE longer made it worse (0.779 &rarr; 0.738)</td></tr>
       <tr><td>Warehouse / intralogistics</td><td><code>logistics-flow-studio</code> (WarehouseTwin); <code>logistics-digital-twin</code></td><td>optimizer &minus;48.6% pick travel (demo layout; pinned in the repo's <code>docs/MEASUREMENTS.md</code>); ABC 80/20 ~21% &gt; random; slotting &minus;44.2% (break-even ~0.7 days); DES cycle &minus;76.1%, travel &minus;66.5%; 24 tests</td></tr>
       <tr><td>Logistics / ops analytics</td><td><code>route-optimizer</code>; <code>supply-network-opt</code></td><td>4.6% / 31% savings; safety stock &minus;65.7% / &minus;80.1%; 19 tests</td></tr>
       <tr><td>Real, messy data (real, not synthetic)</td><td><code>retail-analytics-real</code> - UCI Online Retail II (1,067,371 rows, CC BY 4.0); 20/20 tests on a committed real-data fixture; exec PDF + Excel</td><td>real data: 94.0% of rows retained (every cleaning step logged), 22.77% missing CustomerID flagged, returns 3.65% of gross value, £19,643,862 analyzed; RFM 5,852 customers / 10 segments, Champions 25% &rarr; 69.0% of revenue; 5-fold rolling-origin CV - seasonal-naive wins (MASE 1.094 vs Holt-Winters 1.187, lag-features 1.590), reported plainly</td></tr>
@@ -276,7 +302,7 @@
     Independent, public-info-only analysis &middot; not affiliated with Würth &middot; no internal
     Würth data/systems used &middot; all cited metrics on synthetic data except
     <code>retail-analytics-real</code>, whose results are measured on real UCI Online Retail II
-    data (CC BY 4.0) and labelled as such. Portfolio (16+ repos):
+    data (CC BY 4.0) and labelled as such. Portfolio (19+ repos):
     <a href="https://github.com/Dimikissimov">github.com/Dimikissimov</a>.
     &copy; 2026 Dimitres Kisimov &mdash; all rights reserved; published for portfolio review. This page is hand-written, self-contained, and uses only system
     fonts - no external assets and no network requests (the single link above is a plain anchor, not
