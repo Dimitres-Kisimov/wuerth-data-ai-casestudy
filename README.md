@@ -38,7 +38,7 @@ A distributor at this scale lives or dies on a handful of quantitative levers, e
 
 ## How this repo demonstrates fit for **both** postings
 
-The portfolio behind this case study is now **19+ repositories** (all at [github.com/Dimikissimov](https://github.com/Dimikissimov)). I've built three complementary bodies of work, which is exactly why I can speak to both roles:
+The portfolio behind this case study is now **19+ repositories** (at [github.com/Dimitres-Kisimov](https://github.com/Dimitres-Kisimov)). I've built three complementary bodies of work, which is exactly why I can speak to both roles:
 
 **Analytics side (Job #2)** — forecasting, KPIs, optimization, BI:
 - `revops-optimizer` — assortment (MILP), newsvendor inventory, elasticity pricing, a **Power BI / DAX** pack and an exec deck; ~**€160k/yr** modelled uplift *(synthetic data)*.
