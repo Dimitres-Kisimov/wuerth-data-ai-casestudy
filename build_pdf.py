@@ -37,9 +37,10 @@ DISCLAIMER = (
     "confidential, or proprietary Wuerth data or systems were used. Wuerth-scale "
     "figures are public and approximate. All portfolio performance numbers are on "
     "SYNTHETIC / self-generated data unless labelled REAL DATA, and demonstrate "
-    "method only -- they are not claims about Wuerth's real business. The one "
-    "real-data project (retail-analytics-real) is completed: measured on public "
-    "UCI Online Retail II data (CC BY 4.0) and labelled REAL DATA where cited."
+    "method only -- they are not claims about Wuerth's real business. The "
+    "real-data projects (retail-analytics-real, decision-chain) are completed: "
+    "measured on public UCI Online Retail II data (CC BY 4.0) and labelled REAL "
+    "DATA where cited; decision-chain labels its invented layers on every line."
 )
 
 
@@ -87,13 +88,17 @@ def cover(pdf):
     intro = (
         "This is my independent case study. I mapped the requirements of two "
         "Wuerth Data & AI internship postings to work I have already built and "
-        "measured in my own portfolio (now 19+ repositories, including two "
+        "measured in my own portfolio (now 21+ repositories, including the "
+        "decision-chain integration capstone -- one real dataset through the "
+        "whole distributor chain with 13 machine-checked reconciliation "
+        "identities -- an MCP agentic-integration server, two "
         "warehouse-logistics flagships, a supply-network optimizer, an energy "
         "forecasting + peak-shaving study, a visual quality-inspection study, "
         "and a live installable quantum-explainer PWA). The euro and accuracy "
-        "figures throughout are on synthetic data (except retail-analytics-real, "
-        "measured and labelled on real public data) and exist to prove the "
-        "methods work and are measurable -- not to forecast Wuerth outcomes."
+        "figures throughout are on synthetic data (except retail-analytics-real "
+        "and decision-chain, measured and labelled on real public data) and "
+        "exist to prove the methods work and are measurable -- not to forecast "
+        "Wuerth outcomes."
     )
     ax.text(0.06, 0.685, "\n".join(_wrap(intro, 86)), fontsize=10,
             color=INK, va="top", transform=ax.transAxes)
@@ -187,6 +192,12 @@ def opportunity_page(pdf):
         ["Real data (completed)", "Cleaning + RFM + leakage-safe CV",
          "retail-analytics-real",
          "real data: seasonal-naive wins CV, MASE 1.094; Champions 25% -> 69.0%"],
+        ["Chain integration & reconciliation (new)",
+         "Provenance-tagged pipeline + identity ledger; MCP agentic layer",
+         "decision-chain, chain-mcp",
+         "real data + labelled layers: 13/13 identities PASS; cross-repo revenue "
+         "GBP 19,643,861.62 to the penny; naive wins lumpy (MASE 1.782); "
+         "slotting optimum -1.6% vs ABC; CVRP -0.2% vs Clarke-Wright"],
     ]
     _draw_table(ax, rows, top=0.815, bottom=0.06,
                 col_x=[0.06, 0.31, 0.55, 0.78], col_w=[0.25, 0.24, 0.23, 0.18],
@@ -238,6 +249,10 @@ def _draw_table(ax, rows, top, bottom, col_x, col_w, header_bg, fs=8.0):
 
 JOB1_ROWS = [
     ["Build AI-agent workflows", "agentic-automation-lab", "agentic tool-use loops"],
+    ["Agentic integration via an open standard (MCP)",
+     "chain-mcp (official mcp Python SDK; Claude Desktop / Code configs)",
+     "6 real engines as AI-callable tools; typed schemas; never-crash errors; "
+     "per-tool honesty label; 20 tests incl. live JSON-RPC handshake"],
     ["Low-code (n8n / Power Automate)", "agentic-automation-lab: n8n/rfq_intake_agent.json",
      "RFQ-intake agent; ~EUR625k/yr"],
     ["Visual / flow-based building", "agent-flow-studio", "flow builder; ~EUR47k/yr"],
@@ -257,6 +272,12 @@ JOB1_ROWS = [
 ]
 
 JOB2_ROWS = [
+    ["One dataset through the whole chain (real data + labelled layers)",
+     "decision-chain (run artifact + offline dashboard + 110 tests)",
+     "13/13 reconciliation identities PASS; cross-repo revenue GBP "
+     "19,643,861.62 to the penny; ledger to the cent; naive wins lumpy "
+     "(MASE 1.782); slotting optimum -1.6% vs ABC; CVRP -0.2% vs "
+     "Clarke-Wright; crew 18% utilized; cost rates labelled INVENTED"],
     ["BI / Power BI", "revops-optimizer: powerbi/DAX_measures.md", "DAX pack + 3-page report"],
     ["KPI dashboards / metrics", "sales-kpi-analytics", "KPI layer + exec PDF"],
     ["Predictive analytics / forecasting",
@@ -288,7 +309,9 @@ JOB2_ROWS = [
      "TPR 0.407 vs 0.393 @ 5% FPR; texture-breaks hard for all (best 0.609)"],
     ["Warehouse / intralogistics",
      "logistics-flow-studio (WarehouseTwin); logistics-digital-twin",
-     "-48.6% pick travel; ABC ~21% > random; slotting -44.2%; DES -76.1% / -66.5%"],
+     "-48.6% pick travel; ABC ~21% > random; BYO CSV import (in-browser, "
+     "row-numbered validation) + floor-plan underlay w/ 2-point calibration; "
+     "slotting -44.2%; DES -76.1% / -66.5%"],
     ["Logistics / ops analytics", "route-optimizer; supply-network-opt",
      "4.6% / 31% savings; safety stock -65.7% / -80.1%"],
     ["Real, messy data (completed)",
