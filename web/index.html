@@ -86,9 +86,10 @@
     Würth-scale figures are public and approximate. Every performance number below is measured on
     <strong>synthetic / self-generated data</strong> unless explicitly labelled <strong>real
     data</strong>, and demonstrates method only - it is not a claim about Würth's real business.
-    The one real-data project (<code>retail-analytics-real</code>) is completed and published: its
-    numbers are measured on the public UCI Online Retail II dataset (CC BY 4.0) and labelled
-    real data wherever cited.
+    The real-data projects (<code>retail-analytics-real</code> and <code>decision-chain</code>) are
+    completed: their numbers are measured on the public UCI Online Retail II dataset (CC BY 4.0)
+    and labelled real data wherever cited; <code>decision-chain</code> additionally labels its
+    invented physical layers synthetic-assigned on every line.
   </div>
 
   <p class="muted" style="margin:-14px 0 22px;">
@@ -198,6 +199,9 @@
       <p class="muted">Game-like warehouse twin as an installable offline PWA: canvas layout editor,
       EUR1-EUR6 pallet catalog, DIN 15185-informed aisle checks, deterministic sim, offline heuristic
       AI advisor with explained suggestions; plus slotting + discrete-event sim + container packing.
+      New real-world pass shipped: import your own article/order CSVs (100% in-browser, row-numbered
+      validation, orders replayed exactly, honest "Data: yours" badge) and a floor-plan image underlay
+      with two-point metric calibration; your data is excluded from share links by default.
       <code>logistics-flow-studio</code> (WarehouseTwin), <code>logistics-digital-twin</code>.
       Standards panel framed "aligned to, not a certification".</p>
       <span class="metric">Optimizer &minus;48.6% pick travel &middot; ABC ~21% &gt; random &middot; slotting &minus;44.2% &middot; DES cycle &minus;76.1% &middot; fill 2.0% &rarr; 30.2% (synthetic)</span>
@@ -234,6 +238,21 @@
       <span class="metric">AE 0.779 vs PCA 0.772 ROC-AUC &rarr; PCA recommended &middot; TPR 0.407 vs 0.393 @ 5% FPR &middot; mean IoU 0.207 (synthetic)</span>
     </div>
     <div class="card">
+      <div class="area">Chain integration &amp; reconciliation (new - capstone)</div>
+      <h3>One dataset through the whole chain</h3>
+      <p class="muted">The UCI Online Retail II transactions (1,067,371 raw rows, real data) flow
+      through clean &rarr; forecast &rarr; replenish &rarr; slot &rarr; pick &rarr; route &rarr;
+      cost, and a reconciliation ledger machine-checks 13 cross-stage identities - all PASS,
+      including cleaned revenue reproduced across two repositories to the penny and the cost
+      ledger's total to the cent. Honest findings kept in the headline: naive wins lumpy demand
+      (MASE 1.782); the exact slotting optimum is worth only 1.6% over classic ABC; CVRP beats
+      Clarke-Wright by only 0.2% and loses 19 of 48 days; the crew is 18% utilized; every invented
+      cost rate is labelled INVENTED - no profit claims. Offline dashboard with the 13-identity
+      panel; byte-reproducible deliverables from a committed run artifact; 110 tests.
+      <code>decision-chain</code>; agentic layer via MCP in <code>chain-mcp</code>.</p>
+      <span class="metric">13/13 identities PASS &middot; cross-repo revenue &pound;19,643,861.62 to the penny (real data + labelled synthetic-assigned layers)</span>
+    </div>
+    <div class="card">
       <div class="area">Real data (completed)</div>
       <h3>Retail analytics on real rows</h3>
       <p class="muted">The completed real-data counterpart: UCI Online Retail II (1,067,371 genuinely
@@ -253,6 +272,7 @@
     <thead><tr><th>Requirement</th><th>Repo / artifact</th><th>Proof (synthetic)</th></tr></thead>
     <tbody>
       <tr><td>Build AI-agent workflows</td><td><code>agentic-automation-lab</code></td><td>agentic tool-use loops</td></tr>
+      <tr><td>Agentic integration via an open standard (MCP)</td><td><code>chain-mcp</code> - MCP server on the official <code>mcp</code> Python SDK; Claude Desktop / Claude Code configs</td><td>6 real engines (forecast, slotting, packing, routing, leakage, audit) exposed as AI-callable tools with typed schemas, never-crash structured errors and a per-tool honesty label (data_note); 20 tests incl. a live JSON-RPC handshake; 5 tools on synthetic seeded data, forecast_demand on the real UCI pipeline (labelled)</td></tr>
       <tr><td>Low-code (n8n / Power Automate)</td><td><code>agentic-automation-lab/n8n/rfq_intake_agent.json</code></td><td>RFQ-intake agent; ~€625k/yr</td></tr>
       <tr><td>Visual / flow-based building</td><td><code>agent-flow-studio</code></td><td>flow builder; ~€47k/yr</td></tr>
       <tr><td>Connecting systems / APIs</td><td><code>agentic-automation-lab</code> connector layer</td><td>agents call external APIs</td></tr>
@@ -272,6 +292,7 @@
   <table>
     <thead><tr><th>Requirement</th><th>Repo / artifact</th><th>Proof (synthetic unless noted)</th></tr></thead>
     <tbody>
+      <tr><td>One dataset through the whole chain - integration whose numbers reconcile (real data + labelled layers)</td><td><code>decision-chain</code> - committed run artifact <code>artifacts/full_run.json</code>; offline CHAIN DASHBOARD with the 13-identity reconciliation panel; byte-reproducible PDF + Excel; 110 tests</td><td>real data: UCI Online Retail II (1,067,371 raw rows) through ingest &rarr; forecast &rarr; inventory &rarr; warehouse &rarr; transport &rarr; costing; all 13 machine-checked identities PASS - cross-repo revenue &pound;19,643,861.62 to the penny, ledger total to the cent (253,427.16), every pick/carton/route drop conserved (256,787 lines; 70,820 cartons; 4,151 drops). Honest findings: naive wins lumpy demand (MASE 1.782); slotting optimum only &minus;1.6% vs ABC (math explained); CVRP &minus;0.2% vs Clarke-Wright, loses 19 of 48 days; crew 18% utilized; every cost rate INVENTED and labelled - no profit claims</td></tr>
       <tr><td>BI / Power BI</td><td><code>revops-optimizer/powerbi/DAX_measures.md</code></td><td>DAX pack + 3-page report</td></tr>
       <tr><td>KPI dashboards / metrics</td><td><code>sales-kpi-analytics</code></td><td>KPI layer + exec PDF</td></tr>
       <tr><td>Predictive analytics / forecasting</td><td><code>sales-kpi-analytics</code> rolling-origin CV; <code>ml-models-lab</code> global forecaster</td><td>MASE &lt; 1 vs seasonal-naive; MASE 0.987 / RMSSE 0.948 vs seasonal-naive (1.080/1.062) and Holt-Winters (1.101/1.019)</td></tr>
@@ -286,7 +307,7 @@
       <tr><td>Market-basket / cross-sell</td><td><code>market-basket-analysis</code></td><td>Apriori + FP-growth from scratch, exact equality cross-check; 224 itemsets, 254 rules; 18 tests</td></tr>
       <tr><td>Classification / anomaly detection</td><td><code>ml-models-lab</code></td><td>SKU classifier macro-F1 0.963; anomaly AE PR-AUC 0.963 vs PCA 0.951 (narrow win; PCA recommended default)</td></tr>
       <tr><td>Visual quality inspection (vision)</td><td><code>quality-anomaly-vision</code> - 3 detectors trained on clean images only, one pre-fixed scoring rule, metrics from scratch; 15 tests</td><td>conv AE ROC-AUC 0.779 vs PCA 0.772 vs local stats 0.687 - inside the pre-registered 0.02 margin, so PCA recommended over the deep model; PCA wins TPR 0.407 vs 0.393 @ 5% FPR and mean IoU 0.207; texture-breaks hard for all (best AUC 0.609); training the AE longer made it worse (0.779 &rarr; 0.738)</td></tr>
-      <tr><td>Warehouse / intralogistics</td><td><code>logistics-flow-studio</code> (WarehouseTwin); <code>logistics-digital-twin</code></td><td>optimizer &minus;48.6% pick travel (demo layout; pinned in the repo's <code>docs/MEASUREMENTS.md</code>); ABC 80/20 ~21% &gt; random; slotting &minus;44.2% (break-even ~0.7 days); DES cycle &minus;76.1%, travel &minus;66.5%; 24 tests</td></tr>
+      <tr><td>Warehouse / intralogistics</td><td><code>logistics-flow-studio</code> (WarehouseTwin); <code>logistics-digital-twin</code></td><td>optimizer &minus;48.6% pick travel (demo layout; pinned in the repo's <code>docs/MEASUREMENTS.md</code>); ABC 80/20 ~21% &gt; random; bring-your-own-data: article/order CSV import 100% in-browser (row-numbered validation, orders replayed exactly, honest data badge) + floor-plan underlay with two-point metric calibration, both excluded from share links by default; slotting &minus;44.2% (break-even ~0.7 days); DES cycle &minus;76.1%, travel &minus;66.5%; 24 tests</td></tr>
       <tr><td>Logistics / ops analytics</td><td><code>route-optimizer</code>; <code>supply-network-opt</code></td><td>4.6% / 31% savings; safety stock &minus;65.7% / &minus;80.1%; 19 tests</td></tr>
       <tr><td>Real, messy data (real, not synthetic)</td><td><code>retail-analytics-real</code> - UCI Online Retail II (1,067,371 rows, CC BY 4.0); 20/20 tests on a committed real-data fixture; exec PDF + Excel</td><td>real data: 94.0% of rows retained (every cleaning step logged), 22.77% missing CustomerID flagged, returns 3.65% of gross value, £19,643,862 analyzed; RFM 5,852 customers / 10 segments, Champions 25% &rarr; 69.0% of revenue; 5-fold rolling-origin CV - seasonal-naive wins (MASE 1.094 vs Holt-Winters 1.187, lag-features 1.590), reported plainly</td></tr>
       <tr><td>Present to decision-makers</td><td><code>revops-optimizer</code> exec deck</td><td>exec narrative deck</td></tr>
@@ -308,8 +329,8 @@
   <footer>
     Independent, public-info-only analysis &middot; not affiliated with Würth &middot; no internal
     Würth data/systems used &middot; all cited metrics on synthetic data except
-    <code>retail-analytics-real</code>, whose results are measured on real UCI Online Retail II
-    data (CC BY 4.0) and labelled as such. Portfolio (19+ repos):
+    <code>retail-analytics-real</code> and <code>decision-chain</code>, whose results are measured
+    on real UCI Online Retail II data (CC BY 4.0) and labelled as such. Portfolio (21+ repos):
     <a href="https://github.com/Dimitres-Kisimov">github.com/Dimitres-Kisimov</a>.
     &copy; 2026 Dimitres Kisimov &mdash; all rights reserved; published for portfolio review. This page is hand-written, self-contained, and uses only system
     fonts - no external assets and no network requests (the single link above is a plain anchor, not
