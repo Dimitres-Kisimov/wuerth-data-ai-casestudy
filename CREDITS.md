@@ -29,9 +29,9 @@ external assets.
   from it in this case study is measured on that real data and labelled
   *(real data)* — including the honest headline that the seasonal-naive
   baseline won its forecast comparison.
-- Standards named in `logistics-flow-studio` (ASR A1.8, DIN 15185, EN 15512,
-  EPAL/DIN EN 13698, VDI 2510/3564, DGUV) are referenced as design guidance and
-  framed "aligned to, **not** a certification".
+- Standards named in `logistics-flow-studio` (ISO 22400, ASR A1.8, DIN 15185,
+  EN 15512, EPAL/DIN EN 13698, VDI 2510/3564, DGUV) are referenced as design
+  guidance and framed "aligned to, **not** a certification".
 
 ## Tools
 - PDF generated with **matplotlib** (`PdfPages`).

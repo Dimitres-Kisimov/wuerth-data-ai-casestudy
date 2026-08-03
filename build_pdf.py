@@ -174,9 +174,9 @@ def opportunity_page(pdf):
         ["Customer retention", "Decline + churn classifiers",
          "revops-optimizer, ml-models-lab",
          "ROC-AUC 0.99; churn ECE 0.197 -> 0.021"],
-        ["Warehouse / intralogistics (new)", "Digital twin + slotting + DES + packing",
-         "logistics-flow-studio, logistics-digital-twin",
-         "-48.6% pick travel; slotting -44.2%; fill 2.0% -> 30.2%"],
+        ["Warehouse / WMS (new)", "WMS twin + plant sim; slotting + DES + packing",
+         "logistics-flow-studio (WarehouseTwin v1.0), logistics-digital-twin",
+         "-48.6% pick travel; ABC ~21% > random; ISO 22400 KPIs; slotting -44.2%; fill 2.0% -> 30.2%"],
         ["Supply-network design (new)", "Facility MILP + flows + safety stock",
          "supply-network-opt",
          "-21.2% cost vs greedy; stock -65.7% / -80.1%"],
@@ -261,7 +261,7 @@ JOB1_ROWS = [
     ["Process automation (back-office)", "doc-extract-agent", "RFQ/invoice -> structured"],
     ["Document intake / understanding", "doc-extract-agent", "extract + validate; ~EUR145k/yr"],
     ["Rapid prototyping", "agent-flow-studio, agentic-automation-lab, logistics-flow-studio",
-     "runnable prototypes incl. an installable offline PWA"],
+     "runnable prototypes incl. a full installable offline WMS twin + plant simulator (PWA)"],
     ["Prototyping + education (hype-free)",
      "quantum-explainer -- LIVE: dimitres-kisimov.github.io/quantum-explainer",
      "hand-written simulator ~300 lines, zero deps; 42 physics assertions + "
@@ -308,10 +308,11 @@ JOB2_ROWS = [
      "AE ROC-AUC 0.779 vs PCA 0.772 -- inside 0.02 margin, PCA recommended; "
      "TPR 0.407 vs 0.393 @ 5% FPR; texture-breaks hard for all (best 0.609)"],
     ["Warehouse / intralogistics",
-     "logistics-flow-studio (WarehouseTwin); logistics-digital-twin",
-     "-48.6% pick travel; ABC ~21% > random; BYO CSV import (in-browser, "
-     "row-numbered validation) + floor-plan underlay w/ 2-point calibration; "
-     "slotting -44.2%; DES -76.1% / -66.5%"],
+     "logistics-flow-studio (WarehouseTwin v1.0); logistics-digital-twin",
+     "WMS twin + plant sim: keyword-generated layout, WMS flow w/ ISO 22400 "
+     "KPIs, live material flow + KPI dashboard, automation, BYO CSV import + "
+     "floor-plan underlay; -48.6% pick travel; ABC ~21% > random; 23 "
+     "harnesses; slotting -44.2%; DES -76.1% / -66.5%"],
     ["Logistics / ops analytics", "route-optimizer; supply-network-opt",
      "4.6% / 31% savings; safety stock -65.7% / -80.1%"],
     ["Real, messy data (completed)",

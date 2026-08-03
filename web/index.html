@@ -195,16 +195,21 @@
     </div>
     <div class="card">
       <div class="area">Warehouse / intralogistics (new)</div>
-      <h3>Warehouse digital twin</h3>
-      <p class="muted">Game-like warehouse twin as an installable offline PWA: canvas layout editor,
-      EUR1-EUR6 pallet catalog, DIN 15185-informed aisle checks, deterministic sim, offline heuristic
-      AI advisor with explained suggestions; plus slotting + discrete-event sim + container packing.
-      New real-world pass shipped: import your own article/order CSVs (100% in-browser, row-numbered
-      validation, orders replayed exactly, honest "Data: yours" badge) and a floor-plan image underlay
-      with two-point metric calibration; your data is excluded from share links by default.
-      <code>logistics-flow-studio</code> (WarehouseTwin), <code>logistics-digital-twin</code>.
-      Standards panel framed "aligned to, not a certification".</p>
-      <span class="metric">Optimizer &minus;48.6% pick travel &middot; ABC ~21% &gt; random &middot; slotting &minus;44.2% &middot; DES cycle &minus;76.1% &middot; fill 2.0% &rarr; 30.2% (synthetic)</span>
+      <h3>Warehouse / WMS digital twin + plant simulator</h3>
+      <p class="muted">WarehouseTwin (v1.0): an offline, installable browser app. Describe a plant in
+      plain keywords and a transparent, deterministic generator builds a full layout &mdash; steered by
+      plain-language commands ("include 2 more RGVs in the picking sector") via an offline parser, not a
+      trained model &mdash; then simulate the WMS operation (receiving &rarr; put-away &rarr; replenishment
+      &rarr; picking &rarr; packing &rarr; shipping) with ISO 22400-grounded KPIs and the bottleneck named,
+      a live animated material flow and a live KPI dashboard. Storage slotting/occupancy, automation
+      modelling (AS/RS, shuttle, RGV, AGV, conveyor), an editable standards knowledge base, 22 example
+      scenarios, a canvas to 120&times;80 m and a 2.5D view; import your own article/order CSVs
+      (in-browser, row-numbered validation, orders replayed exactly, honest "Data: yours" badge) and a
+      floor-plan underlay with two-point calibration; outputs a WMS Report (print/JSON/CSV) and a scoped
+      IFC4 export. Plus container packing, slotting and discrete-event sim in
+      <code>logistics-digital-twin</code>. <code>logistics-flow-studio</code> (WarehouseTwin).
+      Standards panel (ISO 22400, DIN 15185, ASR, EN, VDI) framed "aligned to, not a certification".</p>
+      <span class="metric">Optimizer &minus;48.6% pick travel &middot; ABC ~21% &gt; random &middot; 22 scenarios &middot; 23 harnesses &middot; slotting &minus;44.2% &middot; DES cycle &minus;76.1% &middot; fill 2.0% &rarr; 30.2% (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Supply-network design (new)</div>
@@ -278,7 +283,7 @@
       <tr><td>Connecting systems / APIs</td><td><code>agentic-automation-lab</code> connector layer</td><td>agents call external APIs</td></tr>
       <tr><td>Process automation (back-office)</td><td><code>doc-extract-agent</code></td><td>RFQ/invoice &rarr; structured</td></tr>
       <tr><td>Document intake / understanding</td><td><code>doc-extract-agent</code></td><td>extract + validate; ~€145k/yr</td></tr>
-      <tr><td>Rapid prototyping</td><td><code>agent-flow-studio</code>, <code>agentic-automation-lab</code>, <code>logistics-flow-studio</code></td><td>runnable prototypes; a full installable offline PWA</td></tr>
+      <tr><td>Rapid prototyping</td><td><code>agent-flow-studio</code>, <code>agentic-automation-lab</code>, <code>logistics-flow-studio</code></td><td>runnable prototypes; a full installable offline WMS twin + plant simulator (PWA)</td></tr>
       <tr><td>Prototyping + education (explaining tech without hype)</td><td><code>quantum-explainer</code> - live &amp; installable at dimitres-kisimov.github.io/quantum-explainer (plain-text address; this page loads nothing external)</td><td>hand-written state-vector simulator (~300 lines, zero dependencies); 42 physics assertions + 57 structural/offline checks pass; no frameworks, no build step, no network calls</td></tr>
       <tr><td>Show automation ROI</td><td><code>automation-roi-explorer</code></td><td>€383k/yr net modelled</td></tr>
       <tr><td>Python engineering</td><td>all automation repos</td><td>Python throughout</td></tr>
