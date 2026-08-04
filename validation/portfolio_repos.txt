@@ -1,0 +1,50 @@
+# Authoritative registry of the portfolio repositories this case study references.
+#
+# This file is the single source of truth for the anti-drift consistency guard
+# (validation/consistency_check.py). Every repo name cited in the case-study docs
+# must resolve to an entry here; every entry here must be referenced by at least
+# one doc; and the README must mention all of them. When a new portfolio repo is
+# added to the case study, add its exact name here in the same edit -- otherwise
+# the consistency check fails, which is the point.
+#
+# Format: one repository name per line. Blank lines and lines starting with '#'
+# are ignored. Names are the exact GitHub repository slugs under
+# github.com/Dimitres-Kisimov.
+#
+# Provenance is NOT invented here: it is asserted from the docs themselves. The
+# two real-data repositories (retail-analytics-real, decision-chain) are the only
+# ones whose numbers are measured on the public UCI Online Retail II dataset
+# (CC BY 4.0); every other repo's metrics are on synthetic / self-generated data.
+# Both facts are labelled in the docs and checked by the guard -- see
+# validation/consistency_check.py (REAL_DATA_REPOS) and CONSISTENCY_REPORT.md.
+
+# --- Analytics (Job #2): forecasting, KPIs, optimization, BI ---
+revops-optimizer
+sales-kpi-analytics
+distributor-intelligence-platform
+route-optimizer
+market-basket-analysis
+ml-models-lab
+energy-demand-forecast
+quality-anomaly-vision
+
+# --- Logistics & operations ---
+logistics-flow-studio
+logistics-digital-twin
+supply-network-opt
+
+# --- Automation (Job #1): agentic workflows, low-code, documents ---
+agentic-automation-lab
+agent-flow-studio
+doc-extract-agent
+automation-roi-explorer
+chain-mcp
+quantum-explainer
+
+# --- Integration capstone + real-data counterparts ---
+decision-chain
+retail-analytics-real
+
+# --- Supporting research / portfolio maintenance ---
+bio-efficient-ai
+portfolio-ops

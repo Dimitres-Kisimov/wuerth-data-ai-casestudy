@@ -85,6 +85,7 @@ Supporting research/method work: `bio-efficient-ai` (a small research PoC with a
 | [`docs/AREAS_FOR_IMPROVEMENT.md`](docs/AREAS_FOR_IMPROVEMENT.md) | Honest, living list of what a *real* Würth deployment would additionally need (real data, GDPR/security, MLOps, scale, human-in-the-loop) and how I'd approach each. |
 | [`deliverables/wuerth_data_ai_casestudy.pdf`](deliverables/) | A one-page executive PDF (built by `build_pdf.py`) — disclaimer, opportunity summary, both skill maps. |
 | [`web/index.html`](web/index.html) | A self-contained offline web version of the case study. |
+| [`validation/CONSISTENCY_REPORT.md`](validation/CONSISTENCY_REPORT.md) | Machine-checked **anti-drift report** — every referenced repo resolves to the registry, every cited figure has a synthetic/real/public provenance label nearby, the disclaimers are present, and the license stays proprietary (no stale permissive self-license string). Auto-generated and deterministic; regenerate with `python -m validation.consistency_check`. |
 
 ## How to reproduce the artifacts
 
@@ -96,8 +97,22 @@ python build_pdf.py           # writes deliverables/wuerth_data_ai_casestudy.pdf
 
 # Smoke tests (CI runs these too, plus ruff):
 python -m pytest -q           # PDF builds > 10 KB, web page stays self-contained,
-                              # disclaimer present in README + web page
+                              # disclaimer present in README + web page,
+                              # and the consistency / anti-drift guard passes
+
+# Consistency / anti-drift guard (offline, deterministic, stdlib only):
+python -m validation.consistency_check   # validates repo names, provenance labels,
+                                         # disclaimers and license; rewrites the report
 ```
+
+The consistency guard is honest by design: it only **validates** what the docs
+already state (it invents no numbers). It reads the authoritative repo registry in
+[`validation/portfolio_repos.txt`](validation/portfolio_repos.txt) and fails if a
+doc references an unregistered repo, if a cited figure lacks a nearby
+synthetic/real/public provenance label, if a disclaimer goes missing, or if a
+stale permissive open-source self-license string ever creeps back in (the
+license must stay proprietary — all rights reserved). See
+[`validation/CONSISTENCY_REPORT.md`](validation/CONSISTENCY_REPORT.md).
 
 ## Honesty notes
 

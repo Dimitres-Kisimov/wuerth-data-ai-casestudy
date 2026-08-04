@@ -16,5 +16,7 @@ jobs:
         run: pip install matplotlib pytest ruff
       - name: Lint
         run: python -m ruff check .
+      - name: Consistency / anti-drift guard
+        run: python -m validation.consistency_check
       - name: Test
         run: python -m pytest -q
