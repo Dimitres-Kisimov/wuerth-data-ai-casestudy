@@ -174,9 +174,11 @@ def opportunity_page(pdf):
         ["Customer retention", "Decline + churn classifiers",
          "revops-optimizer, ml-models-lab",
          "ROC-AUC 0.99; churn ECE 0.197 -> 0.021"],
-        ["Warehouse / WMS (new)", "WMS twin + plant sim; slotting + DES + packing",
-         "logistics-flow-studio (WarehouseTwin v1.0), logistics-digital-twin",
-         "-48.6% pick travel; ABC ~21% > random; ISO 22400 KPIs; slotting -44.2%; fill 2.0% -> 30.2%"],
+        ["Warehouse / WMS (new)",
+         "WMS twin + plant sim (Story Mode, 894-element plant, definable objects); slotting + DES + packing",
+         "logistics-flow-studio (WarehouseTwin), logistics-digital-twin (engine)",
+         "-48.6% pick travel; ABC ~21% > random; ISO 22400 KPIs; 57/57 self-test + 35 harnesses; "
+         "engine slotting -44.2% (golden-zone 25% -> 100%); fill 2.0% -> 30.2%"],
         ["Supply-network design (new)", "Facility MILP + flows + safety stock",
          "supply-network-opt",
          "-21.2% cost vs greedy; stock -65.7% / -80.1%"],
@@ -283,7 +285,10 @@ JOB2_ROWS = [
     ["Predictive analytics / forecasting",
      "sales-kpi-analytics; ml-models-lab global forecaster",
      "MASE < 1; MASE 0.987 / RMSSE 0.948 beats naive + Holt-Winters"],
-    ["Forecasting rigour", "distributor-intel-platform", "MASE 0.38 (9 rolling folds)"],
+    ["Forecasting rigour + reconciliation guard",
+     "distributor-intelligence-platform (MRO command center)",
+     "MASE 0.38 (9 rolling folds); /reconcile guard renders a green 'no silent drift' verdict over "
+     "16/16 cross-engine identities with all 21 headline numbers present"],
     ["Energy forecasting + optimization",
      "energy-demand-forecast (forecasters + LP from scratch; 19 tests)",
      "MASE 0.497 / MAPE 4.8%, 14/14 folds (Holt-Winters loses to naive, reported); "
@@ -308,11 +313,13 @@ JOB2_ROWS = [
      "AE ROC-AUC 0.779 vs PCA 0.772 -- inside 0.02 margin, PCA recommended; "
      "TPR 0.407 vs 0.393 @ 5% FPR; texture-breaks hard for all (best 0.609)"],
     ["Warehouse / intralogistics",
-     "logistics-flow-studio (WarehouseTwin v1.0); logistics-digital-twin",
+     "logistics-flow-studio (WarehouseTwin); logistics-digital-twin (engine)",
      "WMS twin + plant sim: keyword-generated layout, WMS flow w/ ISO 22400 "
-     "KPIs, live material flow + KPI dashboard, automation, BYO CSV import + "
-     "floor-plan underlay; -48.6% pick travel; ABC ~21% > random; 23 "
-     "harnesses; slotting -44.2%; DES -76.1% / -66.5%"],
+     "KPIs, live material flow + KPI dashboard, Story Mode tour, an 894-element "
+     "signature plant (29 object types), a user-definable object library, BYO CSV "
+     "import + floor-plan underlay; -48.6% pick travel; ABC ~21% > random; 57/57 "
+     "self-test + 35 harnesses; engine slotting -44.2% (golden-zone 25% -> 100%), "
+     "fill 2.0% -> 30.2%; DES -76.1% / -66.5%"],
     ["Logistics / ops analytics", "route-optimizer; supply-network-opt",
      "4.6% / 31% savings; safety stock -65.7% / -80.1%"],
     ["Real, messy data (completed)",

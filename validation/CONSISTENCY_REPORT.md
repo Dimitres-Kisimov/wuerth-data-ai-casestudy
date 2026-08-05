@@ -17,7 +17,7 @@
 | 4 | README mentions every registered repo | PASS | 21/21 registered repos in README |
 | 5 | CREDITS.md credits every registered repo | PASS | 21/21 registered repos credited |
 | 6 | disclaimer present in every substance doc | PASS | 8 docs carry the not-affiliated disclaimer |
-| 7 | every currency figure has a provenance label nearby | PASS | 17 money-bearing sections checked, all labelled |
+| 7 | every currency figure has a provenance label nearby | PASS | 19 money-bearing sections checked, all labelled |
 | 8 | real-data repos are labelled 'real data' wherever named | PASS | real-data repos decision-chain, retail-analytics-real labelled everywhere they appear |
 | 9 | license stays proprietary; no stale MIT self-license | PASS | LICENSE + docs state 'all rights reserved'; zero 'MIT' tokens present |
 

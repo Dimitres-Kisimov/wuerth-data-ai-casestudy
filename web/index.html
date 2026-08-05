@@ -45,6 +45,8 @@
   .card .metric{display:inline-block; margin-top:8px; font-size:.82rem;
                 background:var(--panel); border:1px solid var(--rule);
                 border-radius:20px; padding:3px 10px; color:var(--ink);}
+  .card img{width:100%; height:auto; display:block; border:1px solid var(--rule);
+            border-radius:6px; margin:6px 0 10px; background:#fff;}
   .muted{color:var(--muted); font-size:.82rem;}
   a{color:var(--accent);}
   table{width:100%; border-collapse:collapse; margin:10px 0 4px; font-size:.86rem;}
@@ -118,6 +120,60 @@
       <h3>Data &amp; AI Analytics</h3>
       <p class="muted">BI / Power BI, KPI dashboards, forecasting &amp; predictive analytics,
       Python &amp; SQL, data modelling, turning data into decisions.</p>
+    </div>
+  </div>
+
+  <h2>Featured work &mdash; one story, four flagships</h2>
+  <p class="muted">The spine: <strong>prediction &rarr; operation &rarr; proof &rarr; buyer &rarr;
+  revenue</strong>. Four elevated flagships mapped to concrete Würth opportunities (industrial MRO
+  distribution, a catalogue in the millions of SKUs, ~2,600 branches / trade outlets &mdash; public,
+  approximate &mdash; e-procurement / ORSY). Screenshots are local, offline assets. All metrics on
+  synthetic data unless a line says real data.</p>
+  <div class="cards">
+    <div class="card">
+      <div class="area">1 &mdash; Operate it &middot; logistics-flow-studio</div>
+      <h3>WarehouseTwin &mdash; the operable WMS twin + plant simulator</h3>
+      <img src="../assets/hero-plant-2d.png" alt="The 894-element signature mega automated fulfilment plant on the top-down editable floor plan - dense racking across the full hall with the generator, properties and simulation panels">
+      <p class="muted">Offline browser PWA: keyword-generate a full layout (offline NL parser, not a
+      trained model), then simulate receiving &rarr; put-away &rarr; replenishment &rarr; picking
+      &rarr; packing &rarr; shipping with ISO 22400-grounded KPIs. New depth: a one-click
+      <strong>Story Mode</strong> cinematic tour, an <strong>894-element signature plant</strong> (all
+      29 object types), and a <strong>user-definable object library</strong>. Würth opportunity:
+      branch and warehouse intralogistics across ~2,600 branches.</p>
+      <span class="metric">&minus;48.6% pick travel &middot; ABC ~21% &gt; random &middot; 57/57 self-test &middot; 35 harnesses (synthetic)</span>
+    </div>
+    <div class="card">
+      <div class="area">2 &mdash; The engine &middot; logistics-digital-twin</div>
+      <h3>The OR engine behind the showpiece</h3>
+      <img src="../assets/warehouse_layout.svg" alt="The velocity-slotted warehouse layout the engine produces - six aisle rows of storage slots ordered near-dispatch first, each cell coloured by its ABC velocity class, the nearest 20% ringed as the golden zone with A-movers filling it">
+      <p class="muted">3D carton packing (FFD + CP-SAT optimality proof), Hungarian slotting and a
+      discrete-event sim, sharing the same wt-1 layout format the app uses. The figure is the engine's
+      own hand-built SVG output (no plotting library, byte-identical across re-runs), the same velocity
+      palette as the live dashboard. Würth opportunity: the tested core that keeps the twin honest.</p>
+      <span class="metric">Slotting &minus;44.2% (golden-zone 25% &rarr; 100%) &middot; fill 2.0% &rarr; 30.2%, 56 containers saved &middot; 24 tests (synthetic)</span>
+    </div>
+    <div class="card">
+      <div class="area">3 &mdash; Prove it &middot; decision-chain</div>
+      <h3>One real dataset, reconciled end to end</h3>
+      <p class="muted">UCI Online Retail II (1,067,371 raw rows, real data) through clean &rarr;
+      forecast &rarr; replenish &rarr; slot &rarr; pick &rarr; route &rarr; a single reconciled
+      ledger, with 13 cross-stage identities machine-checked to hold. Honest losses kept in the
+      headline: naive wins lumpy demand (MASE 1.782); the exact slotting optimum is worth only
+      &minus;1.6% over ABC; every cost rate INVENTED and labelled &mdash; no profit claims. Würth
+      opportunity: the losses concentrate at the seams between separate systems, and this proves the
+      numbers still reconcile after every hand-off. (No screenshot &mdash; the deliverable is the
+      numeric ledger, not a UI.)</p>
+      <span class="metric">13/13 identities PASS &middot; cross-repo revenue &pound;19,643,861.62 to the penny &middot; 110 tests (real data + labelled synthetic-assigned layers)</span>
+    </div>
+    <div class="card">
+      <div class="area">4 &mdash; Command it &middot; distributor-intelligence-platform</div>
+      <h3>The MRO command center with a reconciliation guard</h3>
+      <img src="../assets/command-center.png" alt="The Command Center dashboard - KPI tiles, revenue and demand forecast with a confidence band, revenue by region, a gross-margin bridge and the ABC-XYZ portfolio matrix">
+      <p class="muted">Flask decision cockpit &mdash; forecasting, assortment and routing behind one
+      dashboard &mdash; with a reconciliation guard: a /reconcile executive brief renders a green
+      "no silent drift" verdict, tracing every headline number to the engine field it came from. Würth
+      opportunity: the operator's view over assortment, pricing, availability and logistics.</p>
+      <span class="metric">MASE 0.38 (9 folds) &middot; 25.0% km saved &middot; EUR 136,972/yr modelled uplift (8.4% of gross margin) &middot; guard holds 16/16 identities (synthetic)</span>
     </div>
   </div>
 
@@ -202,14 +258,16 @@
       trained model &mdash; then simulate the WMS operation (receiving &rarr; put-away &rarr; replenishment
       &rarr; picking &rarr; packing &rarr; shipping) with ISO 22400-grounded KPIs and the bottleneck named,
       a live animated material flow and a live KPI dashboard. Storage slotting/occupancy, automation
-      modelling (AS/RS, shuttle, RGV, AGV, conveyor), an editable standards knowledge base, 22 example
-      scenarios, a canvas to 120&times;80 m and a 2.5D view; import your own article/order CSVs
+      modelling (AS/RS, shuttle, RGV, AGV, conveyor), an editable standards knowledge base, a one-click
+      Story Mode cinematic tour, an 894-element signature plant (all 29 object types) and a
+      user-definable object library, 22 example
+      scenarios, a canvas to 400&times;250 m and a 2.5D view; import your own article/order CSVs
       (in-browser, row-numbered validation, orders replayed exactly, honest "Data: yours" badge) and a
       floor-plan underlay with two-point calibration; outputs a WMS Report (print/JSON/CSV) and a scoped
       IFC4 export. Plus container packing, slotting and discrete-event sim in
       <code>logistics-digital-twin</code>. <code>logistics-flow-studio</code> (WarehouseTwin).
       Standards panel (ISO 22400, DIN 15185, ASR, EN, VDI) framed "aligned to, not a certification".</p>
-      <span class="metric">Optimizer &minus;48.6% pick travel &middot; ABC ~21% &gt; random &middot; 22 scenarios &middot; 23 harnesses &middot; slotting &minus;44.2% &middot; DES cycle &minus;76.1% &middot; fill 2.0% &rarr; 30.2% (synthetic)</span>
+      <span class="metric">Optimizer &minus;48.6% pick travel &middot; ABC ~21% &gt; random &middot; Story Mode + 894-element signature plant &middot; 22 scenarios &middot; 35 harnesses + 57/57 self-test &middot; slotting &minus;44.2% (golden-zone 25% &rarr; 100%) &middot; DES cycle &minus;76.1% &middot; fill 2.0% &rarr; 30.2% (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Supply-network design (new)</div>
