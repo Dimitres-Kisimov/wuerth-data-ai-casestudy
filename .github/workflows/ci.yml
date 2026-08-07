@@ -18,5 +18,7 @@ jobs:
         run: python -m ruff check .
       - name: Consistency / anti-drift guard
         run: python -m validation.consistency_check
+      - name: Skill-coverage matrix guard
+        run: python -m validation.skill_coverage
       - name: Test
         run: python -m pytest -q

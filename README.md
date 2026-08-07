@@ -122,6 +122,7 @@ Supporting research/method work: `bio-efficient-ai` (a small research PoC with a
 | [`deliverables/wuerth_data_ai_casestudy.pdf`](deliverables/) | A one-page executive PDF (built by `build_pdf.py`) — disclaimer, opportunity summary, both skill maps. |
 | [`web/index.html`](web/index.html) | A self-contained offline web version of the case study. |
 | [`validation/CONSISTENCY_REPORT.md`](validation/CONSISTENCY_REPORT.md) | Machine-checked **anti-drift report** — every referenced repo resolves to the registry, every cited figure has a synthetic/real/public provenance label nearby, the disclaimers are present, and the license stays proprietary (no stale permissive self-license string). Auto-generated and deterministic; regenerate with `python -m validation.consistency_check`. |
+| [`validation/SKILL_COVERAGE_MATRIX.md`](validation/SKILL_COVERAGE_MATRIX.md) | Machine-checked **skill-coverage matrix** — parses the two job tables in [`docs/JOB_SKILL_MAP.md`](docs/JOB_SKILL_MAP.md) and proves each posting requirement is backed by a registered repo, a named artifact, and a non-empty measured proof, with no silent gaps. Auto-generated and deterministic; regenerate with `python -m validation.skill_coverage`. |
 
 ## How to reproduce the artifacts
 
@@ -133,12 +134,18 @@ python build_pdf.py           # writes deliverables/wuerth_data_ai_casestudy.pdf
 
 # Smoke tests (CI runs these too, plus ruff):
 python -m pytest -q           # PDF builds > 10 KB, web page stays self-contained,
-                              # disclaimer present in README + web page,
-                              # and the consistency / anti-drift guard passes
+                              # disclaimer present in README + web page, the
+                              # consistency / anti-drift guard passes, and the
+                              # skill-coverage matrix is complete
 
 # Consistency / anti-drift guard (offline, deterministic, stdlib only):
 python -m validation.consistency_check   # validates repo names, provenance labels,
                                          # disclaimers and license; rewrites the report
+
+# Skill-coverage matrix guard (offline, deterministic, stdlib only):
+python -m validation.skill_coverage      # proves every posting requirement in the
+                                         # job-skill map is backed by a registered
+                                         # repo + artifact + measured proof
 ```
 
 The consistency guard is honest by design: it only **validates** what the docs
@@ -149,6 +156,12 @@ synthetic/real/public provenance label, if a disclaimer goes missing, or if a
 stale permissive open-source self-license string ever creeps back in (the
 license must stay proprietary — all rights reserved). See
 [`validation/CONSISTENCY_REPORT.md`](validation/CONSISTENCY_REPORT.md).
+
+The **skill-coverage matrix** applies the same discipline to the case study's core
+promise — *every posting requirement maps to something I built and measured*. It
+parses the two job tables and fails if any requirement ever loses its backing repo,
+its named artifact, or its measured proof, so a gap can't slip in unnoticed. See
+[`validation/SKILL_COVERAGE_MATRIX.md`](validation/SKILL_COVERAGE_MATRIX.md).
 
 ## Honesty notes
 
