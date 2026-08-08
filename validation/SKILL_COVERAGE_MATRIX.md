@@ -13,13 +13,13 @@
 
 | # | Check | Result | Detail |
 |---|-------|--------|--------|
-| 1 | both job tables parse into 4-column requirement rows | PASS | 32 requirement rows across 2 job tables |
-| 2 | every requirement names a file / artifact to open | PASS | 32 requirements all cite a concrete artifact |
-| 3 | every requirement carries a proof / measured result | PASS | 32 requirements all carry a proof cell |
+| 1 | both job tables parse into 4-column requirement rows | PASS | 36 requirement rows across 2 job tables |
+| 2 | every requirement names a file / artifact to open | PASS | 36 requirements all cite a concrete artifact |
+| 3 | every requirement carries a proof / measured result | PASS | 36 requirements all carry a proof cell |
 | 4 | every repo cited as evidence resolves to the registry | PASS | no dangling / unregistered repo appears in a Repo column |
-| 5 | every posting requirement is backed by a registered repo | PASS | 32/32 requirements backed (incl. explicit cross-cutting rows) |
+| 5 | every posting requirement is backed by a registered repo | PASS | 36/36 requirements backed (incl. explicit cross-cutting rows) |
 | 6 | each crown-jewel flagship backs at least one requirement | PASS | 4/4 flagships appear as evidence |
-| 7 | each job's evidence spans several distinct repos | PASS | Job #1: 7 distinct repos; Job #2: 13 distinct repos |
+| 7 | each job's evidence spans several distinct repos | PASS | Job #1: 7 distinct repos; Job #2: 15 distinct repos |
 
 ## Job #1 — Praktikum Data & AI: (Agentic) Automation mit Low-code Plattformen
 
@@ -42,30 +42,34 @@ _12 requirements, 7 distinct registered repos._
 
 ## Job #2 — Praktikum Data & AI Analytics
 
-_20 requirements, 13 distinct registered repos._
+_24 requirements, 15 distinct registered repos._
 
 | # | Posting requirement | Registered repos backing it |
 |---|---------------------|------------------------------|
 | 1 | One dataset through the whole chain — integration whose numbers reconcile *(real data + labelled synthetic layers)* | `decision-chain` |
 | 2 | BI / Power BI dashboards | `revops-optimizer` |
 | 3 | KPI dashboards / metrics | `sales-kpi-analytics` |
-| 4 | Predictive analytics / forecasting | `ml-models-lab`, `sales-kpi-analytics` |
-| 5 | Forecasting rigour / validation | `distributor-intelligence-platform` |
-| 6 | Energy forecasting + optimization | `energy-demand-forecast` |
-| 7 | Python for analytics | `revops-optimizer`, `sales-kpi-analytics` |
-| 8 | SQL querying / data modelling | `sales-kpi-analytics` |
-| 9 | Excel-level tabular analysis | `sales-kpi-analytics` |
-| 10 | Data modelling | `revops-optimizer` |
-| 11 | Optimization / prescriptive analytics | `logistics-digital-twin`, `revops-optimizer`, `supply-network-opt` |
-| 12 | Elasticity / statistical modelling | `ml-models-lab`, `revops-optimizer` |
-| 13 | Turning data into business decisions | `market-basket-analysis`, `sales-kpi-analytics` |
-| 14 | Market-basket / cross-sell analytics | `market-basket-analysis` |
-| 15 | Classification / anomaly detection | `ml-models-lab` |
-| 16 | Visual quality inspection (vision anomaly detection) | `quality-anomaly-vision` |
-| 17 | Warehouse / intralogistics modelling | `logistics-digital-twin`, `logistics-flow-studio` |
-| 18 | Logistics / operations analytics | `route-optimizer`, `supply-network-opt` |
-| 19 | Real, messy data *(real data, not synthetic)* | `retail-analytics-real` |
-| 20 | Present findings to decision-makers | `revops-optimizer` |
+| 4 | Uncertainty / risk quantification on business numbers | `ml-models-lab`, `revops-optimizer`, `sales-kpi-analytics` |
+| 5 | Predictive analytics / forecasting | `ml-models-lab`, `sales-kpi-analytics` |
+| 6 | Forecasting rigour / validation | `distributor-intelligence-platform` |
+| 7 | Inventory policy / working-capital analytics | `distributor-intelligence-platform`, `supply-network-opt` |
+| 8 | Energy forecasting + optimization | `energy-demand-forecast` |
+| 9 | Python for analytics | `revops-optimizer`, `sales-kpi-analytics` |
+| 10 | SQL querying / data modelling | `sales-kpi-analytics` |
+| 11 | Excel-level tabular analysis | `sales-kpi-analytics` |
+| 12 | Data modelling | `revops-optimizer` |
+| 13 | Optimization / prescriptive analytics | `logistics-digital-twin`, `revops-optimizer`, `supply-network-opt` |
+| 14 | Elasticity / statistical modelling | `ml-models-lab`, `revops-optimizer` |
+| 15 | Turning data into business decisions | `market-basket-analysis`, `sales-kpi-analytics` |
+| 16 | Market-basket / cross-sell analytics | `market-basket-analysis` |
+| 17 | Classification / anomaly detection | `fraud-detection-ops`, `ml-models-lab` |
+| 18 | Model lifecycle / retraining governance (MLOps) | `fraud-detection-ops` |
+| 19 | Reliability / maintenance analytics (survival modelling) | `predictive-maintenance` |
+| 20 | Visual quality inspection (vision anomaly detection) | `quality-anomaly-vision` |
+| 21 | Warehouse / intralogistics modelling | `logistics-digital-twin`, `logistics-flow-studio` |
+| 22 | Logistics / operations analytics | `route-optimizer`, `supply-network-opt` |
+| 23 | Real, messy data *(real data, not synthetic)* | `retail-analytics-real` |
+| 24 | Present findings to decision-makers | `revops-optimizer` |
 
 ## Repo -> requirements index
 
@@ -79,10 +83,12 @@ _20 requirements, 13 distinct registered repos._
 | `distributor-intelligence-platform` | Job #2 |
 | `doc-extract-agent` | Job #1 |
 | `energy-demand-forecast` | Job #2 |
+| `fraud-detection-ops` | Job #2 |
 | `logistics-digital-twin` | Job #2 |
 | `logistics-flow-studio` | Job #1, Job #2 |
 | `market-basket-analysis` | Job #2 |
 | `ml-models-lab` | Job #2 |
+| `predictive-maintenance` | Job #2 |
 | `quality-anomaly-vision` | Job #2 |
 | `quantum-explainer` | Job #1 |
 | `retail-analytics-real` | Job #2 |

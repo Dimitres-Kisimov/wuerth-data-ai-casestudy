@@ -27,6 +27,8 @@ market-basket-analysis
 ml-models-lab
 energy-demand-forecast
 quality-anomaly-vision
+fraud-detection-ops
+predictive-maintenance
 
 # --- Logistics & operations ---
 logistics-flow-studio

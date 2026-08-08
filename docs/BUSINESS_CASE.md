@@ -4,7 +4,7 @@ This repository **is** the business case — the whole case study exists to map 
 Würth internship postings to measured portfolio evidence:
 
 - The business situation and opportunity framing: [`../README.md`](../README.md)
-  and [`OPPORTUNITY_MAP.md`](OPPORTUNITY_MAP.md) (11 business areas, each with the
+  and [`OPPORTUNITY_MAP.md`](OPPORTUNITY_MAP.md) (15 business areas, each with the
   Data/AI approach and the measured result behind it).
 - The requirement-by-requirement evidence: [`JOB_SKILL_MAP.md`](JOB_SKILL_MAP.md).
 - What a real deployment would additionally need — honestly:

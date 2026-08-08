@@ -21,7 +21,8 @@ external assets.
   `automation-roi-explorer`, `route-optimizer`, `bio-efficient-ai`,
   `ml-models-lab`, `logistics-flow-studio`, `logistics-digital-twin`,
   `supply-network-opt`, `market-basket-analysis`, `energy-demand-forecast`,
-  `quality-anomaly-vision`, `portfolio-ops`) are measured on **synthetic /
+  `quality-anomaly-vision`, `fraud-detection-ops`, `predictive-maintenance`,
+  `portfolio-ops`) are measured on **synthetic /
   self-generated data** and are labelled as such throughout. They demonstrate
   method and are not claims about Würth's real business.
 - The real-data work uses the public UCI Online Retail II dataset (**CC BY 4.0**,

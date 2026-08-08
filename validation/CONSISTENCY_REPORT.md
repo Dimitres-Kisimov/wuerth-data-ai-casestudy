@@ -11,17 +11,17 @@
 
 | # | Check | Result | Detail |
 |---|-------|--------|--------|
-| 1 | registry integrity | PASS | 21 repositories registered |
+| 1 | registry integrity | PASS | 23 repositories registered |
 | 2 | repo references resolve to the registry | PASS | every repo-shaped token in the docs is a registered repository |
-| 3 | registry coverage (no dead entries) | PASS | 21/21 registered repos referenced |
-| 4 | README mentions every registered repo | PASS | 21/21 registered repos in README |
-| 5 | CREDITS.md credits every registered repo | PASS | 21/21 registered repos credited |
+| 3 | registry coverage (no dead entries) | PASS | 23/23 registered repos referenced |
+| 4 | README mentions every registered repo | PASS | 23/23 registered repos in README |
+| 5 | CREDITS.md credits every registered repo | PASS | 23/23 registered repos credited |
 | 6 | disclaimer present in every substance doc | PASS | 8 docs carry the not-affiliated disclaimer |
-| 7 | every currency figure has a provenance label nearby | PASS | 19 money-bearing sections checked, all labelled |
+| 7 | every currency figure has a provenance label nearby | PASS | 21 money-bearing sections checked, all labelled |
 | 8 | real-data repos are labelled 'real data' wherever named | PASS | real-data repos decision-chain, retail-analytics-real labelled everywhere they appear |
 | 9 | license stays proprietary; no stale MIT self-license | PASS | LICENSE + docs state 'all rights reserved'; zero 'MIT' tokens present |
 
-## Registered portfolio repositories (21)
+## Registered portfolio repositories (23)
 
 - `agent-flow-studio` — synthetic data
 - `agentic-automation-lab` — synthetic data
@@ -32,11 +32,13 @@
 - `distributor-intelligence-platform` — synthetic data
 - `doc-extract-agent` — synthetic data
 - `energy-demand-forecast` — synthetic data
+- `fraud-detection-ops` — synthetic data
 - `logistics-digital-twin` — synthetic data
 - `logistics-flow-studio` — synthetic data
 - `market-basket-analysis` — synthetic data
 - `ml-models-lab` — synthetic data
 - `portfolio-ops` — synthetic data
+- `predictive-maintenance` — synthetic data
 - `quality-anomaly-vision` — synthetic data
 - `quantum-explainer` — synthetic data
 - `retail-analytics-real` — real data (UCI Online Retail II, CC BY 4.0)
