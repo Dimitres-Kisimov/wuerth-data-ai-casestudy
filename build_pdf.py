@@ -91,8 +91,9 @@ def cover(pdf):
         "measured in my own portfolio (now 23 repositories, including the "
         "decision-chain integration capstone -- one real dataset through the "
         "whole distributor chain with 13 machine-checked reconciliation "
-        "identities plus two additive ones -- an MCP agentic-integration "
-        "server, two warehouse-logistics flagships, a supply-network "
+        "identities plus three additive ones -- an MCP agentic-integration "
+        "server with contract-enforced result provenance, two "
+        "warehouse-logistics flagships, a supply-network "
         "optimizer, an energy forecasting + dispatch study, a visual "
         "quality-inspection study with SPC monitoring, a fraud-operations "
         "study with gated retrain promotion, a predictive-maintenance policy "
@@ -173,8 +174,10 @@ def opportunity_page(pdf):
         ["Logistics / routing", "OR-Tools CP-SAT VRP + robustness", "route-optimizer",
          "4.6% / 31% savings; 5% headroom: failing scenarios 96% -> 44%, "
          "expected day -4.6%"],
-        ["E-procurement automation", "Agentic + n8n low-code",
-         "agentic-automation-lab", "~EUR625k/yr modelled"],
+        ["E-procurement automation", "Agentic + n8n low-code + seeded reliability benchmark",
+         "agentic-automation-lab",
+         "~EUR625k/yr modelled; 1,350 seeded trials: content faults fail "
+         "silently, stated (assumed rates)"],
         ["Document processing", "Agentic extract + 7-rule validation gate", "doc-extract-agent",
          "~EUR145k/yr modelled; combined-gate precision 70.0% -> 87.5%"],
         ["Customer retention", "Decline + churn classifiers",
@@ -182,9 +185,11 @@ def opportunity_page(pdf):
          "ROC-AUC 0.99; churn ECE 0.197 -> 0.021; "
          "bootstrap skill CI +0.457 [+0.381, +0.528]"],
         ["Warehouse / WMS (new)",
-         "WMS twin + plant sim (Story Mode, 894-element plant, definable objects); slotting + DES + packing + pick-path routing",
-         "logistics-flow-studio (WarehouseTwin), logistics-digital-twin (engine)",
-         "-48.6% pick travel; ABC ~21% > random; ISO 22400 KPIs; 57/57 self-test + 35 harnesses; "
+         "WMS twin + factory/plant sim (Story Mode, 894-element plant, definable objects, "
+         "multi-way line sim + fluids solver); slotting + DES + packing + pick-path routing",
+         "logistics-flow-studio (WarehouseTwin v3.19), logistics-digital-twin (engine)",
+         "-48.6% pick travel; ABC ~21% > random; ISO 22400 KPIs; 112/112 self-test + 45 harnesses; "
+         "line sim 112.5 parts/hr (~88.1% eff.); fluids solver (modelled); "
          "engine slotting -44.2% (golden-zone 25% -> 100%); fill 2.0% -> 30.2%; "
          "routing: return +3.0% vs exact optimum, optimized layout ~46% shorter"],
         ["Supply-network design (new)", "Facility MILP + flows + safety stock + service frontier",
@@ -206,12 +211,13 @@ def opportunity_page(pdf):
          "real data: seasonal-naive wins CV, MASE 1.094; returns 3.65% of gross, "
          "95.0% of value matched, median 10-day lag; Champions 25% -> 69.0%"],
         ["Chain integration & reconciliation (new)",
-         "Provenance-tagged pipeline + identity ledger; MCP agentic layer",
+         "Provenance-tagged pipeline + identity ledger; MCP agentic layer w/ "
+         "machine-readable result provenance",
          "decision-chain, chain-mcp",
-         "real data + labelled layers: 13/13 identities PASS + additive (n), (o); "
-         "cross-repo revenue GBP 19,643,861.62 to the penny; forecast-error "
-         "elasticity == holding share exactly (0.0580); naive wins lumpy "
-         "(MASE 1.782); slotting optimum -1.6% vs ABC; CVRP -0.2% vs Clarke-Wright"],
+         "real data + labelled layers: 13/13 identities PASS + additive (n), (o), (p); "
+         "per-order spread to the cent over 4,151 orders (top decile 59.0%, "
+         "Gini 0.665); cross-repo revenue GBP 19,643,861.62 to the penny; "
+         "naive wins lumpy (MASE 1.782); contract-enforced provenance, 145 tests"],
         ["Fraud & transaction-risk ops (new)",
          "Cost-based alerting; champion/challenger gated promotion",
          "fraud-detection-ops",
@@ -272,11 +278,16 @@ def _draw_table(ax, rows, top, bottom, col_x, col_w, header_bg, fs=8.0):
 
 
 JOB1_ROWS = [
-    ["Build AI-agent workflows", "agentic-automation-lab", "agentic tool-use loops"],
+    ["Build AI-agent workflows -- and measure how they fail",
+     "agentic-automation-lab (+ eval/reliability.py benchmark)",
+     "agentic tool-use loops; reliability benchmark (1,350 seeded trials): "
+     "content faults fail silently past the guards and retries can't zero "
+     "them (assumed fault rates, stated); 51 tests"],
     ["Agentic integration via an open standard (MCP)",
      "chain-mcp (official mcp Python SDK; Claude Desktop / Code configs)",
      "6 real engines as AI-callable tools; typed schemas; never-crash errors; "
-     "per-tool honesty label; 20 tests incl. live JSON-RPC handshake"],
+     "contract-enforced machine-readable result provenance (data label + "
+     "engine commit + determinism flag); 145 tests incl. live JSON-RPC handshake"],
     ["Low-code (n8n / Power Automate)", "agentic-automation-lab: n8n/rfq_intake_agent.json",
      "RFQ-intake agent; ~EUR625k/yr"],
     ["Visual / flow-based building", "agent-flow-studio", "flow builder; ~EUR47k/yr"],
@@ -286,7 +297,8 @@ JOB1_ROWS = [
     ["Document intake / understanding", "doc-extract-agent + 7-rule validation layer",
      "extract + validate; ~EUR145k/yr; combined-gate precision 70.0% -> 87.5%"],
     ["Rapid prototyping", "agent-flow-studio, agentic-automation-lab, logistics-flow-studio",
-     "runnable prototypes incl. a full installable offline WMS twin + plant simulator (PWA)"],
+     "runnable prototypes incl. a full installable offline WMS twin + "
+     "factory/plant simulator (PWA, v3.19; 45 harnesses + 112/112 self-test)"],
     ["Prototyping + education (hype-free)",
      "quantum-explainer -- LIVE: dimitres-kisimov.github.io/quantum-explainer",
      "hand-written simulator ~300 lines, zero deps; 42 physics assertions + "
@@ -299,11 +311,13 @@ JOB1_ROWS = [
 JOB2_ROWS = [
     ["One dataset through the whole chain (real data + labelled layers)",
      "decision-chain (run artifact + offline dashboard; FAIL path per identity)",
-     "13/13 reconciliation identities PASS + additive (n), (o); cross-repo "
+     "13/13 reconciliation identities PASS + additive (n), (o), (p); cross-repo "
      "revenue GBP 19,643,861.62 to the penny; ledger to the cent; "
-     "forecast-error elasticity == holding share exactly (0.0580); naive wins "
+     "forecast-error elasticity == holding share exactly (0.0580); per-order "
+     "cost-to-serve to the cent over 4,151 real orders -- top decile 59.0%, "
+     "Gini 0.665 (model shape, not profitability); naive wins "
      "lumpy (MASE 1.782); slotting optimum -1.6% vs ABC; CVRP -0.2% vs "
-     "Clarke-Wright; crew 18% utilized; cost rates labelled INVENTED"],
+     "Clarke-Wright; cost rates labelled INVENTED"],
     ["BI / Power BI", "revops-optimizer: powerbi/DAX_measures.md + kpi_uplift_risk",
      "DAX pack + 3-page report + Monte-Carlo P10/P50/P90 risk table w/ DAX"],
     ["KPI dashboards / metrics", "sales-kpi-analytics + pacing bullet chart",
@@ -358,13 +372,15 @@ JOB2_ROWS = [
      "AE ROC-AUC 0.779 vs PCA 0.772 -- inside 0.02 margin, PCA recommended; "
      "TPR 0.407 vs 0.393 @ 5% FPR; texture-breaks hard for all (best 0.609); "
      "SPC p-chart + WE rules; calibration correction 0 -> 0.70% measured"],
-    ["Warehouse / intralogistics",
-     "logistics-flow-studio (WarehouseTwin); logistics-digital-twin (engine)",
-     "WMS twin + plant sim: keyword-generated layout, WMS flow w/ ISO 22400 "
+    ["Warehouse / intralogistics + factory / process industry",
+     "logistics-flow-studio (WarehouseTwin v3.19); logistics-digital-twin (engine)",
+     "WMS twin + factory/plant sim: keyword-generated layout, WMS flow w/ ISO 22400 "
      "KPIs, live material flow + KPI dashboard, Story Mode tour, an 894-element "
-     "signature plant (29 object types), a user-definable object library, BYO CSV "
-     "import + floor-plan underlay; -48.6% pick travel; ABC ~21% > random; 57/57 "
-     "self-test + 35 harnesses; engine slotting -44.2% (golden-zone 25% -> 100%), "
+     "signature plant (29 object types), a user-definable object library, "
+     "multi-way line sim (QA-split 112.5 parts/hr, ~88.1% eff.) + fluids "
+     "solver (modelled, not measured), BYO CSV "
+     "import + floor-plan underlay; -48.6% pick travel; ABC ~21% > random; 112/112 "
+     "self-test + 45 harnesses; engine slotting -44.2% (golden-zone 25% -> 100%), "
      "fill 2.0% -> 30.2%; DES -76.1% / -66.5%; pick-path routing: return +3.0% "
      "vs exact optimum, optimized layout ~46% shorter"],
     ["Logistics / ops analytics", "route-optimizer (36 tests); supply-network-opt (53 tests)",

@@ -27,7 +27,7 @@ _12 requirements, 7 distinct registered repos._
 
 | # | Posting requirement | Registered repos backing it |
 |---|---------------------|------------------------------|
-| 1 | Build AI-agent workflows (agentic automation) | `agentic-automation-lab` |
+| 1 | Build AI-agent workflows (agentic automation) — and measure how they fail | `agentic-automation-lab` |
 | 2 | Agentic integration via an open standard (MCP) | `chain-mcp` |
 | 3 | Low-code platforms (n8n, Power Automate style) | `agentic-automation-lab` |
 | 4 | Visual / flow-based agent building | `agent-flow-studio` |
@@ -66,7 +66,7 @@ _24 requirements, 15 distinct registered repos._
 | 18 | Model lifecycle / retraining governance (MLOps) | `fraud-detection-ops` |
 | 19 | Reliability / maintenance analytics (survival modelling) | `predictive-maintenance` |
 | 20 | Visual quality inspection (vision anomaly detection) | `quality-anomaly-vision` |
-| 21 | Warehouse / intralogistics modelling | `logistics-digital-twin`, `logistics-flow-studio` |
+| 21 | Warehouse / intralogistics + factory / process-industry modelling | `logistics-digital-twin`, `logistics-flow-studio` |
 | 22 | Logistics / operations analytics | `route-optimizer`, `supply-network-opt` |
 | 23 | Real, messy data *(real data, not synthetic)* | `retail-analytics-real` |
 | 24 | Present findings to decision-makers | `revops-optimizer` |
