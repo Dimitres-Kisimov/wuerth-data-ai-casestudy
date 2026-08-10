@@ -186,11 +186,14 @@ def opportunity_page(pdf):
          "expected day -4.6%; fleet mix: -17.5% vs the status quo with the "
          "service price shown (longest route +25.2%)"],
         ["E-procurement automation",
-         "Agentic + n8n low-code + reliability benchmark + dry-run flow cost estimator",
+         "Agentic + n8n low-code + reliability benchmark + content-verification "
+         "layer + dry-run flow cost estimator",
          "agentic-automation-lab, agent-flow-studio",
          "~EUR625k/yr modelled; 1,350 seeded trials: content faults fail "
-         "silently, stated (assumed rates); flow estimator: engine-verified "
-         "branch scenarios, 'not a bill' (declared rates)"],
+         "silently, stated (assumed rates); verification layer on the same "
+         "fault schedule: 88.7% -> 98.8% delivered-correct, silent-wrong "
+         "11,523/yr -> 0 (price stated; 71 tests); flow estimator: "
+         "engine-verified branch scenarios, 'not a bill' (declared rates)"],
         ["Document processing", "Agentic extract + 7-rule validation gate + cost model",
          "doc-extract-agent",
          "~EUR145k/yr modelled; combined-gate precision 70.0% -> 87.5%; cost model: "
@@ -313,10 +316,14 @@ def _draw_table(ax, rows, top, bottom, col_x, col_w, header_bg, fs=8.0):
 
 JOB1_ROWS = [
     ["Build AI-agent workflows -- and measure how they fail",
-     "agentic-automation-lab (+ eval/reliability.py benchmark)",
+     "agentic-automation-lab (+ eval/reliability.py benchmark + "
+     "eval/verification.py content-verification layer)",
      "agentic tool-use loops; reliability benchmark (1,350 seeded trials): "
      "content faults fail silently past the guards and retries can't zero "
-     "them (assumed fault rates, stated); 51 tests"],
+     "them (assumed fault rates, stated); content-verification layer replays "
+     "the same fault schedule: delivered-correct 88.7% -> 98.8%, silent-wrong "
+     "11,523/yr -> 0 on that schedule (escalations 260 -> 1,300/yr stated; "
+     "prose blind spot unit-tested); 71 tests"],
     ["Agentic integration via an open standard (MCP)",
      "chain-mcp (official mcp Python SDK; Claude Desktop / Code configs)",
      "6 real engines as AI-callable tools; typed schemas; never-crash errors; "
@@ -345,8 +352,10 @@ JOB1_ROWS = [
     ["Prototyping + education (hype-free)",
      "quantum-explainer -- LIVE: dimitres-kisimov.github.io/quantum-explainer; "
      "bio-efficient-ai (learned BioHash vs random, public MNIST benchmark)",
-     "hand-written simulator ~300 lines, zero deps; 42 physics assertions + "
-     "57 structural checks pass; BioHash: mid-range wins from a 10x smaller "
+     "hand-written simulator ~300 lines, zero deps; lessons incl. superdense "
+     "coding (no-FTL demo -- the encoded pair is locally invisible; Holevo's "
+     "bound respected, not beaten); 201 physics assertions + 53 self-test + "
+     "93 structural checks pass; BioHash: mid-range wins from a 10x smaller "
      "circuit -- negatives kept (both tips lost, no memory-frontier point, "
      "corpus-dependent)"],
     ["Show automation ROI", "automation-roi-explorer", "EUR383k/yr net modelled"],
