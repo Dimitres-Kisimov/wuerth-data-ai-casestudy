@@ -19,11 +19,11 @@
 | 4 | every repo cited as evidence resolves to the registry | PASS | no dangling / unregistered repo appears in a Repo column |
 | 5 | every posting requirement is backed by a registered repo | PASS | 36/36 requirements backed (incl. explicit cross-cutting rows) |
 | 6 | each crown-jewel flagship backs at least one requirement | PASS | 4/4 flagships appear as evidence |
-| 7 | each job's evidence spans several distinct repos | PASS | Job #1: 7 distinct repos; Job #2: 15 distinct repos |
+| 7 | each job's evidence spans several distinct repos | PASS | Job #1: 8 distinct repos; Job #2: 15 distinct repos |
 
 ## Job #1 — Praktikum Data & AI: (Agentic) Automation mit Low-code Plattformen
 
-_12 requirements, 7 distinct registered repos._
+_12 requirements, 8 distinct registered repos._
 
 | # | Posting requirement | Registered repos backing it |
 |---|---------------------|------------------------------|
@@ -35,7 +35,7 @@ _12 requirements, 7 distinct registered repos._
 | 6 | Process automation of high-volume back-office flows | `doc-extract-agent` |
 | 7 | Document intake / understanding (RFQ, invoice) | `doc-extract-agent` |
 | 8 | Prototyping quickly, iterating | `agent-flow-studio`, `agentic-automation-lab`, `logistics-flow-studio` |
-| 9 | Prototyping + explaining a technical topic (education, hype-free) | `quantum-explainer` |
+| 9 | Prototyping + explaining a technical topic (education, hype-free) | `bio-efficient-ai`, `quantum-explainer` |
 | 10 | Show ROI / business value of automation | `automation-roi-explorer` |
 | 11 | Python engineering for automation | _(cross-cutting: across automation repos)_ |
 | 12 | Communicate results to non-technical stakeholders | `automation-roi-explorer` |
@@ -78,6 +78,7 @@ _24 requirements, 15 distinct registered repos._
 | `agent-flow-studio` | Job #1 |
 | `agentic-automation-lab` | Job #1 |
 | `automation-roi-explorer` | Job #1 |
+| `bio-efficient-ai` | Job #1 |
 | `chain-mcp` | Job #1 |
 | `decision-chain` | Job #2 |
 | `distributor-intelligence-platform` | Job #2 |

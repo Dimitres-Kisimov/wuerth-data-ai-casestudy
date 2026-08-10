@@ -91,8 +91,9 @@ def cover(pdf):
         "measured in my own portfolio (now 23 repositories, including the "
         "decision-chain integration capstone -- one real dataset through the "
         "whole distributor chain with 13 machine-checked reconciliation "
-        "identities plus three additive ones -- an MCP agentic-integration "
-        "server with contract-enforced result provenance, two "
+        "identities plus four additive ones -- an MCP agentic-integration "
+        "server with contract-enforced result provenance and idempotent "
+        "result caching, two "
         "warehouse-logistics flagships, a supply-network "
         "optimizer, an energy forecasting + dispatch study, a visual "
         "quality-inspection study with SPC monitoring, a fraud-operations "
@@ -162,10 +163,11 @@ def opportunity_page(pdf):
          "revops-optimizer, market-basket-analysis",
          "MILP > greedy; 254 rules, top lift 2.41; 41% of rules redundant -- "
          "the 149 kept carry all the information"],
-        ["Pricing & margin", "Elasticity + leakage; endogeneity fix; per-move robustness gate",
+        ["Pricing & margin", "Elasticity + leakage; endogeneity fix; per-move robustness gate; ablation",
          "revops-optimizer, sales-kpi-analytics, ml-models-lab",
          "EUR2.6M leakage lever; bias +1.52 -> +0.03; price-move gate 17/29 ACCEPT -- "
-         "the biggest move (45% of the pricing uplift) is HELD, stated as a screen"],
+         "the biggest move (45% of the pricing uplift) is HELD, stated as a screen; "
+         "ablation: endogeneity-control knockout +1.446 RMSE -- the load-bearing piece"],
         ["Inventory / replenishment",
          "Newsvendor + forecast + ROP/EOQ policy + supplier reliability",
          "distributor-intel-platform, ml-models-lab",
@@ -178,22 +180,27 @@ def opportunity_page(pdf):
          "MASE < 1; exec PDF; pacing EUR10.91M = 95.7% of plan, 80% interval -- "
          "closed-year back-check landed above the band, reported; rep decomposition "
          "(indirect standardization): 92% of the league table is territory, 8% execution"],
-        ["Logistics / routing", "OR-Tools CP-SAT VRP + robustness", "route-optimizer",
+        ["Logistics / routing", "OR-Tools CP-SAT VRP + robustness + Fleet Size and Mix VRP",
+         "route-optimizer",
          "4.6% / 31% savings; 5% headroom: failing scenarios 96% -> 44%, "
-         "expected day -4.6%"],
-        ["E-procurement automation", "Agentic + n8n low-code + seeded reliability benchmark",
-         "agentic-automation-lab",
+         "expected day -4.6%; fleet mix: -17.5% vs the status quo with the "
+         "service price shown (longest route +25.2%)"],
+        ["E-procurement automation",
+         "Agentic + n8n low-code + reliability benchmark + dry-run flow cost estimator",
+         "agentic-automation-lab, agent-flow-studio",
          "~EUR625k/yr modelled; 1,350 seeded trials: content faults fail "
-         "silently, stated (assumed rates)"],
+         "silently, stated (assumed rates); flow estimator: engine-verified "
+         "branch scenarios, 'not a bill' (declared rates)"],
         ["Document processing", "Agentic extract + 7-rule validation gate + cost model",
          "doc-extract-agent",
          "~EUR145k/yr modelled; combined-gate precision 70.0% -> 87.5%; cost model: "
          "auto-post pays only above 98.4% precision -- the gate alone would lose "
          "money (modeled), the pre-fill carries the value"],
-        ["Customer retention", "Decline + churn classifiers",
+        ["Customer retention", "Decline + churn classifiers + ablation",
          "revops-optimizer, ml-models-lab",
          "ROC-AUC 0.99; churn ECE 0.197 -> 0.021; "
-         "bootstrap skill CI +0.457 [+0.381, +0.528]"],
+         "bootstrap skill CI +0.457 [+0.381, +0.528]; ablation: freq_slope "
+         "knockout -0.247 PR-AUC; null knockouts not counted as wins"],
         ["Warehouse / WMS (new)",
          "WMS twin + factory/plant sim (Story Mode, 894-element plant, definable objects, "
          "multi-way line sim + fluids solver); slotting + DES + packing + pick-path routing "
@@ -210,16 +217,24 @@ def opportunity_page(pdf):
          "-21.2% cost vs greedy; stock -65.7% / -80.1%; "
          "frontier $2,353 -> $14,750 per service point (6.3x); "
          "growth: +8.8% headroom, 4th DC first pays at 1.30x (planning estimates)"],
-        ["Energy management / facilities (new)", "Load forecast (rolling CV) + peak-shaving LP + causal dispatch backtest",
+        ["Energy management / facilities (new)",
+         "Load forecast (rolling CV) + peak-shaving LP + causal dispatch backtest "
+         "+ degree-day decomposition",
          "energy-demand-forecast",
          "MASE 0.497, 14/14 folds (Holt-Winters loses to naive, reported); "
          "peak -20.9%; ~EUR11,100/yr at ASSUMED tariff; battery does not pay back "
          "on these assumptions; backtest captures 72.7% of the LP bound "
-         "(robust variant loses, reported)"],
-        ["Quality inspection (new)", "Clean-only anomaly detection; pre-registered rule; SPC p-chart + WE rules",
+         "(robust variant loses, reported); decomposition recovers designed "
+         "balance points exactly -- weather 4.5% of energy, 18% of the July peak "
+         "(modelled attribution)"],
+        ["Quality inspection (new)",
+         "Clean-only anomaly detection; pre-registered rule; SPC p-chart + WE rules; "
+         "measured OCAP",
          "quality-anomaly-vision",
          "AE 0.779 vs PCA 0.772 ROC-AUC -- inside 0.02 margin, PCA recommended; "
-         "TPR 0.407 vs 0.393 @ 5% FPR; calibration correction 0 -> 0.70% measured"],
+         "TPR 0.407 vs 0.393 @ 5% FPR; calibration correction 0 -> 0.70% measured; "
+         "OCAP: label-free re-centering is a trap (green chart, near-blind screen); "
+         "refit on verified-clean frames recovers ~99% of the drift cost"],
         ["Real data (completed)", "Cleaning + RFM + returns + lifecycle + leakage-safe CV",
          "retail-analytics-real",
          "real data: seasonal-naive wins CV, MASE 1.094; returns 3.65% of gross, "
@@ -227,12 +242,14 @@ def opportunity_page(pdf):
          "lifecycle: resurrections outnumber repeats (439 vs 390/month)"],
         ["Chain integration & reconciliation (new)",
          "Provenance-tagged pipeline + identity ledger; MCP agentic layer w/ "
-         "machine-readable result provenance",
+         "machine-readable result provenance + idempotent caching",
          "decision-chain, chain-mcp",
-         "real data + labelled layers: 13/13 identities PASS + additive (n), (o), (p); "
-         "per-order spread to the cent over 4,151 orders (top decile 59.0%, "
-         "Gini 0.665); cross-repo revenue GBP 19,643,861.62 to the penny; "
-         "naive wins lumpy (MASE 1.782); contract-enforced provenance, 145 tests"],
+         "real data + labelled layers: 13/13 identities PASS + additive (n), (o), "
+         "(p), (q); per-order spread to the cent over 4,151 orders (top decile "
+         "59.0%, Gini 0.665); fleet knob: only the transport line moves, vans "
+         "unpriced (model property, not fleet advice); cross-repo revenue "
+         "GBP 19,643,861.62 to the penny; naive wins lumpy (MASE 1.782); "
+         "contract-enforced provenance + cache-status, 193 tests"],
         ["Fraud & transaction-risk ops (new)",
          "Cost-based alerting; gated retrain promotion; selective-labels feedback sim",
          "fraud-detection-ops",
@@ -304,10 +321,16 @@ JOB1_ROWS = [
      "chain-mcp (official mcp Python SDK; Claude Desktop / Code configs)",
      "6 real engines as AI-callable tools; typed schemas; never-crash errors; "
      "contract-enforced machine-readable result provenance (data label + "
-     "engine commit + determinism flag); 145 tests incl. live JSON-RPC handshake"],
+     "engine commit + determinism flag); idempotency + result caching -- the "
+     "key binds args + the exact engine checkout, and every success says "
+     "computed-or-replayed (provenance.cache, contract-required); 193 tests "
+     "incl. live JSON-RPC handshake"],
     ["Low-code (n8n / Power Automate)", "agentic-automation-lab: n8n/rfq_intake_agent.json",
      "RFQ-intake agent; ~EUR625k/yr"],
-    ["Visual / flow-based building", "agent-flow-studio", "flow builder; ~EUR47k/yr"],
+    ["Visual / flow-based building", "agent-flow-studio (+ estimator.js dry-run estimator)",
+     "flow builder; ~EUR47k/yr; dry-run cost/latency estimator: declared rate "
+     "card, branch scenarios enumerated and proven against real engine runs "
+     "branch-for-branch -- 'emphatically not a bill' (78 node tests)"],
     ["Connecting systems / APIs", "agentic-automation-lab connector layer",
      "agents call external APIs"],
     ["Process automation (back-office)", "doc-extract-agent", "RFQ/invoice -> structured"],
@@ -320,9 +343,12 @@ JOB1_ROWS = [
      "runnable prototypes incl. a full installable offline WMS twin + "
      "factory/plant simulator (PWA, v3.19; 45 harnesses + 112/112 self-test)"],
     ["Prototyping + education (hype-free)",
-     "quantum-explainer -- LIVE: dimitres-kisimov.github.io/quantum-explainer",
+     "quantum-explainer -- LIVE: dimitres-kisimov.github.io/quantum-explainer; "
+     "bio-efficient-ai (learned BioHash vs random, public MNIST benchmark)",
      "hand-written simulator ~300 lines, zero deps; 42 physics assertions + "
-     "57 structural checks pass"],
+     "57 structural checks pass; BioHash: mid-range wins from a 10x smaller "
+     "circuit -- negatives kept (both tips lost, no memory-frontier point, "
+     "corpus-dependent)"],
     ["Show automation ROI", "automation-roi-explorer", "EUR383k/yr net modelled"],
     ["Python engineering", "all automation repos", "Python throughout"],
     ["Stakeholder communication", "automation-roi-explorer", "business-readable ROI views"],
@@ -331,13 +357,14 @@ JOB1_ROWS = [
 JOB2_ROWS = [
     ["One dataset through the whole chain (real data + labelled layers)",
      "decision-chain (run artifact + offline dashboard; FAIL path per identity)",
-     "13/13 reconciliation identities PASS + additive (n), (o), (p); cross-repo "
-     "revenue GBP 19,643,861.62 to the penny; ledger to the cent; "
+     "13/13 reconciliation identities PASS + additive (n), (o), (p), (q); "
+     "cross-repo revenue GBP 19,643,861.62 to the penny; ledger to the cent; "
      "forecast-error elasticity == holding share exactly (0.0580); per-order "
      "cost-to-serve to the cent over 4,151 real orders -- top decile 59.0%, "
-     "Gini 0.665 (model shape, not profitability); naive wins "
-     "lumpy (MASE 1.782); slotting optimum -1.6% vs ABC; CVRP -0.2% vs "
-     "Clarke-Wright; cost rates labelled INVENTED"],
+     "Gini 0.665 (model shape, not profitability); fleet knob swept with every "
+     "day's CVRP re-solved: only transport moves, vans unpriced (not fleet "
+     "advice); naive wins lumpy (MASE 1.782); slotting optimum -1.6% vs ABC; "
+     "CVRP -0.2% vs Clarke-Wright; cost rates labelled INVENTED"],
     ["BI / Power BI", "revops-optimizer: powerbi/DAX_measures.md + kpi_uplift_risk",
      "DAX pack + 3-page report + Monte-Carlo P10/P50/P90 risk table w/ DAX"],
     ["KPI dashboards / metrics + fair performance measurement",
@@ -367,20 +394,27 @@ JOB2_ROWS = [
      "MASE 0.38 (9 rolling folds); /reconcile guard renders a green 'no silent drift' verdict over "
      "16/16 cross-engine identities with all 21 headline numbers present"],
     ["Energy forecasting + optimization",
-     "energy-demand-forecast (forecasters + LP + dispatch backtest; 59 tests)",
+     "energy-demand-forecast (forecasters + LP + dispatch backtest + "
+     "degree-day decomposition; 72 tests)",
      "MASE 0.497 / MAPE 4.8%, 14/14 folds (Holt-Winters loses to naive, reported); "
      "peak 368.2 -> 291.1 kW (-20.9%); ~EUR11,100/yr at ASSUMED EUR12/kW-month; "
      "timer baseline EUR0; battery does not pay back on these assumptions; "
-     "causal backtest captures 72.7% of the LP bound (robust variant loses)"],
+     "causal backtest captures 72.7% of the LP bound (robust variant loses); "
+     "decomposition recovers designed balance points exactly -- weather 4.5% "
+     "of energy, 18% of the July peak (modelled attribution, not a sub-meter)"],
     ["Python for analytics", "sales-kpi-analytics, revops-optimizer", "end-to-end pipelines"],
     ["SQL / data modelling", "sales-kpi-analytics SQL set", "spend analysis queries"],
     ["Excel-level tabular analysis", "sales-kpi-analytics", "spend breakdowns"],
     ["Optimization / prescriptive",
      "revops-optimizer; supply-network-opt; logistics-digital-twin",
      "~EUR160k/yr; -21.2% cost vs greedy; fill 2.0% -> 30.2% (CP-SAT proof)"],
-    ["Elasticity / statistical modelling", "revops-optimizer; ml-models-lab",
+    ["Elasticity / statistical modelling",
+     "revops-optimizer; ml-models-lab (+ ablation -> docs/ABLATION.md, drift-gated)",
      "ROC-AUC 0.99; elasticity bias +1.52 -> +0.03; churn ECE 0.197 -> 0.021, "
-     "bootstrap skill CI +0.457 [+0.381, +0.528]"],
+     "bootstrap skill CI +0.457 [+0.381, +0.528]; ablation: freq_slope knockout "
+     "-0.247 PR-AUC, endogeneity-control knockout +1.446 RMSE; the calibration "
+     "knockout's bit-identical PR-AUC is the kept honest exception; null "
+     "knockouts not counted as wins (numpy only, CI-reproducible)"],
     ["Data into business decisions", "sales-kpi-analytics; market-basket-analysis",
      "EUR2.6M leakage lever; cross-sell recs, top lift 2.41"],
     ["Market-basket / cross-sell", "market-basket-analysis + affinity.py + redundancy.py",
@@ -404,10 +438,13 @@ JOB2_ROWS = [
      "re-tuned economically the ranking flips to CBM (4.02, break-even "
      "inspection cost 553.3) -- bounded, in-sample; 80 tests"],
     ["Visual quality inspection (vision)",
-     "quality-anomaly-vision (3 detectors, pre-registered rule; SPC; 45 tests)",
+     "quality-anomaly-vision (3 detectors, pre-registered rule; SPC + OCAP; 59 tests)",
      "AE ROC-AUC 0.779 vs PCA 0.772 -- inside 0.02 margin, PCA recommended; "
      "TPR 0.407 vs 0.393 @ 5% FPR; texture-breaks hard for all (best 0.609); "
-     "SPC p-chart + WE rules; calibration correction 0 -> 0.70% measured"],
+     "SPC p-chart + WE rules; calibration correction 0 -> 0.70% measured; "
+     "measured OCAP: label-free threshold re-centering is a trap (bit-identical "
+     "ROC-AUC, 1.1/15 defects at +0.10 drift); refit on 200 verified-clean "
+     "frames recovers ~99% of the drift cost"],
     ["Warehouse / intralogistics + factory / process industry",
      "logistics-flow-studio (WarehouseTwin v3.19); logistics-digital-twin (engine)",
      "WMS twin + factory/plant sim: keyword-generated layout, WMS flow w/ ISO 22400 "
@@ -421,10 +458,13 @@ JOB2_ROWS = [
      "vs exact optimum, optimized layout ~46% shorter; batching: savings "
      "-71.3%, routing flips to largest-gap (+1.2%)"],
     ["Logistics / ops analytics",
-     "route-optimizer (36 tests); supply-network-opt (71 tests, growth.py)",
+     "route-optimizer (46 tests, fleetmix.py); supply-network-opt (71 tests, growth.py)",
      "4.6% / 31% savings; robustness: 5% headroom cuts failures 96% -> 44%, "
-     "expected day -4.6%; safety stock -65.7% / -80.1%; frontier 6.3x; growth "
-     "plan: +8.8% headroom, 4th DC first pays at 1.30x (planning estimates)"],
+     "expected day -4.6%; fleet mix (FSM): 5 large vans -17.5% vs 10 mediums "
+     "with the service price shown (longest route +25.2%); a genuine mix wins "
+     "the small instance (-8.5%; illustrative catalogue); safety stock -65.7% / "
+     "-80.1%; frontier 6.3x; growth plan: +8.8% headroom, 4th DC first pays at "
+     "1.30x (planning estimates)"],
     ["Real, messy data (completed)",
      "retail-analytics-real (UCI Online Retail II, 1,067,371 real rows, CC BY 4.0)",
      "real data: 94.0% rows kept; GBP 19.6M revenue; returns 3.65% of gross, "

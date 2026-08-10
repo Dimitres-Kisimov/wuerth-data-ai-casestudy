@@ -17,7 +17,7 @@
 | 4 | README mentions every registered repo | PASS | 23/23 registered repos in README |
 | 5 | CREDITS.md credits every registered repo | PASS | 23/23 registered repos credited |
 | 6 | disclaimer present in every substance doc | PASS | 8 docs carry the not-affiliated disclaimer |
-| 7 | every currency figure has a provenance label nearby | PASS | 21 money-bearing sections checked, all labelled |
+| 7 | every currency figure has a provenance label nearby | PASS | 23 money-bearing sections checked, all labelled |
 | 8 | real-data repos are labelled 'real data' wherever named | PASS | real-data repos decision-chain, retail-analytics-real labelled everywhere they appear |
 | 9 | license stays proprietary; no stale MIT self-license | PASS | LICENSE + docs state 'all rights reserved'; zero 'MIT' tokens present |
 
@@ -26,7 +26,7 @@
 - `agent-flow-studio` — synthetic data
 - `agentic-automation-lab` — synthetic data
 - `automation-roi-explorer` — synthetic data
-- `bio-efficient-ai` — synthetic data
+- `bio-efficient-ai` — public benchmark data (MNIST) + synthetic fixtures
 - `chain-mcp` — synthetic data
 - `decision-chain` — real data (UCI Online Retail II, CC BY 4.0)
 - `distributor-intelligence-platform` — synthetic data
@@ -47,4 +47,4 @@
 - `sales-kpi-analytics` — synthetic data
 - `supply-network-opt` — synthetic data
 
-_Metrics are on synthetic / self-generated data unless the repo is marked real data. Wuerth-scale figures are public and approximate. Independent analysis; not affiliated with, endorsed by, or reviewed by the Wuerth Group._
+_Metrics are on synthetic / self-generated data unless the repo is marked real data or public benchmark data. Wuerth-scale figures are public and approximate. Independent analysis; not affiliated with, endorsed by, or reviewed by the Wuerth Group._

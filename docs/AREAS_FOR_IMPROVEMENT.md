@@ -54,7 +54,7 @@
 ## 10. Cost, sustainability & maintainability
 
 - **The gap.** I haven't accounted for compute cost, energy, or long-term maintenance ownership.
-- **How I'd approach it.** Prefer small/efficient models where they suffice (see `bio-efficient-ai` and `ml-models-lab` for that mindset), measure cost per decision, and document handover so the work outlives my internship.
+- **How I'd approach it.** Prefer small/efficient models where they suffice — a mindset that is now measured, not asserted: `bio-efficient-ai`'s learned BioHash variant retrieves equal-or-better across the MNIST benchmark's mid-range from a circuit a tenth the size (and the study reports plainly where learning does *not* pay: both tips lost, no memory-frontier point, a one-time training bill, corpus dependence), and `ml-models-lab`'s ablation study only credits an "improvement" if knocking it out measurably hurts. Measure cost per decision the same way, and document handover so the work outlives my internship.
 
 ---
 

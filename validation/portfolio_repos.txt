@@ -14,9 +14,12 @@
 # Provenance is NOT invented here: it is asserted from the docs themselves. The
 # two real-data repositories (retail-analytics-real, decision-chain) are the only
 # ones whose numbers are measured on the public UCI Online Retail II dataset
-# (CC BY 4.0); every other repo's metrics are on synthetic / self-generated data.
-# Both facts are labelled in the docs and checked by the guard -- see
-# validation/consistency_check.py (REAL_DATA_REPOS) and CONSISTENCY_REPORT.md.
+# (CC BY 4.0); bio-efficient-ai's retrieval headlines are measured on the public
+# MNIST benchmark (plus synthetic fixtures) and labelled as such; every other
+# repo's metrics are on synthetic / self-generated data.
+# These facts are labelled in the docs and checked by the guard -- see
+# validation/consistency_check.py (REAL_DATA_REPOS, PUBLIC_BENCHMARK_REPOS)
+# and CONSISTENCY_REPORT.md.
 
 # --- Analytics (Job #2): forecasting, KPIs, optimization, BI ---
 revops-optimizer

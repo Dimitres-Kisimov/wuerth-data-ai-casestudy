@@ -60,6 +60,11 @@ LICENSE_DOC = "LICENSE"
 # The only repositories whose numbers are measured on real (public UCI) data.
 REAL_DATA_REPOS = ("decision-chain", "retail-analytics-real")
 
+# Repositories whose headline numbers are measured on a public benchmark dataset
+# (not the UCI retail data, not purely synthetic). Labelled honestly in the
+# registry roll-up so the blanket "synthetic" footer cannot mislabel them.
+PUBLIC_BENCHMARK_REPOS = ("bio-efficient-ai",)
+
 # Backtick tokens that share the repo-name shape but are NOT repositories
 # (provenance-tag values and identifiers, kept out of the registry check).
 NON_REPO_TOKENS = frozenset({"synthetic-assigned"})
@@ -380,12 +385,19 @@ def render_report(checks: list[Check], registry: list[str]) -> str:
     lines.append(f"## Registered portfolio repositories ({len(registry)})")
     lines.append("")
     real = set(REAL_DATA_REPOS)
+    bench = set(PUBLIC_BENCHMARK_REPOS)
     for name in sorted(registry):
-        kind = "real data (UCI Online Retail II, CC BY 4.0)" if name in real else "synthetic data"
+        if name in real:
+            kind = "real data (UCI Online Retail II, CC BY 4.0)"
+        elif name in bench:
+            kind = "public benchmark data (MNIST) + synthetic fixtures"
+        else:
+            kind = "synthetic data"
         lines.append(f"- `{name}` — {kind}")
     lines.append("")
     lines.append("_Metrics are on synthetic / self-generated data unless the repo is "
-                 "marked real data. Wuerth-scale figures are public and approximate. "
+                 "marked real data or public benchmark data. Wuerth-scale figures are "
+                 "public and approximate. "
                  "Independent analysis; not affiliated with, endorsed by, or reviewed "
                  "by the Wuerth Group._")
     lines.append("")
