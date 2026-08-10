@@ -157,20 +157,27 @@ def opportunity_page(pdf):
 
     rows = [
         ["Area (public-info)", "Approach", "Repo", "Result (synthetic -- labelled if real)"],
-        ["Procurement / assortment / cross-sell", "MILP vs greedy; Apriori/FP-growth",
+        ["Procurement / assortment / cross-sell",
+         "MILP vs greedy; Apriori/FP-growth; rule redundancy pruning",
          "revops-optimizer, market-basket-analysis",
-         "MILP > greedy; 254 rules, top lift 2.41"],
-        ["Pricing & margin", "Elasticity + leakage; endogeneity fix",
-         "sales-kpi-analytics, ml-models-lab",
-         "EUR2.6M leakage lever; bias +1.52 -> +0.03"],
-        ["Inventory / replenishment", "Newsvendor + forecast + ROP/EOQ policy",
+         "MILP > greedy; 254 rules, top lift 2.41; 41% of rules redundant -- "
+         "the 149 kept carry all the information"],
+        ["Pricing & margin", "Elasticity + leakage; endogeneity fix; per-move robustness gate",
+         "revops-optimizer, sales-kpi-analytics, ml-models-lab",
+         "EUR2.6M leakage lever; bias +1.52 -> +0.03; price-move gate 17/29 ACCEPT -- "
+         "the biggest move (45% of the pricing uplift) is HELD, stated as a screen"],
+        ["Inventory / replenishment",
+         "Newsvendor + forecast + ROP/EOQ policy + supplier reliability",
          "distributor-intel-platform, ml-models-lab",
          "MASE 0.38; MASE 0.987 / RMSSE 0.948 (beats naive + Holt-Winters); "
-         "policy: EUR127,421 working capital (cycle+safety exactly), 5.5x turns, 99.9% fill"],
-        ["Sales KPIs & analytics", "KPIs + rolling-origin CV + pacing interval",
+         "policy: EUR127,421 working capital (cycle+safety exactly), 5.5x turns, 99.9% fill; "
+         "measured lead times cost +14.4% safety stock -- wobble is 3/4 of the bill"],
+        ["Sales KPIs & analytics",
+         "KPIs + rolling-origin CV + pacing interval + rep decomposition",
          "sales-kpi-analytics",
          "MASE < 1; exec PDF; pacing EUR10.91M = 95.7% of plan, 80% interval -- "
-         "closed-year back-check landed above the band, reported"],
+         "closed-year back-check landed above the band, reported; rep decomposition "
+         "(indirect standardization): 92% of the league table is territory, 8% execution"],
         ["Logistics / routing", "OR-Tools CP-SAT VRP + robustness", "route-optimizer",
          "4.6% / 31% savings; 5% headroom: failing scenarios 96% -> 44%, "
          "expected day -4.6%"],
@@ -178,24 +185,31 @@ def opportunity_page(pdf):
          "agentic-automation-lab",
          "~EUR625k/yr modelled; 1,350 seeded trials: content faults fail "
          "silently, stated (assumed rates)"],
-        ["Document processing", "Agentic extract + 7-rule validation gate", "doc-extract-agent",
-         "~EUR145k/yr modelled; combined-gate precision 70.0% -> 87.5%"],
+        ["Document processing", "Agentic extract + 7-rule validation gate + cost model",
+         "doc-extract-agent",
+         "~EUR145k/yr modelled; combined-gate precision 70.0% -> 87.5%; cost model: "
+         "auto-post pays only above 98.4% precision -- the gate alone would lose "
+         "money (modeled), the pre-fill carries the value"],
         ["Customer retention", "Decline + churn classifiers",
          "revops-optimizer, ml-models-lab",
          "ROC-AUC 0.99; churn ECE 0.197 -> 0.021; "
          "bootstrap skill CI +0.457 [+0.381, +0.528]"],
         ["Warehouse / WMS (new)",
          "WMS twin + factory/plant sim (Story Mode, 894-element plant, definable objects, "
-         "multi-way line sim + fluids solver); slotting + DES + packing + pick-path routing",
+         "multi-way line sim + fluids solver); slotting + DES + packing + pick-path routing "
+         "+ order batching",
          "logistics-flow-studio (WarehouseTwin v3.19), logistics-digital-twin (engine)",
          "-48.6% pick travel; ABC ~21% > random; ISO 22400 KPIs; 112/112 self-test + 45 harnesses; "
          "line sim 112.5 parts/hr (~88.1% eff.); fluids solver (modelled); "
          "engine slotting -44.2% (golden-zone 25% -> 100%); fill 2.0% -> 30.2%; "
-         "routing: return +3.0% vs exact optimum, optimized layout ~46% shorter"],
-        ["Supply-network design (new)", "Facility MILP + flows + safety stock + service frontier",
+         "routing: return +3.0% vs exact optimum, optimized layout ~46% shorter; "
+         "batching: savings -71.3%, routing flips to largest-gap"],
+        ["Supply-network design (new)",
+         "Facility MILP + flows + safety stock + service frontier + growth plan",
          "supply-network-opt",
          "-21.2% cost vs greedy; stock -65.7% / -80.1%; "
-         "frontier $2,353 -> $14,750 per service point (6.3x)"],
+         "frontier $2,353 -> $14,750 per service point (6.3x); "
+         "growth: +8.8% headroom, 4th DC first pays at 1.30x (planning estimates)"],
         ["Energy management / facilities (new)", "Load forecast (rolling CV) + peak-shaving LP + causal dispatch backtest",
          "energy-demand-forecast",
          "MASE 0.497, 14/14 folds (Holt-Winters loses to naive, reported); "
@@ -206,10 +220,11 @@ def opportunity_page(pdf):
          "quality-anomaly-vision",
          "AE 0.779 vs PCA 0.772 ROC-AUC -- inside 0.02 margin, PCA recommended; "
          "TPR 0.407 vs 0.393 @ 5% FPR; calibration correction 0 -> 0.70% measured"],
-        ["Real data (completed)", "Cleaning + RFM + returns + leakage-safe CV",
+        ["Real data (completed)", "Cleaning + RFM + returns + lifecycle + leakage-safe CV",
          "retail-analytics-real",
          "real data: seasonal-naive wins CV, MASE 1.094; returns 3.65% of gross, "
-         "95.0% of value matched, median 10-day lag; Champions 25% -> 69.0%"],
+         "95.0% of value matched, median 10-day lag; Champions 25% -> 69.0%; "
+         "lifecycle: resurrections outnumber repeats (439 vs 390/month)"],
         ["Chain integration & reconciliation (new)",
          "Provenance-tagged pipeline + identity ledger; MCP agentic layer w/ "
          "machine-readable result provenance",
@@ -219,19 +234,21 @@ def opportunity_page(pdf):
          "Gini 0.665); cross-repo revenue GBP 19,643,861.62 to the penny; "
          "naive wins lumpy (MASE 1.782); contract-enforced provenance, 145 tests"],
         ["Fraud & transaction-risk ops (new)",
-         "Cost-based alerting; champion/challenger gated promotion",
+         "Cost-based alerting; gated retrain promotion; selective-labels feedback sim",
          "fraud-detection-ops",
          "PR-AUC 0.270 vs oracle 0.367; swap-set gates -> PROMOTE at $8,632 vs "
-         "$8,841 -- retrain finds no new fraud, wins by shedding load (stated)"],
+         "$8,841 -- retrain finds no new fraud, wins by shedding load (stated); "
+         "feedback sim: ranking survives censoring, probabilities + alerts collapse"],
         ["Maintenance & asset reliability (new)",
-         "Censored Weibull + age-replacement vs condition-based",
+         "Censored Weibull + age-replacement vs condition-based + CBM re-tuning",
          "predictive-maintenance",
          "beta 4.81; T* = 44.4 d at 7.16/machine-day -- the calendar rule beats "
-         "the repo's own detector at the default threshold, reported"],
+         "the repo's own detector at the default threshold, reported; re-tuned "
+         "economically the ranking flips to CBM (4.02) -- bounded, in-sample"],
     ]
     _draw_table(ax, rows, top=0.815, bottom=0.06,
                 col_x=[0.06, 0.31, 0.55, 0.78], col_w=[0.25, 0.24, 0.23, 0.18],
-                header_bg="#222222")
+                header_bg="#222222", fs=7.0)
     pdf.savefig(fig)
     plt.close(fig)
 
@@ -294,8 +311,11 @@ JOB1_ROWS = [
     ["Connecting systems / APIs", "agentic-automation-lab connector layer",
      "agents call external APIs"],
     ["Process automation (back-office)", "doc-extract-agent", "RFQ/invoice -> structured"],
-    ["Document intake / understanding", "doc-extract-agent + 7-rule validation layer",
-     "extract + validate; ~EUR145k/yr; combined-gate precision 70.0% -> 87.5%"],
+    ["Document intake / understanding",
+     "doc-extract-agent + 7-rule validation layer + cost model (eval/run_cost)",
+     "extract + validate; ~EUR145k/yr; combined-gate precision 70.0% -> 87.5%; "
+     "cost model: auto-post pays only above 98.4% precision -- the gate alone "
+     "would lose money (modeled), the pre-fill carries the value"],
     ["Rapid prototyping", "agent-flow-studio, agentic-automation-lab, logistics-flow-studio",
      "runnable prototypes incl. a full installable offline WMS twin + "
      "factory/plant simulator (PWA, v3.19; 45 harnesses + 112/112 self-test)"],
@@ -320,17 +340,25 @@ JOB2_ROWS = [
      "Clarke-Wright; cost rates labelled INVENTED"],
     ["BI / Power BI", "revops-optimizer: powerbi/DAX_measures.md + kpi_uplift_risk",
      "DAX pack + 3-page report + Monte-Carlo P10/P50/P90 risk table w/ DAX"],
-    ["KPI dashboards / metrics", "sales-kpi-analytics + pacing bullet chart",
+    ["KPI dashboards / metrics + fair performance measurement",
+     "sales-kpi-analytics + pacing bullet chart + repperf.py",
      "KPI layer + exec PDF; pacing EUR10.91M = 95.7% of plan, 80% interval; "
-     "back-check: realised EUR11.28M landed above the band -- honest miss"],
+     "back-check: realised EUR11.28M landed above the band -- honest miss; "
+     "rep decomposition (indirect standardization): 92% of the league-table "
+     "dispersion is territory, only 8% execution"],
     ["Uncertainty / risk quantification",
-     "revops-optimizer simulate.py; ml-models-lab BENCHMARK_CI.md",
+     "revops-optimizer simulate.py + robustness.py; ml-models-lab BENCHMARK_CI.md",
      "P10-P90 EUR145,091..170,723/yr, ~43% chance of clearing the headline; "
-     "tornado ranks drivers; bootstrap skill CIs: churn +0.457 [+0.381, +0.528]"],
+     "tornado ranks drivers; price-move gate: 17/29 ACCEPT, the biggest move "
+     "HELD (67% carry) -- a screen, not a guarantee; bootstrap skill CIs: "
+     "churn +0.457 [+0.381, +0.528]"],
     ["Inventory policy / working capital",
-     "distributor-intelligence-platform dip/inventory.py; supply-network-opt frontier",
+     "distributor-intelligence-platform dip/inventory.py + dip/reliability.py; "
+     "supply-network-opt frontier",
      "ROP/EOQ at ABC-XYZ targets: EUR127,421 working capital (cycle+safety "
-     "exactly), 5.5x turns, 99.9% fill; frontier 6.3x convexity"],
+     "exactly), 5.5x turns, 99.9% fill; supplier reliability: measured lead "
+     "times cost +14.4% safety stock -- wobble is 3/4 of the bill; frontier "
+     "6.3x convexity"],
     ["Predictive analytics / forecasting",
      "sales-kpi-analytics; ml-models-lab global forecaster",
      "MASE < 1; MASE 0.987 / RMSSE 0.948 beats naive + Holt-Winters"],
@@ -355,18 +383,26 @@ JOB2_ROWS = [
      "bootstrap skill CI +0.457 [+0.381, +0.528]"],
     ["Data into business decisions", "sales-kpi-analytics; market-basket-analysis",
      "EUR2.6M leakage lever; cross-sell recs, top lift 2.41"],
-    ["Market-basket / cross-sell", "market-basket-analysis + affinity.py",
+    ["Market-basket / cross-sell", "market-basket-analysis + affinity.py + redundancy.py",
      "Apriori + FP-growth from scratch; 224 itemsets, 254 rules; affinity "
-     "network Q=0.58, 3 communities, 4 bridges; 55 tests"],
+     "network Q=0.58, 3 communities, 4 bridges; 41% of rules redundant -- "
+     "149 carry all the information; 68 tests"],
     ["Classification / anomaly detection", "ml-models-lab; fraud-detection-ops",
      "SKU macro-F1 0.963; AE PR-AUC 0.963 vs PCA 0.951 (PCA default); fraud "
-     "PR-AUC 0.270 vs oracle ceiling 0.367; 42 tests"],
-    ["Model lifecycle / MLOps (gated retrain)", "fraud-detection-ops challenger.py",
+     "PR-AUC 0.270 vs oracle ceiling 0.367; 55 tests"],
+    ["Model lifecycle / MLOps (gated retrain)",
+     "fraud-detection-ops challenger.py + feedback.py",
      "swap-set + five pre-declared gates -> PROMOTE at $8,632 vs $8,841; "
-     "retrain finds no new fraud, wins by shedding load ($8/review assumption, stated)"],
-    ["Reliability / maintenance (survival)", "predictive-maintenance pdm/policy.py",
+     "retrain finds no new fraud, wins by shedding load ($8/review assumption, "
+     "stated); selective-labels feedback sim: ranking survives censoring "
+     "(PR-AUC 0.268-0.273) but probabilities die -- alerts starve 651 -> 197 "
+     "while the arm's own dashboard reads 100% recall by construction"],
+    ["Reliability / maintenance (survival)",
+     "predictive-maintenance pdm/policy.py + pdm/cbm_tuning.py",
      "censored Weibull beta 4.81; age-replacement T* 44.4 d at 7.16/machine-day "
-     "beats the repo's own detector (8.28) at the default threshold -- reported; 63 tests"],
+     "beats the repo's own detector (8.28) at the default threshold -- reported; "
+     "re-tuned economically the ranking flips to CBM (4.02, break-even "
+     "inspection cost 553.3) -- bounded, in-sample; 80 tests"],
     ["Visual quality inspection (vision)",
      "quality-anomaly-vision (3 detectors, pre-registered rule; SPC; 45 tests)",
      "AE ROC-AUC 0.779 vs PCA 0.772 -- inside 0.02 margin, PCA recommended; "
@@ -382,14 +418,18 @@ JOB2_ROWS = [
      "import + floor-plan underlay; -48.6% pick travel; ABC ~21% > random; 112/112 "
      "self-test + 45 harnesses; engine slotting -44.2% (golden-zone 25% -> 100%), "
      "fill 2.0% -> 30.2%; DES -76.1% / -66.5%; pick-path routing: return +3.0% "
-     "vs exact optimum, optimized layout ~46% shorter"],
-    ["Logistics / ops analytics", "route-optimizer (36 tests); supply-network-opt (53 tests)",
+     "vs exact optimum, optimized layout ~46% shorter; batching: savings "
+     "-71.3%, routing flips to largest-gap (+1.2%)"],
+    ["Logistics / ops analytics",
+     "route-optimizer (36 tests); supply-network-opt (71 tests, growth.py)",
      "4.6% / 31% savings; robustness: 5% headroom cuts failures 96% -> 44%, "
-     "expected day -4.6%; safety stock -65.7% / -80.1%; frontier 6.3x"],
+     "expected day -4.6%; safety stock -65.7% / -80.1%; frontier 6.3x; growth "
+     "plan: +8.8% headroom, 4th DC first pays at 1.30x (planning estimates)"],
     ["Real, messy data (completed)",
      "retail-analytics-real (UCI Online Retail II, 1,067,371 real rows, CC BY 4.0)",
      "real data: 94.0% rows kept; GBP 19.6M revenue; returns 3.65% of gross, "
      "95.0% of value matched, median 10-day lag; Champions 25% -> 69.0%; "
+     "lifecycle: resurrections outnumber repeats (439 vs 390/month); "
      "seasonal-naive wins CV, MASE 1.094"],
     ["Present to decision-makers", "revops-optimizer exec deck", "exec narrative deck"],
 ]

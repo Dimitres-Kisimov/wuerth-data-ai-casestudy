@@ -200,16 +200,23 @@
       <div class="area">Procurement / assortment / cross-sell</div>
       <h3>Assortment &amp; basket analysis</h3>
       <p class="muted">MILP selection vs. a greedy baseline; Apriori + FP-growth from scratch for
-      cross-sell. <code>revops-optimizer</code>, <code>distributor-intelligence-platform</code>,
-      <code>market-basket-analysis</code>.</p>
-      <span class="metric">MILP &gt; greedy &middot; part of €136,972/yr uplift &middot; 254 rules, top lift 2.41 &middot; affinity network: 3 communities (Q=0.58), 4 bridges (synthetic)</span>
+      cross-sell; rule redundancy pruning (confidence improvement + closed/maximal itemsets) - 105
+      of the 254 rules (41%) are redundant, every pruned rule names the simpler rule that covers it,
+      and a pruned rule is not wrong, merely already said. <code>revops-optimizer</code>,
+      <code>distributor-intelligence-platform</code>, <code>market-basket-analysis</code> (68 tests).</p>
+      <span class="metric">MILP &gt; greedy &middot; part of €136,972/yr uplift &middot; 254 rules, top lift 2.41 &middot; affinity network: 3 communities (Q=0.58), 4 bridges &middot; 41% of rules redundant - 149 carry all the information (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Pricing &amp; margin</div>
       <h3>Elasticity &amp; leakage</h3>
-      <p class="muted">Elasticity + Lerner pricing; discount-leakage detection.
+      <p class="muted">Elasticity + Lerner pricing; discount-leakage detection; and a per-move
+      robustness gate - the same fixed-seed Monte-Carlo draws behind the published risk band
+      re-examine every recommended price move (carried in &ge;90% of draws, same direction in
+      &ge;80%, positive € at the P10). The honest headline: the single biggest move (45% of the
+      whole pricing uplift) is HELD, because its SKU survives the assortment re-optimization in
+      only 67% of draws - a screening discipline on synthetic data, not a guarantee.
       <code>revops-optimizer</code>, <code>sales-kpi-analytics</code>.</p>
-      <span class="metric">€2.6M discount-leakage lever (synthetic)</span>
+      <span class="metric">€2.6M discount-leakage lever &middot; price-move gate: 17/29 ACCEPT (EUR 19,032/yr), 12 HOLD (EUR 16,187/yr parked) - biggest move held (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Inventory / replenishment</div>
@@ -217,18 +224,28 @@
       <p class="muted">Service-vs-holding trade-off; demand forecasting drives replenishment; a
       continuous-review (ROP, EOQ) policy turns the ABC-XYZ service targets into how much to hold and
       when to re-order — working capital equals cycle + safety stock exactly, asserted by tests
-      ("modelled, not measured", per the repo). <code>distributor-intelligence-platform</code>,
+      ("modelled, not measured", per the repo); and a supplier-reliability scorecard that measures
+      the PO receipt history instead of trusting the vendor master: 2,400 seeded receipts, 74.3%
+      on-time at a stated 2-day grace, and safety stock re-derived on measured lead times costs
+      +14.4% (+EUR 2,344) vs the quoted basis - split exactly into delay + variability, and the
+      wobble, not the lateness, is three quarters of the bill (kept out of the uplift total; seeded
+      synthetic receipts, labelled). <code>distributor-intelligence-platform</code>,
       <code>ml-models-lab</code>, <code>supply-network-opt</code>.</p>
-      <span class="metric">MASE 0.38 &middot; global forecaster MASE 0.987 / RMSSE 0.948, beats seasonal-naive and Holt-Winters &middot; policy: EUR 127,421 working capital, 5.5x turns, 99.9% fill (synthetic)</span>
+      <span class="metric">MASE 0.38 &middot; global forecaster MASE 0.987 / RMSSE 0.948, beats seasonal-naive and Holt-Winters &middot; policy: EUR 127,421 working capital, 5.5x turns, 99.9% fill &middot; supplier reliability: safety stock +14.4% on measured lead times - variability is 3/4 of the bill (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Sales KPIs &amp; analytics</div>
       <h3>KPIs + rolling-origin CV</h3>
       <p class="muted">KPI layer, forecasting with rolling-origin cross-validation, Power BI / DAX;
-      new sales pacing &amp; target attainment with an empirical 80% prediction interval — and the
+      sales pacing &amp; target attainment with an empirical 80% prediction interval — and the
       closed-year back-check reported honestly: the realised year landed just above the projected
-      band. <code>sales-kpi-analytics</code>, <code>revops-optimizer</code>.</p>
-      <span class="metric">MASE &lt; 1 vs seasonal-naive &middot; DAX pack + kpi_uplift_risk P10/P50/P90 risk table &middot; pacing €10.91M = 95.7% of plan; realised €11.28M above the band — an honest miss (synthetic)</span>
+      band. New rep performance decomposition - a fair comparison, because volume is not skill:
+      each rep's gap vs an even-share baseline splits exactly into coverage + frequency + mix +
+      execution (classic indirect standardization). The honest punch: the #2 rep by raw revenue has
+      an execution index of 0.9999 - the book, not the selling - and 92% of the league-table
+      dispersion is territory, only 8% execution.
+      <code>sales-kpi-analytics</code>, <code>revops-optimizer</code>.</p>
+      <span class="metric">MASE &lt; 1 vs seasonal-naive &middot; DAX pack + kpi_uplift_risk P10/P50/P90 risk table &middot; pacing €10.91M = 95.7% of plan; realised €11.28M above the band — an honest miss &middot; rep decomposition: 92% territory / 8% execution (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Logistics / routing</div>
@@ -257,9 +274,14 @@
       <h3>RFQ / invoice extraction</h3>
       <p class="muted">Agentic extraction of documents into structured records, behind a confidence
       gate plus a 7-rule field-level business-rule validation layer (arithmetic, required fields,
-      dates, IBAN/VAT) — the layer "checks format and internal consistency, not truth".
-      <code>doc-extract-agent</code>.</p>
-      <span class="metric">~€145k/yr modelled &middot; combined-gate auto-post precision 70.0% &rarr; 87.5% (synthetic)</span>
+      dates, IBAN/VAT) — the layer "checks format and internal consistency, not truth" — and an
+      extraction-error cost model that prices every measured gating policy in euros (€0.40
+      pre-filled review vs €25 per silent error): auto-posting pays only above a 98.4% precision
+      break-even and no measured policy clears that bar credibly - the confidence gate alone would
+      lose money on this set (modeled €181,778/yr vs €173,000 fully manual), so the honest
+      recommendation is to pre-fill everything and auto-post almost nothing; euros modeled, not
+      measured. <code>doc-extract-agent</code>.</p>
+      <span class="metric">~€145k/yr modelled &middot; combined-gate auto-post precision 70.0% &rarr; 87.5% &middot; cost model: auto-post break-even 98.4% - the gate alone loses money, kept as a negative finding (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Customer retention</div>
@@ -290,19 +312,29 @@
       scenarios, a canvas to 400&times;250 m and a 2.5D view; import your own article/order CSVs
       (in-browser, row-numbered validation, orders replayed exactly, honest "Data: yours" badge) and a
       floor-plan underlay with two-point calibration; outputs a WMS Report (print/JSON/CSV) and a scoped
-      IFC4 export. Plus container packing, slotting and discrete-event sim in
-      <code>logistics-digital-twin</code>. <code>logistics-flow-studio</code> (WarehouseTwin).
+      IFC4 export. Plus container packing, slotting, discrete-event sim, pick-path routing and order
+      batching in <code>logistics-digital-twin</code> - batching walked on the same aisle geometry
+      against the same exact optimum (Held-Karp extension): savings batching cuts pick travel
+      &minus;71.3% and flips the routing recommendation from return to largest-gap as tour density
+      rises 2.9 &rarr; 6.0 faces - the textbook density result, measured; no batching policy can
+      lose to single-order picking under exact routing (a theorem, verified per batch).
+      <code>logistics-flow-studio</code> (WarehouseTwin).
       Standards panel (ISO 22400, DIN 15185, ASR, EN, VDI) framed "aligned to, not a certification".</p>
-      <span class="metric">Optimizer &minus;48.6% pick travel &middot; ABC ~21% &gt; random &middot; Story Mode + 894-element signature plant &middot; 23 scenarios &middot; 45 harnesses + 112/112 self-test &middot; line sim: QA-split 112.5 parts/hr (&asymp;88.1% efficiency) &middot; fluids demo tank FULL in 96 min &middot; slotting &minus;44.2% (golden-zone 25% &rarr; 100%) &middot; DES cycle &minus;76.1% &middot; fill 2.0% &rarr; 30.2% &middot; pick-path routing: return +3.0% vs the exact Ratliff&ndash;Rosenthal optimum, optimized layout ~46% shorter (synthetic)</span>
+      <span class="metric">Optimizer &minus;48.6% pick travel &middot; ABC ~21% &gt; random &middot; Story Mode + 894-element signature plant &middot; 23 scenarios &middot; 45 harnesses + 112/112 self-test &middot; line sim: QA-split 112.5 parts/hr (&asymp;88.1% efficiency) &middot; fluids demo tank FULL in 96 min &middot; slotting &minus;44.2% (golden-zone 25% &rarr; 100%) &middot; DES cycle &minus;76.1% &middot; fill 2.0% &rarr; 30.2% &middot; pick-path routing: return +3.0% vs the exact Ratliff&ndash;Rosenthal optimum, optimized layout ~46% shorter &middot; batching: savings 2,692 &rarr; 774 m/shift (&minus;71.3%), routing flips to largest-gap (+1.2%) (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Supply-network design (new)</div>
       <h3>Facility location + flows + safety stock</h3>
       <p class="muted">Capacitated facility-location MILP vs. greedy; min-cost flow with an
       independent cross-check; multi-echelon safety stock with risk pooling; an inventory
-      service-level frontier pricing each extra point of service (illustrative rates, stated).
-      <code>supply-network-opt</code> (53 tests).</p>
-      <span class="metric">3 of 8 DCs, &minus;21.2% cost vs greedy &middot; LP == graph to $0.00 &middot; stock &minus;65.7% / &minus;80.1% &middot; frontier: $2,353 &rarr; $14,750 per service point (6.3x) (synthetic)</span>
+      service-level frontier pricing each extra point of service (illustrative rates, stated); and
+      a demand-growth capacity plan - a 1.00x-2.00x sweep re-solving the same MILP unconstrained
+      and with today's DCs pinned: the lean network has only +8.8% growth headroom, the first
+      response to growth is a reshuffle (not a new DC), the 4th DC first pays at 1.30x, and the
+      plant echelon's 2.10x ceiling binds before the DC pool's 2.74x. Uniform growth and flat rates
+      are stated assumptions - planning estimates, not forecasts.
+      <code>supply-network-opt</code> (71 tests).</p>
+      <span class="metric">3 of 8 DCs, &minus;21.2% cost vs greedy &middot; LP == graph to $0.00 &middot; stock &minus;65.7% / &minus;80.1% &middot; frontier: $2,353 &rarr; $14,750 per service point (6.3x) &middot; growth: +8.8% headroom, 4th DC at 1.30x (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Energy management / facilities (new)</div>
@@ -371,10 +403,17 @@
       credit-note &rarr; invoice key in the data, attribution is a labelled heuristic (most recent
       prior same-SKU, same-customer sale) - 95.0% of returned value matches a prior purchase at a
       median 10-day lag, "a heuristic attribution, not a linked RMA". RFM:
-      5,852 customers, 10 segments. 97 tests on a committed real-data fixture; QA'd figures;
+      5,852 customers, 10 segments. New lifecycle segmentation &amp; growth accounting (5,824
+      customers, 24 complete months; the 3-month dormancy threshold audited against the measured
+      gap distribution; flow-matrix structural zeros asserted by tests): in the average month
+      resurrected buyers (439) outnumber month-over-month repeats (390), dormant customers return
+      at 8.9% per month, and 31.2% of stage-attributed revenue is customers coming back from a gap
+      - for this wholesale-heavy base, skipping months is normal purchasing behaviour, and a CRM
+      that treats every one-month absence as churn would misread most of it. 113 tests on a
+      committed real-data fixture; QA'd figures;
       exec PDF + Excel. Honest forecasting headline: the naive baseline won.
       <a href="https://github.com/Dimitres-Kisimov/retail-analytics-real"><code>retail-analytics-real</code></a>.</p>
-      <span class="metric">Seasonal-naive wins CV: MASE 1.094 vs Holt-Winters 1.187 &middot; returns 3.65% of gross, 95.0% of value matched, median 10-day lag &middot; Champions 25% of customers &rarr; 69.0% of revenue (real data)</span>
+      <span class="metric">Seasonal-naive wins CV: MASE 1.094 vs Holt-Winters 1.187 &middot; returns 3.65% of gross, 95.0% of value matched, median 10-day lag &middot; Champions 25% of customers &rarr; 69.0% of revenue &middot; lifecycle: resurrections 439 vs repeats 390/month, quick ratio 1.05 (real data)</span>
     </div>
     <div class="card">
       <div class="area">Fraud &amp; transaction-risk operations (new)</div>
@@ -386,8 +425,14 @@
       with swap-set analysis and five pre-declared promotion gates: the verdict on this run is
       PROMOTE - and the repo says plainly that the retrain finds no new fraud, wins purely by
       shedding analyst load, and the $210 (2.4%) margin is modelled, not measured, resting entirely
-      on the $8/review assumption. <code>fraud-detection-ops</code> (42 tests).</p>
-      <span class="metric">PR-AUC 0.270 vs oracle ceiling 0.367 &middot; threshold catches 76/126 frauds at $8,841 modelled cost &middot; challenger promoted at $8,632 vs $8,841 (synthetic)</span>
+      on the $8/review assumption. New selective-labels feedback simulation (four labelling-policy
+      arms, threshold and review capacity frozen): ranking survives label censoring (final PR-AUC
+      0.268-0.273 across arms) but the probabilities die - the assume-legit arm degrades to 3.2x
+      the oracle's ECE and starves its own alert queue 651 &rarr; 197 while its dashboard reads
+      100% observed recall by construction (the model grades its own homework); a model of a
+      process, not a measurement of one, and the repo says so.
+      <code>fraud-detection-ops</code> (55 tests).</p>
+      <span class="metric">PR-AUC 0.270 vs oracle ceiling 0.367 &middot; threshold catches 76/126 frauds at $8,841 modelled cost &middot; challenger promoted at $8,632 vs $8,841 &middot; feedback sim: ranking survives, probabilities + alert volume collapse (synthetic)</span>
     </div>
     <div class="card">
       <div class="area">Maintenance &amp; asset reliability (new)</div>
@@ -399,9 +444,15 @@
       (&minus;23.2% weighted delay vs FIFO, proven OPTIMAL). The honest headline: the calendar rule
       beats the repo's own detector at the default threshold - false alarms book more than half the
       condition-based cost, and &beta; &asymp; 4.8 is exactly the regime where a calendar rule is
-      hard to beat; "the trade-off is computed, not asserted". Everything modelled, not measured.
-      <code>predictive-maintenance</code> (63 tests).</p>
-      <span class="metric">Age-replacement 7.16/machine-day at T* = 44.4 d (&minus;51.7% vs run-to-failure) &middot; condition-based 8.28 - the calendar rule wins, reported (synthetic)</span>
+      hard to beat; "the trade-off is computed, not asserted". New CBM threshold re-optimization -
+      the loop closed: an exact sweep re-prices the condition-based policy at every candidate
+      threshold, and economically tuned (0.262 &rarr; 0.397) CBM falls to 4.02/machine-day, under
+      the age-replacement optimum's 7.16 - the ranking flips to condition-based, with a closed-form
+      break-even inspection cost of 553.3 (~11x the assumed 50). Honestly bounded: the tuned
+      threshold is selected in-sample, so the flip is "the shape of the closed loop, not a
+      certified operating point". Everything modelled, not measured.
+      <code>predictive-maintenance</code> (80 tests).</p>
+      <span class="metric">Age-replacement 7.16/machine-day at T* = 44.4 d (&minus;51.7% vs run-to-failure) &middot; condition-based 8.28 at the default threshold - the calendar rule wins, reported &middot; re-tuned: CBM 4.02 flips the ranking (bounded, in-sample) (synthetic)</span>
     </div>
   </div>
 
@@ -415,8 +466,8 @@
       <tr><td>Low-code (n8n / Power Automate)</td><td><code>agentic-automation-lab/n8n/rfq_intake_agent.json</code></td><td>RFQ-intake agent; ~€625k/yr</td></tr>
       <tr><td>Visual / flow-based building</td><td><code>agent-flow-studio</code></td><td>flow builder; ~€47k/yr</td></tr>
       <tr><td>Connecting systems / APIs</td><td><code>agentic-automation-lab</code> connector layer</td><td>agents call external APIs</td></tr>
-      <tr><td>Process automation (back-office)</td><td><code>doc-extract-agent</code></td><td>RFQ/invoice &rarr; structured, behind an auto-post/needs-review confidence gate; ~€145k/yr modelled</td></tr>
-      <tr><td>Document intake / understanding</td><td><code>doc-extract-agent</code> - extraction + 7-rule business-rule validation layer</td><td>7 field-level rules (arithmetic, required fields, dates, IBAN mod-97, VAT shape); combined-gate auto-post precision 70.0% &rarr; 87.5% on the eval set - the remaining error (a currency mis-inferred from prose) is reported, not hidden</td></tr>
+      <tr><td>Process automation (back-office)</td><td><code>doc-extract-agent</code></td><td>RFQ/invoice &rarr; structured, behind an auto-post/needs-review confidence gate; ~€145k/yr modelled - now bracketed by the extraction-error cost model from measured operating points (€100,556-€152,556/yr depending on gating policy)</td></tr>
+      <tr><td>Document intake / understanding</td><td><code>doc-extract-agent</code> - extraction + 7-rule business-rule validation layer + extraction-error cost model (eval/run_cost)</td><td>7 field-level rules (arithmetic, required fields, dates, IBAN mod-97, VAT shape); combined-gate auto-post precision 70.0% &rarr; 87.5% on the eval set - the remaining error (a currency mis-inferred from prose) is reported, not hidden. Cost model at the business case's modeled rates (€0.40 review, €25 per silent error): auto-post pays only above 98.4% precision and no measured policy clears that bar credibly - the confidence gate alone would lose money (modeled €181,778/yr vs €173,000 manual), the validation layer is worth ~€109,333/yr in this model, and ~€149,000/yr of the value is the pre-fill, not the skipped confirm; euros modeled, not measured</td></tr>
       <tr><td>Rapid prototyping</td><td><code>agent-flow-studio</code>, <code>agentic-automation-lab</code>, <code>logistics-flow-studio</code></td><td>runnable prototypes; a full installable offline WMS twin + factory/plant simulator (PWA, v3.19; 45 harnesses + 112/112 self-test)</td></tr>
       <tr><td>Prototyping + education (explaining tech without hype)</td><td><code>quantum-explainer</code> - live &amp; installable at dimitres-kisimov.github.io/quantum-explainer (plain-text address; this page loads nothing external)</td><td>hand-written state-vector simulator (~300 lines, zero dependencies); 42 physics assertions + 57 structural/offline checks pass; no frameworks, no build step, no network calls</td></tr>
       <tr><td>Show automation ROI</td><td><code>automation-roi-explorer</code></td><td>€383k/yr net modelled</td></tr>
@@ -433,9 +484,9 @@
     <tbody>
       <tr><td>One dataset through the whole chain - integration whose numbers reconcile (real data + labelled layers)</td><td><code>decision-chain</code> - committed run artifact <code>artifacts/full_run.json</code>; offline CHAIN DASHBOARD with the 13-identity reconciliation panel; order_costs.py per-order consumer; byte-reproducible PDF + Excel; a deliberate-corruption FAIL path per identity in the tests</td><td>real data: UCI Online Retail II (1,067,371 raw rows) through ingest &rarr; forecast &rarr; inventory &rarr; warehouse &rarr; transport &rarr; costing; all 13 machine-checked identities PASS - cross-repo revenue &pound;19,643,861.62 to the penny, ledger total to the cent (253,427.16), every pick/carton/route drop conserved (256,787 lines; 70,820 cartons; 4,151 drops); additive identities (n), (o) and (p): the ledger total rebuilt from physical drivers to the cent; a forecast error moves only the holding line - elasticity of total cost == holding share exactly, 0.0580 on the committed full run; and the per-order cost-to-serve spread reassembled to the cent over 4,151 real orders (both planes to 253,427.16; per-order real revenue to the window revenue to the penny) - top decile 59.0% of delivered cost, Gini 0.665, the model's shape under invented rates, never order profitability. Honest findings: naive wins lumpy demand (MASE 1.782); slotting optimum only &minus;1.6% vs ABC (math explained); CVRP &minus;0.2% vs Clarke-Wright, loses 19 of 48 days; crew 18% utilized; every cost rate INVENTED and labelled - no profit claims</td></tr>
       <tr><td>BI / Power BI</td><td><code>revops-optimizer/powerbi/DAX_measures.md</code> + disconnected <code>kpi_uplift_risk</code> table</td><td>DAX pack + 3-page report; the star schema also emits a Power BI risk table (Monte-Carlo P10/P50/P90 band + VaR/CVaR) with matching DAX measures</td></tr>
-      <tr><td>Uncertainty / risk quantification on business numbers</td><td><code>revops-optimizer</code> (<code>revops/simulate.py</code> Monte-Carlo + tornado); <code>ml-models-lab</code> (<code>docs/BENCHMARK_CI.md</code>); <code>sales-kpi-analytics</code> pacing interval</td><td>Joint Monte-Carlo band on the EUR 159,966/yr headline: P10&ndash;P90 EUR 145,091&ndash;170,723/yr, median below the point estimate, only ~43% chance of clearing it - illustrative planning ranges on synthetic data, not a forecast; one-way tornado ranks the drivers; bootstrap 95% skill CIs: churn +0.457 [+0.381, +0.528], elasticity +0.918 [+0.904, +0.934], both above zero (torch models excluded on purpose - not bit-reproducible)</td></tr>
-      <tr><td>Inventory policy / working capital</td><td><code>distributor-intelligence-platform</code> (<code>dip/inventory.py</code>); <code>supply-network-opt</code> service frontier</td><td>Continuous-review (ROP, EOQ) policy at ABC-XYZ service targets (A/X 98%, C/Z 88%): EUR 127,421 working capital - cycle + safety exactly, asserted by tests - 5.5x turns, 66 days of cover, 99.9% demand-weighted fill; "modelled, not measured"; frontier: 97.5% &rarr; 99.0% costs ~$14,750/yr per service point, ~6.3x the first increment (synthetic)</td></tr>
-      <tr><td>KPI dashboards / metrics</td><td><code>sales-kpi-analytics</code> + pacing bullet chart (<code>deliverables/pacing_bullet.svg</code>)</td><td>KPI layer + exec PDF; pacing &amp; target attainment: run-rate €10.91M = 95.7% of the assumed €11.40M plan, empirical 80% prediction interval (€10.77M&ndash;€11.05M) - and the closed-year back-check reported honestly: realised €11.28M (98.9%) landed just above the band</td></tr>
+      <tr><td>Uncertainty / risk quantification on business numbers</td><td><code>revops-optimizer</code> (<code>revops/simulate.py</code> Monte-Carlo + tornado + <code>revops/robustness.py</code> accept/hold gate); <code>ml-models-lab</code> (<code>docs/BENCHMARK_CI.md</code>); <code>sales-kpi-analytics</code> pacing interval</td><td>Joint Monte-Carlo band on the EUR 159,966/yr headline: P10&ndash;P90 EUR 145,091&ndash;170,723/yr, median below the point estimate, only ~43% chance of clearing it - illustrative planning ranges on synthetic data, not a forecast; one-way tornado ranks the drivers. New price-move robustness gate replaying the same fixed-seed draws (a test pins the per-draw totals): every recommended move gated on carry &ge;90%, same direction &ge;80%, positive € at the P10 - 17 of 29 ACCEPT (EUR 19,032/yr), 12 HOLD (EUR 16,187/yr parked), and the single biggest move (45% of the pricing uplift) is HELD on a 67% carry rate - a screen, not a guarantee; 69 tests. Bootstrap 95% skill CIs: churn +0.457 [+0.381, +0.528], elasticity +0.918 [+0.904, +0.934], both above zero (torch models excluded on purpose - not bit-reproducible)</td></tr>
+      <tr><td>Inventory policy / working capital</td><td><code>distributor-intelligence-platform</code> (<code>dip/inventory.py</code> + <code>dip/reliability.py</code> supplier scorecards); <code>supply-network-opt</code> service frontier</td><td>Continuous-review (ROP, EOQ) policy at ABC-XYZ service targets (A/X 98%, C/Z 88%): EUR 127,421 working capital - cycle + safety exactly, asserted by tests - 5.5x turns, 66 days of cover, 99.9% demand-weighted fill; "modelled, not measured". New supplier lead-time reliability - measure the receipts, not the vendor master: 10 suppliers, 2,400 seeded receipts, 74.3% on-time (2-day grace); safety stock on measured lead times EUR 18,626 vs quoted-basis EUR 16,282 (+14.4%), split exactly into delay (EUR 576) + variability (EUR 1,768) - the wobble, not the lateness, is three quarters of the bill; quoted basis reproduces the inventory engine SKU by SKU (tested); kept out of the uplift total. Frontier: 97.5% &rarr; 99.0% costs ~$14,750/yr per service point, ~6.3x the first increment (synthetic)</td></tr>
+      <tr><td>KPI dashboards / metrics - incl. fair performance measurement</td><td><code>sales-kpi-analytics</code> + pacing bullet chart (<code>deliverables/pacing_bullet.svg</code>) + rep decomposition (<code>repperf.py</code>)</td><td>KPI layer + exec PDF; pacing &amp; target attainment: run-rate €10.91M = 95.7% of the assumed €11.40M plan, empirical 80% prediction interval (€10.77M&ndash;€11.05M) - and the closed-year back-check reported honestly: realised €11.28M (98.9%) landed just above the band. New rep performance decomposition: gap vs even-share baseline = coverage + frequency + mix + execution, exactly (indirect standardization) - the #2 rep by raw revenue has an execution index of 0.9999 (mix +€354.5k, frequency +€198.4k, coverage &minus;€215.8k, execution &minus;€127: the book, not the selling), one rep swings #6 &rarr; #11 adjusted, and 92% of the league-table dispersion is territory - SVG labels read back and asserted equal to the source to the cent</td></tr>
       <tr><td>Predictive analytics / forecasting</td><td><code>sales-kpi-analytics</code> rolling-origin CV; <code>ml-models-lab</code> global forecaster</td><td>MASE &lt; 1 vs seasonal-naive; MASE 0.987 / RMSSE 0.948 vs seasonal-naive (1.080/1.062) and Holt-Winters (1.101/1.019)</td></tr>
       <tr><td>Forecasting rigour</td><td><code>distributor-intelligence-platform</code></td><td>MASE 0.38 (9 rolling folds); /reconcile guard: 16/16 cross-engine identities, all 21 headline numbers present</td></tr>
       <tr><td>Energy forecasting + optimization</td><td><code>energy-demand-forecast</code> - forecasters + peak-shaving LP + causal dispatch backtest from scratch (numpy/scipy); 59 tests</td><td>regression MASE 0.497 / MAPE 4.8%, 14/14 CV folds vs seasonal-naive (1.369 / 17.6%); Holt-Winters loses to the naive baseline (3.040 / 37.6%), reported; LP cuts mean monthly peak 368.2 &rarr; 291.1 kW (&minus;20.9%), ~€11,100/yr at an ASSUMED €12/kW-month tariff, timer baseline €0; at an assumed €120k-180k battery cost: 10+ year simple payback - the battery does not pay for itself on these assumptions; causal day-ahead dispatch backtest: the deployable controller captures 72.7% of the perfect-foresight LP bound, and the robust variant is a measured negative result kept in the table (65.4%)</td></tr>
@@ -445,14 +496,14 @@
       <tr><td>Optimization / prescriptive</td><td><code>revops-optimizer</code> MILP + newsvendor; <code>supply-network-opt</code>; <code>logistics-digital-twin</code> packing</td><td>~€160k/yr uplift; 3 of 8 DCs at &minus;21.2% cost vs greedy; LP == graph to $0.00; fill 2.0% &rarr; 30.2%, 56 containers saved, CP-SAT optimality proof</td></tr>
       <tr><td>Elasticity / statistical modelling</td><td><code>revops-optimizer</code> predict layer; <code>ml-models-lab</code></td><td>ROC-AUC 0.99; elasticity bias +1.52 &rarr; +0.03 (profit regret 0.89%); churn PR-AUC 0.653, ECE 0.197 &rarr; 0.021, bootstrap skill CI +0.457 [+0.381, +0.528]</td></tr>
       <tr><td>Data into business decisions</td><td><code>sales-kpi-analytics</code>; <code>market-basket-analysis</code></td><td>€2.6M leakage lever; cross-sell recs from 254 rules (top lift 2.41), 3 segments</td></tr>
-      <tr><td>Market-basket / cross-sell</td><td><code>market-basket-analysis</code> + <code>basket/affinity.py</code></td><td>Apriori + FP-growth from scratch, exact equality cross-check; 224 itemsets, 254 rules; affinity network: 3 communities via greedy modularity (Q=0.58), 4 bridge edges (strongest electrical&ndash;lubricants, lift 1.40) - honestly noted as machinery validation, not customer discovery; 55 tests</td></tr>
+      <tr><td>Market-basket / cross-sell</td><td><code>market-basket-analysis</code> + <code>basket/affinity.py</code> + <code>basket/redundancy.py</code></td><td>Apriori + FP-growth from scratch, exact equality cross-check; 224 itemsets, 254 rules; affinity network: 3 communities via greedy modularity (Q=0.58), 4 bridge edges (strongest electrical&ndash;lubricants, lift 1.40) - honestly noted as machinery validation, not customer discovery. New rule redundancy pruning (confidence improvement, closed/maximal itemsets): 105 of 254 rules (41%) redundant, the 149 kept carry all the information, every pruned rule names its covering rule (the coverer is asserted kept); 224 closed / 126 maximal - closure does not compress here, and the doc says so; 68 tests</td></tr>
       <tr><td>Classification / anomaly detection</td><td><code>ml-models-lab</code></td><td>SKU classifier macro-F1 0.963; anomaly AE PR-AUC 0.963 vs PCA 0.951 (narrow win; PCA recommended default)</td></tr>
       <tr><td>Visual quality inspection (vision)</td><td><code>quality-anomaly-vision</code> - 3 detectors trained on clean images only, one pre-fixed scoring rule, metrics from scratch; <code>qav/spc.py</code>; 45 tests</td><td>conv AE ROC-AUC 0.779 vs PCA 0.772 vs local stats 0.687 - inside the pre-registered 0.02 margin, so PCA recommended over the deep model; PCA wins TPR 0.407 vs 0.393 @ 5% FPR and mean IoU 0.207; texture-breaks hard for all (best AUC 0.609); training the AE longer made it worse (0.779 &rarr; 0.738); SPC: p-chart + Western Electric rules - process shift caught by a run rule while naked 3&sigma; never fires, and the measured calibration correction (0 &rarr; 0.70% on fresh parts) is reported</td></tr>
-      <tr><td>Warehouse / intralogistics + factory / process industry</td><td><code>logistics-flow-studio</code> (WarehouseTwin v3.19); <code>logistics-digital-twin</code></td><td>optimizer &minus;48.6% pick travel (demo layout; pinned in the repo's <code>docs/MEASUREMENTS.md</code>); ABC 80/20 ~21% &gt; random; 45 harnesses + 112/112 self-test; factory pass (v3.17-v3.19): multi-way proportional-flow line sim with conservation verified at every node; the generated QA-split archetype resolves to 112.5 parts/hr at &asymp;88.1% line efficiency (harness-pinned RPW balance on effective loads); fluids steady-state solver names the bottleneck pipe and computes the demo tank FULL in 96 min ("modelled, not measured", not CFD); bring-your-own-data: article/order CSV import 100% in-browser (row-numbered validation, orders replayed exactly, honest data badge) + floor-plan underlay with two-point metric calibration, both excluded from share links by default; slotting &minus;44.2% (break-even ~0.7 days); DES cycle &minus;76.1%, travel &minus;66.5%; pick-path routing: return +3.0% vs the exact Ratliff&ndash;Rosenthal optimum (s-shape +7.1%), optimized layout ~46% shorter at fixed policy (51.4 &rarr; 27.5 m/order)</td></tr>
-      <tr><td>Logistics / ops analytics</td><td><code>route-optimizer</code> (36 tests); <code>supply-network-opt</code> (53 tests)</td><td>4.6% / 31% savings; robustness: 5% capacity headroom cuts failing scenarios 96% &rarr; 44% and the expected day &minus;4.6% across 200 seeded demand scenarios (noise "modelled, not measured"); safety stock &minus;65.7% / &minus;80.1%; service frontier $2,353 &rarr; $14,750 per point (6.3x)</td></tr>
-      <tr><td>Model lifecycle / retraining governance (MLOps)</td><td><code>fraud-detection-ops</code> - <code>fdo/challenger.py</code> champion/challenger harness</td><td>swap-set analysis + five pre-declared promotion gates - verdict PROMOTE at $8,632 vs $8,841 (net $210, 2.4%); honestly framed: the retrain finds no new fraud, wins by shedding analyst load, and the margin rests on the $8/review assumption; 42 tests (synthetic)</td></tr>
-      <tr><td>Reliability / maintenance analytics (survival modelling)</td><td><code>predictive-maintenance</code> - <code>pdm/policy.py</code></td><td>censored Weibull (&beta; 4.81, &eta; 73.6 d, MTBF 67.4 d); age-replacement T* = 44.4 d at 7.16/machine-day vs condition-based 8.28 - the calendar rule beats the repo's own detector at the default threshold, reported; 63 tests (synthetic, modelled - not measured)</td></tr>
-      <tr><td>Real, messy data (real, not synthetic)</td><td><code>retail-analytics-real</code> - UCI Online Retail II (1,067,371 rows, CC BY 4.0); 97 tests on a committed real-data fixture; exec PDF + Excel</td><td>real data: 94.0% of rows retained (every cleaning step logged), 22.77% missing CustomerID flagged, £19,643,862 analyzed; returns &amp; cancellations: 3.65% of gross value across 17,914 return lines / 7,405 credit notes, 95.0% of returned value heuristically matched to a prior same-SKU/same-customer sale ("not a linked RMA") at a median 10-day lag; RFM 5,852 customers / 10 segments, Champions 25% &rarr; 69.0% of revenue; 5-fold rolling-origin CV - seasonal-naive wins (MASE 1.094 vs Holt-Winters 1.187, lag-features 1.590), reported plainly</td></tr>
+      <tr><td>Warehouse / intralogistics + factory / process industry</td><td><code>logistics-flow-studio</code> (WarehouseTwin v3.19); <code>logistics-digital-twin</code></td><td>optimizer &minus;48.6% pick travel (demo layout; pinned in the repo's <code>docs/MEASUREMENTS.md</code>); ABC 80/20 ~21% &gt; random; 45 harnesses + 112/112 self-test; factory pass (v3.17-v3.19): multi-way proportional-flow line sim with conservation verified at every node; the generated QA-split archetype resolves to 112.5 parts/hr at &asymp;88.1% line efficiency (harness-pinned RPW balance on effective loads); fluids steady-state solver names the bottleneck pipe and computes the demo tank FULL in 96 min ("modelled, not measured", not CFD); bring-your-own-data: article/order CSV import 100% in-browser (row-numbered validation, orders replayed exactly, honest data badge) + floor-plan underlay with two-point metric calibration, both excluded from share links by default; slotting &minus;44.2% (break-even ~0.7 days); DES cycle &minus;76.1%, travel &minus;66.5%; pick-path routing: return +3.0% vs the exact Ratliff&ndash;Rosenthal optimum (s-shape +7.1%), optimized layout ~46% shorter at fixed policy (51.4 &rarr; 27.5 m/order); order batching on the same exact-optimum yardstick (Held-Karp extension): savings batching 2,692 &rarr; 774 m/shift (&minus;71.3%), batching + slotting stack, and the routing recommendation flips to largest-gap (+1.2%) at 6.0 faces/tour - no batching policy can lose to single-order picking (theorem, verified per batch)</td></tr>
+      <tr><td>Logistics / ops analytics</td><td><code>route-optimizer</code> (36 tests); <code>supply-network-opt</code> (71 tests, incl. <code>supplynet/growth.py</code>)</td><td>4.6% / 31% savings; robustness: 5% capacity headroom cuts failing scenarios 96% &rarr; 44% and the expected day &minus;4.6% across 200 seeded demand scenarios (noise "modelled, not measured"); safety stock &minus;65.7% / &minus;80.1%; service frontier $2,353 &rarr; $14,750 per point (6.3x). New demand-growth capacity plan: the lean 3-DC network has only +8.8% headroom (19,451 vs 17,880 units), the first response to growth is a reshuffle (1.10x swaps one DC), the 4th DC first pays at 1.30x, the plant echelon (2.10x) binds before the DC pool (2.74x) - uniform growth and flat rates stated, planning estimates, not forecasts</td></tr>
+      <tr><td>Model lifecycle / retraining governance (MLOps)</td><td><code>fraud-detection-ops</code> - <code>fdo/challenger.py</code> champion/challenger harness + <code>fdo/feedback.py</code> selective-labels simulation</td><td>swap-set analysis + five pre-declared promotion gates - verdict PROMOTE at $8,632 vs $8,841 (net $210, 2.4%); honestly framed: the retrain finds no new fraud, wins by shedding analyst load, and the margin rests on the $8/review assumption. New selective-labels feedback simulation (four labelling-policy arms, frozen threshold + review capacity): ranking survives censoring (PR-AUC 0.268-0.273 across arms) but the probabilities die - the assume-legit arm relabels 292 frauds legitimate, degrades to 3.2x the oracle's ECE, starves alerts 651 &rarr; 197 (recall 61% &rarr; 44%) - while its own dashboard reads 100% observed recall by construction; a model of a process, not a measurement, and the repo says so; 55 tests (synthetic)</td></tr>
+      <tr><td>Reliability / maintenance analytics (survival modelling)</td><td><code>predictive-maintenance</code> - <code>pdm/policy.py</code> + <code>pdm/cbm_tuning.py</code></td><td>censored Weibull (&beta; 4.81, &eta; 73.6 d, MTBF 67.4 d); age-replacement T* = 44.4 d at 7.16/machine-day vs condition-based 8.28 - the calendar rule beats the repo's own detector at the default threshold, reported. New CBM threshold re-optimization - the loop closed: an exact sweep re-prices CBM at every threshold; economically tuned (0.262 &rarr; 0.397) it falls to 4.02/machine-day, under 7.16, and the ranking flips to condition-based - break-even inspection cost 553.3 (~11x assumed); bounded honestly: in-sample threshold choice, "the shape of the closed loop, not a certified operating point"; 80 tests (synthetic, modelled - not measured)</td></tr>
+      <tr><td>Real, messy data (real, not synthetic)</td><td><code>retail-analytics-real</code> - UCI Online Retail II (1,067,371 rows, CC BY 4.0); 113 tests on a committed real-data fixture; exec PDF + Excel</td><td>real data: 94.0% of rows retained (every cleaning step logged), 22.77% missing CustomerID flagged, £19,643,862 analyzed; returns &amp; cancellations: 3.65% of gross value across 17,914 return lines / 7,405 credit notes, 95.0% of returned value heuristically matched to a prior same-SKU/same-customer sale ("not a linked RMA") at a median 10-day lag; RFM 5,852 customers / 10 segments, Champions 25% &rarr; 69.0% of revenue; lifecycle segmentation (5,824 customers, 24 complete months; dormancy threshold audited; flow-matrix structural zeros tested): resurrections outnumber month-over-month repeats (439 vs 390), dormant returns at 8.9%/month, 31.2% of stage-attributed revenue is comeback buying - stage definitions a declared lens, not a behavioural truth; 5-fold rolling-origin CV - seasonal-naive wins (MASE 1.094 vs Holt-Winters 1.187, lag-features 1.590), reported plainly</td></tr>
       <tr><td>Present to decision-makers</td><td><code>revops-optimizer</code> exec deck</td><td>exec narrative deck</td></tr>
     </tbody>
   </table>

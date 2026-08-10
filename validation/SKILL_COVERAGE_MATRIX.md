@@ -48,7 +48,7 @@ _24 requirements, 15 distinct registered repos._
 |---|---------------------|------------------------------|
 | 1 | One dataset through the whole chain — integration whose numbers reconcile *(real data + labelled synthetic layers)* | `decision-chain` |
 | 2 | BI / Power BI dashboards | `revops-optimizer` |
-| 3 | KPI dashboards / metrics | `sales-kpi-analytics` |
+| 3 | KPI dashboards / metrics — incl. fair performance measurement | `sales-kpi-analytics` |
 | 4 | Uncertainty / risk quantification on business numbers | `ml-models-lab`, `revops-optimizer`, `sales-kpi-analytics` |
 | 5 | Predictive analytics / forecasting | `ml-models-lab`, `sales-kpi-analytics` |
 | 6 | Forecasting rigour / validation | `distributor-intelligence-platform` |
