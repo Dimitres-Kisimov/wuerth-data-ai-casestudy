@@ -1,13 +1,21 @@
-"""Build the executive one-pager PDF for the Wuerth Data & AI case study.
+"""Build the executive PDF for the Wuerth Data & AI case study.
 
 Independent, public-info-only analysis. Not affiliated with Wuerth. No internal
 Wuerth data or systems used. All portfolio metrics are on SYNTHETIC data except
 retail-analytics-real, which is measured on real UCI Online Retail II data
 (CC BY 4.0) and labelled REAL DATA wherever cited.
 
+Layout engine ("dossier" pass): every table cell is measured with the actual
+font metrics (Agg renderer), wrapped to its column width, and rows take the
+height their content needs -- tables flow across pages with a repeated header
+row instead of cramming into one fixed grid. Consistent margins, a running
+header, hairline (booktabs-style) rules and page numbers throughout. The cover
+carries one oversized figure -- the number of mapped requirements -- computed at
+build time from the repository's own validation guards, never hard-coded.
+
 Usage:
     python build_pdf.py
-Writes deliverables/wuerth_data_ai_casestudy.pdf (multi-panel, executive).
+Writes deliverables/wuerth_data_ai_casestudy.pdf (multi-page, executive).
 """
 
 import os
@@ -16,12 +24,19 @@ import sys
 import matplotlib
 
 matplotlib.use("Agg")
+# Render every string verbatim: '$' is a currency sign in this document, never
+# a mathtext delimiter (otherwise "$2,353 -> $14,750" would be typeset as math).
+matplotlib.rcParams["text.parse_math"] = False
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.backends.backend_agg import FigureCanvasAgg  # noqa: E402
 from matplotlib.backends.backend_pdf import PdfPages  # noqa: E402
 
 # Windows-console-safe stdout (ASCII markers used anyway, but be defensive).
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+# Make the validation package importable when run from anywhere.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 OUT_DIR = "deliverables"
 OUT_PATH = os.path.join(OUT_DIR, "wuerth_data_ai_casestudy.pdf")
@@ -30,6 +45,149 @@ INK = "#1a1a1a"
 MUTED = "#555555"
 ACCENT = "#c8102e"  # a neutral red, not a logo asset
 RULE = "#cccccc"
+NOTICE_BG = "#fdf3f4"
+NOTICE_INK = "#7a1420"
+
+SANS = "DejaVu Sans"
+MONO = "DejaVu Sans Mono"
+
+# ---------------------------------------------------------------- page geometry
+PAGE_W, PAGE_H = 8.27, 11.69  # A4 portrait, inches
+MARGIN_L = 0.75
+MARGIN_R = 0.75
+MARGIN_B = 0.95  # room for the footer furniture
+BODY_TOP = 1.05  # content starts below the running header
+BODY_W = PAGE_W - MARGIN_L - MARGIN_R
+
+LEAD = 1.42  # line-height multiple used for every measured text block
+CELL_PAD_X = 0.07  # inches of horizontal padding inside a table cell
+CELL_PAD_Y = 0.065  # inches of vertical padding above/below a table row
+
+
+def X(x_in):
+    """Inches from the left edge -> axes fraction."""
+    return x_in / PAGE_W
+
+
+def Y(y_in):
+    """Inches from the TOP edge -> axes fraction."""
+    return 1.0 - y_in / PAGE_H
+
+
+# ------------------------------------------------------------- text measurement
+
+_probe_fig = None
+_probe_renderer = None
+_width_cache = {}
+_space_cache = {}
+
+
+def _renderer():
+    global _probe_fig, _probe_renderer
+    if _probe_renderer is None:
+        _probe_fig = plt.figure(figsize=(PAGE_W, PAGE_H))
+        _probe_renderer = FigureCanvasAgg(_probe_fig).get_renderer()
+    return _probe_fig, _probe_renderer
+
+
+def text_width(s, fs, weight="normal", family=SANS):
+    """Measured width of a string, in inches, using the real font metrics."""
+    key = (s, fs, weight, family)
+    if key not in _width_cache:
+        fig, renderer = _renderer()
+        t = fig.text(0, 0, s, fontsize=fs, fontweight=weight, family=family)
+        bb = t.get_window_extent(renderer=renderer)
+        t.remove()
+        _width_cache[key] = bb.width / fig.dpi
+    return _width_cache[key]
+
+
+def _space_width(fs, weight, family):
+    key = (fs, weight, family)
+    if key not in _space_cache:
+        _space_cache[key] = text_width("i i", fs, weight, family) - 2 * text_width(
+            "i", fs, weight, family
+        )
+    return _space_cache[key]
+
+
+def _split_long(word, fs, maxw, weight, family):
+    """Visual-only break of a token wider than its column (URLs, repo lists).
+
+    Prefers existing '-' and '/' boundaries (the separator stays with the left
+    fragment, standard typography); falls back to character packing. No
+    characters are added or removed -- the string content is unchanged.
+    """
+    frags, cur = [], ""
+    for ch in word:
+        cur += ch
+        if ch in "-/":
+            frags.append(cur)
+            cur = ""
+    if cur:
+        frags.append(cur)
+
+    pieces, cur = [], ""
+    for frag in frags:
+        cand = cur + frag
+        if cur and text_width(cand, fs, weight, family) > maxw:
+            pieces.append(cur)
+            cur = frag
+        else:
+            cur = cand
+    if cur:
+        pieces.append(cur)
+
+    out = []
+    for piece in pieces:
+        if text_width(piece, fs, weight, family) <= maxw:
+            out.append(piece)
+            continue
+        chunk = ""
+        for ch in piece:
+            if chunk and text_width(chunk + ch, fs, weight, family) > maxw:
+                out.append(chunk)
+                chunk = ch
+            else:
+                chunk += ch
+        if chunk:
+            out.append(chunk)
+    return out
+
+
+def wrap_measured(text, fs, maxw, weight="normal", family=SANS):
+    """Greedy word wrap against measured glyph widths (2% safety margin)."""
+    limit = maxw * 0.98
+    words = []
+    for w in str(text).split():
+        if text_width(w, fs, weight, family) <= limit:
+            words.append(w)
+        else:
+            words.extend(_split_long(w, fs, limit, weight, family))
+
+    space = _space_width(fs, weight, family)
+    lines, cur, cur_w = [], [], 0.0
+    for w in words:
+        ww = text_width(w, fs, weight, family)
+        if cur and cur_w + space + ww > limit:
+            lines.append(" ".join(cur))
+            cur, cur_w = [w], ww
+        else:
+            cur.append(w)
+            cur_w = cur_w + space + ww if cur else ww
+            if len(cur) == 1:
+                cur_w = ww
+    if cur:
+        lines.append(" ".join(cur))
+    return lines or [""]
+
+
+def block_height(n_lines, fs):
+    """Height in inches of an n-line text block at the shared leading."""
+    return n_lines * fs * LEAD / 72.0
+
+
+# ------------------------------------------------------------------- document
 
 DISCLAIMER = (
     "DISCLAIMER: Independent analysis based on PUBLIC information only. NOT "
@@ -43,276 +201,370 @@ DISCLAIMER = (
     "DATA where cited; decision-chain labels its invented layers on every line."
 )
 
-
-def _wrap(text, width):
-    words, lines, cur = text.split(), [], ""
-    for w in words:
-        if len(cur) + len(w) + 1 <= width:
-            cur = (cur + " " + w).strip()
-        else:
-            lines.append(cur)
-            cur = w
-    if cur:
-        lines.append(cur)
-    return lines
+FOOTER_LEFT = "Independent, public-info analysis -- not affiliated with the Wuerth Group"
+RUNNING_TITLE = "DATA & AI CASE STUDY"
 
 
-def new_page(pdf):
-    fig = plt.figure(figsize=(8.27, 11.69))  # A4 portrait
-    ax = fig.add_axes([0, 0, 1, 1])
-    ax.axis("off")
-    return fig, ax
+class Doc:
+    """Collects pages, then stamps footers with final page numbers and saves."""
+
+    def __init__(self):
+        self.pages = []
+
+    def new_page(self, section=None):
+        fig = plt.figure(figsize=(PAGE_W, PAGE_H))
+        ax = fig.add_axes([0, 0, 1, 1])
+        ax.axis("off")
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        if section:
+            ax.text(X(MARGIN_L), Y(0.58), RUNNING_TITLE, fontsize=6.3,
+                    color=MUTED, family=SANS, fontweight="bold", va="bottom")
+            ax.text(X(PAGE_W - MARGIN_R), Y(0.58), section.upper(), fontsize=6.3,
+                    color=MUTED, family=SANS, va="bottom", ha="right")
+            hairline(ax, 0.66, lw=0.6)
+        self.pages.append((fig, ax))
+        return fig, ax
+
+    def finalize(self, path):
+        n = len(self.pages)
+        with PdfPages(path) as pdf:
+            for i, (fig, ax) in enumerate(self.pages):
+                hairline(ax, PAGE_H - 0.68, lw=0.6)
+                ax.text(X(MARGIN_L), Y(PAGE_H - 0.60), FOOTER_LEFT,
+                        fontsize=6.3, color=MUTED, family=SANS, va="top")
+                ax.text(X(PAGE_W - MARGIN_R), Y(PAGE_H - 0.60), f"{i + 1} / {n}",
+                        fontsize=6.3, color=MUTED, family=MONO, va="top", ha="right")
+                pdf.savefig(fig)
+                plt.close(fig)
+            d = pdf.infodict()
+            d["Title"] = "Wuerth Data & AI Case Study (independent, public-info)"
+            d["Author"] = "Dimitres Kisimov"
+            d["Subject"] = "Independent Data & AI opportunity map + skill evidence"
+        return n
 
 
-def disclaimer_band(ax, y=0.965):
-    ax.add_patch(
-        plt.Rectangle((0.06, y - 0.085), 0.88, 0.085, transform=ax.transAxes,
-                      facecolor="#fdeaec", edgecolor=ACCENT, lw=0.8, zorder=0)
-    )
-    lines = _wrap(DISCLAIMER, 92)
-    ax.text(0.075, y - 0.011, "\n".join(lines), transform=ax.transAxes,
-            fontsize=6.6, color="#7a1420", va="top", family="DejaVu Sans")
+def hairline(ax, y_in, lw=0.5, color=RULE, x0=MARGIN_L, x1=PAGE_W - MARGIN_R):
+    ax.plot([X(x0), X(x1)], [Y(y_in), Y(y_in)], color=color, lw=lw,
+            solid_capstyle="butt")
 
 
-def cover(pdf):
-    fig, ax = new_page(pdf)
-    ax.text(0.06, 0.90, "Data & AI Case Study", fontsize=30, fontweight="bold",
-            color=INK, transform=ax.transAxes)
-    ax.text(0.06, 0.855, "Mapped to two Wuerth internship roles",
-            fontsize=14, color=MUTED, transform=ax.transAxes)
-    ax.plot([0.06, 0.94], [0.835, 0.835], color=ACCENT, lw=2,
-            transform=ax.transAxes)
-
-    disclaimer_band(ax, y=0.80)
-
-    intro = (
-        "This is my independent case study. I mapped the requirements of two "
-        "Wuerth Data & AI internship postings to work I have already built and "
-        "measured in my own portfolio (now 23 repositories, including the "
-        "decision-chain integration capstone -- one real dataset through the "
-        "whole distributor chain with 13 machine-checked reconciliation "
-        "identities plus four additive ones -- an MCP agentic-integration "
-        "server with contract-enforced result provenance and idempotent "
-        "result caching, two "
-        "warehouse-logistics flagships, a supply-network "
-        "optimizer, an energy forecasting + dispatch study, a visual "
-        "quality-inspection study with SPC monitoring, a fraud-operations "
-        "study with gated retrain promotion, a predictive-maintenance policy "
-        "study, and a live installable quantum-explainer PWA). The euro and accuracy "
-        "figures throughout are on synthetic data (except retail-analytics-real "
-        "and decision-chain, measured and labelled on real public data) and "
-        "exist to prove the methods work and are measurable -- not to forecast "
-        "Wuerth outcomes."
-    )
-    ax.text(0.06, 0.685, "\n".join(_wrap(intro, 86)), fontsize=10,
-            color=INK, va="top", transform=ax.transAxes)
-
-    roles = [
-        ("Job #1  --  (Agentic) Automation with Low-code Platforms",
-         ("Agentic AI workflows, low-code (n8n / Power Automate), connecting "
-          "systems & APIs, document automation, ROI, rapid prototyping.")),
-        ("Job #2  --  Data & AI Analytics",
-         ("BI / Power BI, KPI dashboards, forecasting & predictive analytics, "
-          "Python & SQL, data modelling, turning data into decisions.")),
-    ]
-    y = 0.57
-    for title, body in roles:
-        ax.add_patch(plt.Rectangle((0.06, y - 0.085), 0.88, 0.095,
-                     transform=ax.transAxes, facecolor="#f5f5f5",
-                     edgecolor=RULE, lw=0.8))
-        ax.text(0.075, y - 0.005, title, fontsize=11, fontweight="bold",
-                color=ACCENT, va="top", transform=ax.transAxes)
-        ax.text(0.075, y - 0.035, "\n".join(_wrap(body, 82)), fontsize=8.8,
-                color=INK, va="top", transform=ax.transAxes)
-        y -= 0.125
-
-    who = (
-        "Wuerth (public profile, approximate): a large family-owned German-HQ "
-        "group in assembly/fastening and industrial MRO distribution -- ~400+ "
-        "companies in 80+ countries, ~87,000 employees, ~EUR 20B+ revenue, a "
-        "catalogue in the millions of articles, multi-channel (field sales, "
-        "branches, e-commerce, e-procurement/EDI, ORSY inventory systems). A "
-        "business that runs on assortment, pricing, availability, logistics, and "
-        "high-volume transactional documents -- a natural fit for applied Data & AI."
-    )
-    ax.text(0.06, 0.30, "Who Wuerth is (public info)", fontsize=12,
-            fontweight="bold", color=INK, transform=ax.transAxes)
-    ax.text(0.06, 0.275, "\n".join(_wrap(who, 88)), fontsize=8.8, color=MUTED,
-            va="top", transform=ax.transAxes)
-
-    ax.text(0.06, 0.04, "Dimitres Kisimov  |  2026  |  all rights reserved "
-            "(portfolio review)  |  metrics on synthetic data unless labelled "
-            "real data", fontsize=8, color=MUTED, transform=ax.transAxes)
-    pdf.savefig(fig)
-    plt.close(fig)
+def paragraph(ax, y_in, text, fs, color=INK, weight="normal", family=SANS,
+              width=BODY_W, x_in=MARGIN_L):
+    """Paint a measured, wrapped paragraph; returns the y below it (inches)."""
+    lines = wrap_measured(text, fs, width, weight, family)
+    ax.text(X(x_in), Y(y_in), "\n".join(lines), fontsize=fs, color=color,
+            fontweight=weight, family=family, va="top", linespacing=LEAD)
+    return y_in + block_height(len(lines), fs)
 
 
-def opportunity_page(pdf):
-    fig, ax = new_page(pdf)
-    disclaimer_band(ax, y=0.985)
-    ax.text(0.06, 0.885, "Opportunity map (summary)", fontsize=18,
-            fontweight="bold", color=INK, transform=ax.transAxes)
-    ax.text(0.06, 0.86, "Wuerth business area (public-info) -> Data/AI approach "
-            "-> repo + measured result (synthetic unless noted)", fontsize=8.5,
-            color=MUTED, transform=ax.transAxes)
-
-    rows = [
-        ["Area (public-info)", "Approach", "Repo", "Result (synthetic -- labelled if real)"],
-        ["Procurement / assortment / cross-sell",
-         "MILP vs greedy; Apriori/FP-growth; rule redundancy pruning",
-         "revops-optimizer, market-basket-analysis",
-         "MILP > greedy; 254 rules, top lift 2.41; 41% of rules redundant -- "
-         "the 149 kept carry all the information"],
-        ["Pricing & margin", "Elasticity + leakage; endogeneity fix; per-move robustness gate; ablation",
-         "revops-optimizer, sales-kpi-analytics, ml-models-lab",
-         "EUR2.6M leakage lever; bias +1.52 -> +0.03; price-move gate 17/29 ACCEPT -- "
-         "the biggest move (45% of the pricing uplift) is HELD, stated as a screen; "
-         "ablation: endogeneity-control knockout +1.446 RMSE -- the load-bearing piece"],
-        ["Inventory / replenishment",
-         "Newsvendor + forecast + ROP/EOQ policy + supplier reliability",
-         "distributor-intel-platform, ml-models-lab",
-         "MASE 0.38; MASE 0.987 / RMSSE 0.948 (beats naive + Holt-Winters); "
-         "policy: EUR127,421 working capital (cycle+safety exactly), 5.5x turns, 99.9% fill; "
-         "measured lead times cost +14.4% safety stock -- wobble is 3/4 of the bill"],
-        ["Sales KPIs & analytics",
-         "KPIs + rolling-origin CV + pacing interval + rep decomposition",
-         "sales-kpi-analytics",
-         "MASE < 1; exec PDF; pacing EUR10.91M = 95.7% of plan, 80% interval -- "
-         "closed-year back-check landed above the band, reported; rep decomposition "
-         "(indirect standardization): 92% of the league table is territory, 8% execution"],
-        ["Logistics / routing", "OR-Tools CP-SAT VRP + robustness + Fleet Size and Mix VRP",
-         "route-optimizer",
-         "4.6% / 31% savings; 5% headroom: failing scenarios 96% -> 44%, "
-         "expected day -4.6%; fleet mix: -17.5% vs the status quo with the "
-         "service price shown (longest route +25.2%)"],
-        ["E-procurement automation",
-         "Agentic + n8n low-code + reliability benchmark + content-verification "
-         "layer + dry-run flow cost estimator",
-         "agentic-automation-lab, agent-flow-studio",
-         "~EUR625k/yr modelled; 1,350 seeded trials: content faults fail "
-         "silently, stated (assumed rates); verification layer on the same "
-         "fault schedule: 88.7% -> 98.8% delivered-correct, silent-wrong "
-         "11,523/yr -> 0 (price stated; 71 tests); flow estimator: "
-         "engine-verified branch scenarios, 'not a bill' (declared rates)"],
-        ["Document processing", "Agentic extract + 7-rule validation gate + cost model",
-         "doc-extract-agent",
-         "~EUR145k/yr modelled; combined-gate precision 70.0% -> 87.5%; cost model: "
-         "auto-post pays only above 98.4% precision -- the gate alone would lose "
-         "money (modeled), the pre-fill carries the value"],
-        ["Customer retention", "Decline + churn classifiers + ablation",
-         "revops-optimizer, ml-models-lab",
-         "ROC-AUC 0.99; churn ECE 0.197 -> 0.021; "
-         "bootstrap skill CI +0.457 [+0.381, +0.528]; ablation: freq_slope "
-         "knockout -0.247 PR-AUC; null knockouts not counted as wins"],
-        ["Warehouse / WMS (new)",
-         "WMS twin + factory/plant sim (Story Mode, 894-element plant, definable objects, "
-         "multi-way line sim + fluids solver); slotting + DES + packing + pick-path routing "
-         "+ order batching",
-         "logistics-flow-studio (WarehouseTwin v3.19), logistics-digital-twin (engine)",
-         "-48.6% pick travel; ABC ~21% > random; ISO 22400 KPIs; 112/112 self-test + 45 harnesses; "
-         "line sim 112.5 parts/hr (~88.1% eff.); fluids solver (modelled); "
-         "engine slotting -44.2% (golden-zone 25% -> 100%); fill 2.0% -> 30.2%; "
-         "routing: return +3.0% vs exact optimum, optimized layout ~46% shorter; "
-         "batching: savings -71.3%, routing flips to largest-gap"],
-        ["Supply-network design (new)",
-         "Facility MILP + flows + safety stock + service frontier + growth plan",
-         "supply-network-opt",
-         "-21.2% cost vs greedy; stock -65.7% / -80.1%; "
-         "frontier $2,353 -> $14,750 per service point (6.3x); "
-         "growth: +8.8% headroom, 4th DC first pays at 1.30x (planning estimates)"],
-        ["Energy management / facilities (new)",
-         "Load forecast (rolling CV) + peak-shaving LP + causal dispatch backtest "
-         "+ degree-day decomposition",
-         "energy-demand-forecast",
-         "MASE 0.497, 14/14 folds (Holt-Winters loses to naive, reported); "
-         "peak -20.9%; ~EUR11,100/yr at ASSUMED tariff; battery does not pay back "
-         "on these assumptions; backtest captures 72.7% of the LP bound "
-         "(robust variant loses, reported); decomposition recovers designed "
-         "balance points exactly -- weather 4.5% of energy, 18% of the July peak "
-         "(modelled attribution)"],
-        ["Quality inspection (new)",
-         "Clean-only anomaly detection; pre-registered rule; SPC p-chart + WE rules; "
-         "measured OCAP",
-         "quality-anomaly-vision",
-         "AE 0.779 vs PCA 0.772 ROC-AUC -- inside 0.02 margin, PCA recommended; "
-         "TPR 0.407 vs 0.393 @ 5% FPR; calibration correction 0 -> 0.70% measured; "
-         "OCAP: label-free re-centering is a trap (green chart, near-blind screen); "
-         "refit on verified-clean frames recovers ~99% of the drift cost"],
-        ["Real data (completed)", "Cleaning + RFM + returns + lifecycle + leakage-safe CV",
-         "retail-analytics-real",
-         "real data: seasonal-naive wins CV, MASE 1.094; returns 3.65% of gross, "
-         "95.0% of value matched, median 10-day lag; Champions 25% -> 69.0%; "
-         "lifecycle: resurrections outnumber repeats (439 vs 390/month)"],
-        ["Chain integration & reconciliation (new)",
-         "Provenance-tagged pipeline + identity ledger; MCP agentic layer w/ "
-         "machine-readable result provenance + idempotent caching",
-         "decision-chain, chain-mcp",
-         "real data + labelled layers: 13/13 identities PASS + additive (n), (o), "
-         "(p), (q); per-order spread to the cent over 4,151 orders (top decile "
-         "59.0%, Gini 0.665); fleet knob: only the transport line moves, vans "
-         "unpriced (model property, not fleet advice); cross-repo revenue "
-         "GBP 19,643,861.62 to the penny; naive wins lumpy (MASE 1.782); "
-         "contract-enforced provenance + cache-status, 193 tests"],
-        ["Fraud & transaction-risk ops (new)",
-         "Cost-based alerting; gated retrain promotion; selective-labels feedback sim",
-         "fraud-detection-ops",
-         "PR-AUC 0.270 vs oracle 0.367; swap-set gates -> PROMOTE at $8,632 vs "
-         "$8,841 -- retrain finds no new fraud, wins by shedding load (stated); "
-         "feedback sim: ranking survives censoring, probabilities + alerts collapse"],
-        ["Maintenance & asset reliability (new)",
-         "Censored Weibull + age-replacement vs condition-based + CBM re-tuning",
-         "predictive-maintenance",
-         "beta 4.81; T* = 44.4 d at 7.16/machine-day -- the calendar rule beats "
-         "the repo's own detector at the default threshold, reported; re-tuned "
-         "economically the ranking flips to CBM (4.02) -- bounded, in-sample"],
-    ]
-    _draw_table(ax, rows, top=0.815, bottom=0.06,
-                col_x=[0.06, 0.31, 0.55, 0.78], col_w=[0.25, 0.24, 0.23, 0.18],
-                header_bg="#222222", fs=7.0)
-    pdf.savefig(fig)
-    plt.close(fig)
+def disclaimer_band(ax, y_in):
+    """The unchanged disclaimer, set as a designed notice: light tint, red
+    left-hand rule, measured height. Returns the y below the band."""
+    fs = 6.6
+    pad = 0.12
+    inner_w = BODY_W - 2 * pad - 0.04
+    lines = wrap_measured(DISCLAIMER, fs, inner_w)
+    h = block_height(len(lines), fs) + 2 * pad
+    ax.add_patch(plt.Rectangle((X(MARGIN_L), Y(y_in + h)), BODY_W / PAGE_W,
+                               h / PAGE_H, facecolor=NOTICE_BG, edgecolor="none",
+                               zorder=0))
+    ax.plot([X(MARGIN_L), X(MARGIN_L)], [Y(y_in), Y(y_in + h)], color=ACCENT,
+            lw=2.2, solid_capstyle="butt")
+    ax.text(X(MARGIN_L + pad + 0.04), Y(y_in + pad), "\n".join(lines),
+            fontsize=fs, color=NOTICE_INK, family=SANS, va="top",
+            linespacing=LEAD)
+    return y_in + h
 
 
-def skillmap_page(pdf, job_title, subtitle, rows):
-    fig, ax = new_page(pdf)
-    disclaimer_band(ax, y=0.985)
-    ax.text(0.06, 0.885, job_title, fontsize=15, fontweight="bold",
-            color=INK, transform=ax.transAxes)
-    ax.text(0.06, 0.862, subtitle, fontsize=8.5, color=MUTED,
-            transform=ax.transAxes)
-    header = ["Requirement", "Repo / artifact", "Proof (synthetic unless noted)"]
-    _draw_table(ax, [header] + rows, top=0.83, bottom=0.05,
-                col_x=[0.06, 0.40, 0.68], col_w=[0.33, 0.27, 0.26],
-                header_bg=ACCENT, fs=7.4)
-    pdf.savefig(fig)
-    plt.close(fig)
+# ------------------------------------------------------------------ table engine
+
+def layout_row(cells, widths, fs_list, weights, families):
+    """Wrap every cell; return (wrapped_cells, row_height_inches)."""
+    wrapped = []
+    n_max = 1
+    tallest = 0.0
+    for cell, w, fs, weight, family in zip(cells, widths, fs_list, weights,
+                                           families, strict=True):
+        lines = wrap_measured(cell, fs, w - 2 * CELL_PAD_X, weight, family)
+        wrapped.append(lines)
+        n_max = max(n_max, len(lines))
+        tallest = max(tallest, block_height(len(lines), fs))
+    return wrapped, tallest + 2 * CELL_PAD_Y
 
 
-def _draw_table(ax, rows, top, bottom, col_x, col_w, header_bg, fs=8.0):
-    n = len(rows)
-    rh = (top - bottom) / n
+def paint_row(ax, y_in, wrapped, widths, fs_list, weights, families, colors):
+    x = MARGIN_L
+    for lines, w, fs, weight, family, color in zip(wrapped, widths, fs_list,
+                                                   weights, families, colors,
+                                                   strict=True):
+        ax.text(X(x + CELL_PAD_X), Y(y_in + CELL_PAD_Y), "\n".join(lines),
+                fontsize=fs, color=color, fontweight=weight, family=family,
+                va="top", linespacing=LEAD)
+        x += w
+
+
+class TableStyle:
+    """Booktabs-style evidence table: hairline rules, no fills, measured rows."""
+
+    def __init__(self, widths, fs_list, weights, families):
+        self.widths = widths
+        self.fs_list = fs_list
+        self.weights = weights
+        self.families = families
+        self.head_fs = [6.8] * len(widths)
+        self.head_weights = ["bold"] * len(widths)
+        self.head_families = [SANS] * len(widths)
+
+    def header_layout(self, header):
+        return layout_row(header, self.widths, self.head_fs,
+                          self.head_weights, self.head_families)
+
+    def paint_header(self, ax, y_in, header_wrapped, header_h):
+        hairline(ax, y_in, lw=1.1, color=INK)
+        paint_row(ax, y_in, header_wrapped, self.widths, self.head_fs,
+                  self.head_weights, self.head_families, [MUTED] * len(self.widths))
+        hairline(ax, y_in + header_h, lw=0.5, color=INK)
+        return y_in + header_h
+
+    def row_layout(self, row):
+        return layout_row(row, self.widths, self.fs_list, self.weights,
+                          self.families)
+
+    def paint_body_row(self, ax, y_in, wrapped, h, last):
+        colors = [INK] * len(self.widths)
+        paint_row(ax, y_in, wrapped, self.widths, self.fs_list, self.weights,
+                  self.families, colors)
+        y_next = y_in + h
+        hairline(ax, y_next, lw=1.1 if last else 0.4,
+                 color=INK if last else RULE)
+        return y_next
+
+
+def section_title(ax, y_in, index, title, subtitle):
+    """Numbered section heading; returns y below the heading block."""
+    ax.text(X(MARGIN_L), Y(y_in), f"{index:02d}", fontsize=9.5, color=ACCENT,
+            family=MONO, fontweight="bold", va="top")
+    y = y_in + 0.20
+    ax.text(X(MARGIN_L), Y(y), title, fontsize=16, fontweight="bold",
+            color=INK, family=SANS, va="top")
+    y += 0.30
+    y = paragraph(ax, y, subtitle, 8.2, color=MUTED)
+    return y + 0.14
+
+
+def table_section(doc, index, section_label, title, subtitle, header, rows,
+                  style):
+    """One numbered section whose table flows across as many pages as it needs."""
+    fig, ax = doc.new_page(section_label)
+    y = disclaimer_band(ax, BODY_TOP) + 0.26
+    y = section_title(ax, y, index, title, subtitle)
+
+    header_wrapped, header_h = style.header_layout(header)
+    y = style.paint_header(ax, y, header_wrapped, header_h)
+
+    limit = PAGE_H - MARGIN_B
     for i, row in enumerate(rows):
-        y = top - i * rh
-        is_head = i == 0
-        if is_head:
-            ax.add_patch(plt.Rectangle((0.06, y - rh), 0.88, rh,
-                         transform=ax.transAxes, facecolor=header_bg,
-                         edgecolor="none", zorder=1))
-        elif i % 2 == 0:
-            ax.add_patch(plt.Rectangle((0.06, y - rh), 0.88, rh,
-                         transform=ax.transAxes, facecolor="#f4f4f4",
-                         edgecolor="none", zorder=0))
-        for cx, cw, cell in zip(col_x, col_w, row, strict=True):
-            color = "white" if is_head else INK
-            weight = "bold" if is_head else "normal"
-            lines = _wrap(str(cell), max(10, int(cw * 150)))
-            ax.text(cx, y - rh / 2 + (len(lines) - 1) * 0.006,
-                    "\n".join(lines), transform=ax.transAxes, fontsize=fs,
-                    color=color, va="center", fontweight=weight)
-    ax.plot([0.06, 0.94], [top, top], color=RULE, lw=0.6, transform=ax.transAxes)
-    ax.plot([0.06, 0.94], [bottom, bottom], color=RULE, lw=0.6,
-            transform=ax.transAxes)
+        wrapped, h = style.row_layout(row)
+        if y + h > limit:
+            hairline(ax, y, lw=1.1, color=INK)  # close the table on this page
+            fig, ax = doc.new_page(section_label)
+            y = BODY_TOP
+            ax.text(X(MARGIN_L), Y(y), f"{title} (continued)", fontsize=8.0,
+                    color=MUTED, family=SANS, style="italic", va="top")
+            y += 0.24
+            y = style.paint_header(ax, y, header_wrapped, header_h)
+        last = i == len(rows) - 1
+        y = style.paint_body_row(ax, y, wrapped, h, last)
 
+
+# ------------------------------------------------------------- build-time stats
+
+def gather_stats():
+    """Figures for the cover, computed from the repo's own validation guards.
+
+    Nothing here is hard-coded: the requirement count comes from parsing
+    docs/JOB_SKILL_MAP.md exactly the way validation/skill_coverage.py does,
+    the repo count from the registry, and the check tallies from actually
+    running both guard batteries (read-only; no reports are written).
+    """
+    from validation.consistency_check import load_registry
+    from validation.consistency_check import run_all_checks as consistency_checks
+    from validation.skill_coverage import parse_skill_map
+    from validation.skill_coverage import run_all_checks as coverage_checks
+
+    registry = load_registry()
+    sm = parse_skill_map(registry)
+    cc = consistency_checks()
+    sc = coverage_checks(sm)
+    return {
+        "requirements": len(sm.requirements),
+        "repos": len(registry),
+        "consistency": (sum(1 for c in cc if c.passed), len(cc)),
+        "coverage": (sum(1 for c in sc if c.passed), len(sc)),
+    }
+
+
+# --------------------------------------------------------------------- content
+
+ROLES = [
+    ("Job #1  --  (Agentic) Automation with Low-code Platforms",
+     ("Agentic AI workflows, low-code (n8n / Power Automate), connecting "
+      "systems & APIs, document automation, ROI, rapid prototyping.")),
+    ("Job #2  --  Data & AI Analytics",
+     ("BI / Power BI, KPI dashboards, forecasting & predictive analytics, "
+      "Python & SQL, data modelling, turning data into decisions.")),
+]
+
+INTRO = (
+    "This is my independent case study. I mapped the requirements of two "
+    "Wuerth Data & AI internship postings to work I have already built and "
+    "measured in my own portfolio (now 23 repositories, including the "
+    "decision-chain integration capstone -- one real dataset through the "
+    "whole distributor chain with 13 machine-checked reconciliation "
+    "identities plus four additive ones -- an MCP agentic-integration "
+    "server with contract-enforced result provenance and idempotent "
+    "result caching, two "
+    "warehouse-logistics flagships, a supply-network "
+    "optimizer, an energy forecasting + dispatch study, a visual "
+    "quality-inspection study with SPC monitoring, a fraud-operations "
+    "study with gated retrain promotion, a predictive-maintenance policy "
+    "study, and a live installable quantum-explainer PWA). The euro and accuracy "
+    "figures throughout are on synthetic data (except retail-analytics-real "
+    "and decision-chain, measured and labelled on real public data) and "
+    "exist to prove the methods work and are measurable -- not to forecast "
+    "Wuerth outcomes."
+)
+
+WHO_TITLE = "Who Wuerth is (public info)"
+WHO = (
+    "Wuerth (public profile, approximate): a large family-owned German-HQ "
+    "group in assembly/fastening and industrial MRO distribution -- ~400+ "
+    "companies in 80+ countries, ~87,000 employees, ~EUR 20B+ revenue, a "
+    "catalogue in the millions of articles, multi-channel (field sales, "
+    "branches, e-commerce, e-procurement/EDI, ORSY inventory systems). A "
+    "business that runs on assortment, pricing, availability, logistics, and "
+    "high-volume transactional documents -- a natural fit for applied Data & AI."
+)
+
+BYLINE = ("Dimitres Kisimov  |  2026  |  all rights reserved "
+          "(portfolio review)  |  metrics on synthetic data unless labelled "
+          "real data")
+
+OPPORTUNITY_HEADER = ["Area (public-info)", "Approach", "Repo",
+                      "Result (synthetic -- labelled if real)"]
+
+OPPORTUNITY_ROWS = [
+    ["Procurement / assortment / cross-sell",
+     "MILP vs greedy; Apriori/FP-growth; rule redundancy pruning",
+     "revops-optimizer, market-basket-analysis",
+     "MILP > greedy; 254 rules, top lift 2.41; 41% of rules redundant -- "
+     "the 149 kept carry all the information"],
+    ["Pricing & margin", "Elasticity + leakage; endogeneity fix; per-move robustness gate; ablation",
+     "revops-optimizer, sales-kpi-analytics, ml-models-lab",
+     "EUR2.6M leakage lever; bias +1.52 -> +0.03; price-move gate 17/29 ACCEPT -- "
+     "the biggest move (45% of the pricing uplift) is HELD, stated as a screen; "
+     "ablation: endogeneity-control knockout +1.446 RMSE -- the load-bearing piece"],
+    ["Inventory / replenishment",
+     "Newsvendor + forecast + ROP/EOQ policy + supplier reliability",
+     "distributor-intel-platform, ml-models-lab",
+     "MASE 0.38; MASE 0.987 / RMSSE 0.948 (beats naive + Holt-Winters); "
+     "policy: EUR127,421 working capital (cycle+safety exactly), 5.5x turns, 99.9% fill; "
+     "measured lead times cost +14.4% safety stock -- wobble is 3/4 of the bill"],
+    ["Sales KPIs & analytics",
+     "KPIs + rolling-origin CV + pacing interval + rep decomposition",
+     "sales-kpi-analytics",
+     "MASE < 1; exec PDF; pacing EUR10.91M = 95.7% of plan, 80% interval -- "
+     "closed-year back-check landed above the band, reported; rep decomposition "
+     "(indirect standardization): 92% of the league table is territory, 8% execution"],
+    ["Logistics / routing", "OR-Tools CP-SAT VRP + robustness + Fleet Size and Mix VRP",
+     "route-optimizer",
+     "4.6% / 31% savings; 5% headroom: failing scenarios 96% -> 44%, "
+     "expected day -4.6%; fleet mix: -17.5% vs the status quo with the "
+     "service price shown (longest route +25.2%)"],
+    ["E-procurement automation",
+     "Agentic + n8n low-code + reliability benchmark + content-verification "
+     "layer + dry-run flow cost estimator",
+     "agentic-automation-lab, agent-flow-studio",
+     "~EUR625k/yr modelled; 1,350 seeded trials: content faults fail "
+     "silently, stated (assumed rates); verification layer on the same "
+     "fault schedule: 88.7% -> 98.8% delivered-correct, silent-wrong "
+     "11,523/yr -> 0 (price stated; 71 tests); flow estimator: "
+     "engine-verified branch scenarios, 'not a bill' (declared rates)"],
+    ["Document processing", "Agentic extract + 7-rule validation gate + cost model",
+     "doc-extract-agent",
+     "~EUR145k/yr modelled; combined-gate precision 70.0% -> 87.5%; cost model: "
+     "auto-post pays only above 98.4% precision -- the gate alone would lose "
+     "money (modeled), the pre-fill carries the value"],
+    ["Customer retention", "Decline + churn classifiers + ablation",
+     "revops-optimizer, ml-models-lab",
+     "ROC-AUC 0.99; churn ECE 0.197 -> 0.021; "
+     "bootstrap skill CI +0.457 [+0.381, +0.528]; ablation: freq_slope "
+     "knockout -0.247 PR-AUC; null knockouts not counted as wins"],
+    ["Warehouse / WMS (new)",
+     "WMS twin + factory/plant sim (Story Mode, 894-element plant, definable objects, "
+     "multi-way line sim + fluids solver); slotting + DES + packing + pick-path routing "
+     "+ order batching",
+     "logistics-flow-studio (WarehouseTwin v3.19), logistics-digital-twin (engine)",
+     "-48.6% pick travel; ABC ~21% > random; ISO 22400 KPIs; 112/112 self-test + 45 harnesses; "
+     "line sim 112.5 parts/hr (~88.1% eff.); fluids solver (modelled); "
+     "engine slotting -44.2% (golden-zone 25% -> 100%); fill 2.0% -> 30.2%; "
+     "routing: return +3.0% vs exact optimum, optimized layout ~46% shorter; "
+     "batching: savings -71.3%, routing flips to largest-gap"],
+    ["Supply-network design (new)",
+     "Facility MILP + flows + safety stock + service frontier + growth plan",
+     "supply-network-opt",
+     "-21.2% cost vs greedy; stock -65.7% / -80.1%; "
+     "frontier $2,353 -> $14,750 per service point (6.3x); "
+     "growth: +8.8% headroom, 4th DC first pays at 1.30x (planning estimates)"],
+    ["Energy management / facilities (new)",
+     "Load forecast (rolling CV) + peak-shaving LP + causal dispatch backtest "
+     "+ degree-day decomposition",
+     "energy-demand-forecast",
+     "MASE 0.497, 14/14 folds (Holt-Winters loses to naive, reported); "
+     "peak -20.9%; ~EUR11,100/yr at ASSUMED tariff; battery does not pay back "
+     "on these assumptions; backtest captures 72.7% of the LP bound "
+     "(robust variant loses, reported); decomposition recovers designed "
+     "balance points exactly -- weather 4.5% of energy, 18% of the July peak "
+     "(modelled attribution)"],
+    ["Quality inspection (new)",
+     "Clean-only anomaly detection; pre-registered rule; SPC p-chart + WE rules; "
+     "measured OCAP",
+     "quality-anomaly-vision",
+     "AE 0.779 vs PCA 0.772 ROC-AUC -- inside 0.02 margin, PCA recommended; "
+     "TPR 0.407 vs 0.393 @ 5% FPR; calibration correction 0 -> 0.70% measured; "
+     "OCAP: label-free re-centering is a trap (green chart, near-blind screen); "
+     "refit on verified-clean frames recovers ~99% of the drift cost"],
+    ["Real data (completed)", "Cleaning + RFM + returns + lifecycle + leakage-safe CV",
+     "retail-analytics-real",
+     "real data: seasonal-naive wins CV, MASE 1.094; returns 3.65% of gross, "
+     "95.0% of value matched, median 10-day lag; Champions 25% -> 69.0%; "
+     "lifecycle: resurrections outnumber repeats (439 vs 390/month)"],
+    ["Chain integration & reconciliation (new)",
+     "Provenance-tagged pipeline + identity ledger; MCP agentic layer w/ "
+     "machine-readable result provenance + idempotent caching",
+     "decision-chain, chain-mcp",
+     "real data + labelled layers: 13/13 identities PASS + additive (n), (o), "
+     "(p), (q); per-order spread to the cent over 4,151 orders (top decile "
+     "59.0%, Gini 0.665); fleet knob: only the transport line moves, vans "
+     "unpriced (model property, not fleet advice); cross-repo revenue "
+     "GBP 19,643,861.62 to the penny; naive wins lumpy (MASE 1.782); "
+     "contract-enforced provenance + cache-status, 193 tests"],
+    ["Fraud & transaction-risk ops (new)",
+     "Cost-based alerting; gated retrain promotion; selective-labels feedback sim",
+     "fraud-detection-ops",
+     "PR-AUC 0.270 vs oracle 0.367; swap-set gates -> PROMOTE at $8,632 vs "
+     "$8,841 -- retrain finds no new fraud, wins by shedding load (stated); "
+     "feedback sim: ranking survives censoring, probabilities + alerts collapse"],
+    ["Maintenance & asset reliability (new)",
+     "Censored Weibull + age-replacement vs condition-based + CBM re-tuning",
+     "predictive-maintenance",
+     "beta 4.81; T* = 44.4 d at 7.16/machine-day -- the calendar rule beats "
+     "the repo's own detector at the default threshold, reported; re-tuned "
+     "economically the ranking flips to CBM (4.02) -- bounded, in-sample"],
+]
+
+SKILL_HEADER = ["Requirement", "Repo / artifact", "Proof (synthetic unless noted)"]
 
 JOB1_ROWS = [
     ["Build AI-agent workflows -- and measure how they fail",
@@ -484,24 +736,114 @@ JOB2_ROWS = [
 ]
 
 
+# ----------------------------------------------------------------------- pages
+
+def cover(doc, stats):
+    fig, ax = doc.new_page(section=None)
+
+    y = 0.82
+    ax.text(X(MARGIN_L), Y(y), "INDEPENDENT CASE STUDY -- PUBLIC INFORMATION ONLY",
+            fontsize=6.8, color=ACCENT, family=SANS, fontweight="bold", va="top")
+    y += 0.18
+    ax.text(X(MARGIN_L), Y(y), "Data & AI Case Study", fontsize=27,
+            fontweight="bold", color=INK, family=SANS, va="top")
+    y += 0.48
+    ax.text(X(MARGIN_L), Y(y), "Mapped to two Wuerth internship roles",
+            fontsize=12.5, color=MUTED, family=SANS, va="top")
+    y += 0.30
+    hairline(ax, y, lw=1.8, color=ACCENT)
+    y += 0.16
+
+    y = disclaimer_band(ax, y) + 0.24
+    y = paragraph(ax, y, INTRO, 9.0) + 0.26
+
+    # The one oversized figure: requirement count, computed from the guards.
+    hairline(ax, y, lw=1.1, color=INK)
+    y_fig = y + 0.14
+    big = str(stats["requirements"])
+    ax.text(X(MARGIN_L), Y(y_fig), big, fontsize=56, fontweight="bold",
+            color=INK, family=SANS, va="top")
+    big_w = text_width(big, 56, "bold") + 0.28
+    label_x = MARGIN_L + big_w
+    label_w = BODY_W - big_w
+    ax.text(X(label_x), Y(y_fig + 0.10),
+            "requirements mapped -> repo + artifact + measured proof",
+            fontsize=11, fontweight="bold", color=ACCENT, family=SANS, va="top")
+    cc, cc_n = stats["consistency"]
+    sc, sc_n = stats["coverage"]
+    sub = (f"computed at build time from this repository's own guards: "
+           f"skill coverage {sc}/{sc_n} checks and consistency {cc}/{cc_n} "
+           f"checks passing; {stats['repos']} portfolio repositories "
+           f"registered")
+    y_sub = paragraph(ax, y_fig + 0.34, sub, 7.4, color=MUTED, width=label_w,
+                      x_in=label_x)
+    y = max(y_fig + 0.90, y_sub) + 0.12
+    hairline(ax, y, lw=1.1, color=INK)
+    y += 0.28
+
+    for title, body in ROLES:
+        ax.text(X(MARGIN_L), Y(y), title, fontsize=10.5, fontweight="bold",
+                color=INK, family=SANS, va="top")
+        y += 0.20
+        y = paragraph(ax, y, body, 8.6, color=MUTED) + 0.10
+        hairline(ax, y, lw=0.4)
+        y += 0.18
+
+    y += 0.06
+    ax.text(X(MARGIN_L), Y(y), WHO_TITLE, fontsize=11.5, fontweight="bold",
+            color=INK, family=SANS, va="top")
+    y += 0.24
+    y = paragraph(ax, y, WHO, 8.6, color=MUTED)
+
+    ax.text(X(MARGIN_L), Y(PAGE_H - 1.02), BYLINE, fontsize=7.6, color=MUTED,
+            family=SANS, va="bottom")
+
+
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
-    with PdfPages(OUT_PATH) as pdf:
-        cover(pdf)
-        opportunity_page(pdf)
-        skillmap_page(pdf, "Job #1 -- (Agentic) Automation with Low-code",
-                      "Every posting requirement -> repo + artifact + measured "
-                      "proof (all synthetic data).", JOB1_ROWS)
-        skillmap_page(pdf, "Job #2 -- Data & AI Analytics",
-                      "Every posting requirement -> repo + artifact + measured "
-                      "proof (synthetic data unless labelled real data).", JOB2_ROWS)
-        d = pdf.infodict()
-        d["Title"] = "Wuerth Data & AI Case Study (independent, public-info)"
-        d["Author"] = "Dimitres Kisimov"
-        d["Subject"] = "Independent Data & AI opportunity map + skill evidence"
+    stats = gather_stats()
+    doc = Doc()
+
+    cover(doc, stats)
+
+    opportunity_style = TableStyle(
+        widths=[1.22, 1.50, 1.28, 2.77],
+        fs_list=[7.0, 7.0, 6.4, 7.0],
+        weights=["bold", "normal", "normal", "normal"],
+        families=[SANS, SANS, MONO, SANS],
+    )
+    table_section(
+        doc, 2, "Opportunity map", "Opportunity map (summary)",
+        "Wuerth business area (public-info) -> Data/AI approach "
+        "-> repo + measured result (synthetic unless noted)",
+        OPPORTUNITY_HEADER, OPPORTUNITY_ROWS, opportunity_style,
+    )
+
+    skill_style = TableStyle(
+        widths=[1.50, 1.90, 3.37],
+        fs_list=[7.2, 6.6, 7.2],
+        weights=["bold", "normal", "normal"],
+        families=[SANS, MONO, SANS],
+    )
+    table_section(
+        doc, 3, "Job #1 -- Automation with Low-code",
+        "Job #1 -- (Agentic) Automation with Low-code",
+        "Every posting requirement -> repo + artifact + measured "
+        "proof (all synthetic data).",
+        SKILL_HEADER, JOB1_ROWS, skill_style,
+    )
+    table_section(
+        doc, 4, "Job #2 -- Data & AI Analytics",
+        "Job #2 -- Data & AI Analytics",
+        "Every posting requirement -> repo + artifact + measured "
+        "proof (synthetic data unless labelled real data).",
+        SKILL_HEADER, JOB2_ROWS, skill_style,
+    )
+
+    pages = doc.finalize(OUT_PATH)
 
     size = os.path.getsize(OUT_PATH)
-    print(f"[OK] wrote {OUT_PATH} ({size} bytes, {size / 1024:.1f} KB)")
+    print(f"[OK] wrote {OUT_PATH} ({size} bytes, {size / 1024:.1f} KB, {pages} pages)")
     if size < 10 * 1024:
         print("[WARN] PDF smaller than 10 KB")
         sys.exit(1)
