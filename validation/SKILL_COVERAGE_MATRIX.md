@@ -13,17 +13,17 @@
 
 | # | Check | Result | Detail |
 |---|-------|--------|--------|
-| 1 | both job tables parse into 4-column requirement rows | PASS | 36 requirement rows across 2 job tables |
-| 2 | every requirement names a file / artifact to open | PASS | 36 requirements all cite a concrete artifact |
-| 3 | every requirement carries a proof / measured result | PASS | 36 requirements all carry a proof cell |
+| 1 | both job tables parse into 4-column requirement rows | PASS | 38 requirement rows across 2 job tables |
+| 2 | every requirement names a file / artifact to open | PASS | 38 requirements all cite a concrete artifact |
+| 3 | every requirement carries a proof / measured result | PASS | 38 requirements all carry a proof cell |
 | 4 | every repo cited as evidence resolves to the registry | PASS | no dangling / unregistered repo appears in a Repo column |
-| 5 | every posting requirement is backed by a registered repo | PASS | 36/36 requirements backed (incl. explicit cross-cutting rows) |
+| 5 | every posting requirement is backed by a registered repo | PASS | 38/38 requirements backed (incl. explicit cross-cutting rows) |
 | 6 | each crown-jewel flagship backs at least one requirement | PASS | 4/4 flagships appear as evidence |
 | 7 | each job's evidence spans several distinct repos | PASS | Job #1: 8 distinct repos; Job #2: 15 distinct repos |
 
 ## Job #1 — Praktikum Data & AI: (Agentic) Automation mit Low-code Plattformen
 
-_12 requirements, 8 distinct registered repos._
+_13 requirements, 8 distinct registered repos._
 
 | # | Posting requirement | Registered repos backing it |
 |---|---------------------|------------------------------|
@@ -38,11 +38,12 @@ _12 requirements, 8 distinct registered repos._
 | 9 | Prototyping + explaining a technical topic (education, hype-free) | `bio-efficient-ai`, `quantum-explainer` |
 | 10 | Show ROI / business value of automation | `automation-roi-explorer` |
 | 11 | Python engineering for automation | _(cross-cutting: across automation repos)_ |
-| 12 | Communicate results to non-technical stakeholders | `automation-roi-explorer` |
+| 12 | Human-in-the-loop control of agentic actions (approval gates, resumable state, priced per placement) *(new row — previously an acknowledged gap in [`AREAS_FOR_IMPROVEMENT.md`](AREAS_FOR_IMPROVEMENT.md))* | `agentic-automation-lab` |
+| 13 | Communicate results to non-technical stakeholders | `automation-roi-explorer` |
 
 ## Job #2 — Praktikum Data & AI Analytics
 
-_24 requirements, 15 distinct registered repos._
+_25 requirements, 15 distinct registered repos._
 
 | # | Posting requirement | Registered repos backing it |
 |---|---------------------|------------------------------|
@@ -65,11 +66,12 @@ _24 requirements, 15 distinct registered repos._
 | 17 | Classification / anomaly detection | `fraud-detection-ops`, `ml-models-lab` |
 | 18 | Model lifecycle / retraining governance (MLOps) | `fraud-detection-ops` |
 | 19 | Reliability / maintenance analytics (survival modelling) | `predictive-maintenance` |
-| 20 | Visual quality inspection (vision anomaly detection) | `quality-anomaly-vision` |
-| 21 | Warehouse / intralogistics + factory / process-industry modelling | `logistics-digital-twin`, `logistics-flow-studio` |
-| 22 | Logistics / operations analytics | `route-optimizer`, `supply-network-opt` |
-| 23 | Real, messy data *(real data, not synthetic)* | `retail-analytics-real` |
-| 24 | Present findings to decision-makers | `revops-optimizer` |
+| 20 | Explainability / decision transparency (why did this decision fire?) *(new row — no earlier row covered per-decision attribution)* | `fraud-detection-ops` |
+| 21 | Visual quality inspection (vision anomaly detection) | `quality-anomaly-vision` |
+| 22 | Warehouse / intralogistics + factory / process-industry modelling | `logistics-digital-twin`, `logistics-flow-studio` |
+| 23 | Logistics / operations analytics | `route-optimizer`, `supply-network-opt` |
+| 24 | Real, messy data *(real data, not synthetic)* | `retail-analytics-real` |
+| 25 | Present findings to decision-makers | `revops-optimizer` |
 
 ## Repo -> requirements index
 
