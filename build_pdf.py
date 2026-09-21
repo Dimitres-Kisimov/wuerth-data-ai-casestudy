@@ -523,8 +523,8 @@ OPPORTUNITY_ROWS = [
      "WMS twin + factory/plant sim (Story Mode, 933-element plant, definable objects, "
      "multi-way line sim + fluids solver); slotting + DES + packing + pick-path routing "
      "+ order batching",
-     "logistics-flow-studio (WarehouseTwin v3.29), logistics-digital-twin (engine)",
-     "-48.6% pick travel; ABC ~21% > random; ISO 22400 KPIs; per-order routing (20 ops, 8 archetypes); 168/168 self-test + 61 harnesses + 62 Python tests; "
+     "logistics-flow-studio (WarehouseTwin v3.30), logistics-digital-twin (engine)",
+     "-48.6% pick travel; ABC ~21% > random; ISO 22400 KPIs; per-order routing (20 ops, 8 archetypes); 169/169 self-test + 62 harnesses + 62 Python tests; "
      "line sim 112.5 parts/hr (~88.1% eff.); fluids solver (modelled); "
      "engine slotting -44.2% (golden-zone 25% -> 100%); fill 2.0% -> 30.2%; "
      "routing: return +3.0% vs exact optimum, optimized layout ~46% shorter; "
@@ -654,7 +654,7 @@ JOB1_ROWS = [
      "verified across all 30 committed documents"],
     ["Rapid prototyping", "agent-flow-studio, agentic-automation-lab, logistics-flow-studio",
      "runnable prototypes incl. a full installable offline WMS twin + "
-     "factory/plant simulator (PWA, v3.29; 61 harnesses + 62 Python tests + 168/168 self-test), "
+     "factory/plant simulator (PWA, v3.30; 62 harnesses + 62 Python tests + 169/169 self-test), "
      "whose floor now reads like a working shift -- rendering, not model"],
     ["Prototyping + education (hype-free)",
      "quantum-explainer -- LIVE: dimitres-kisimov.github.io/quantum-explainer; "
@@ -815,14 +815,14 @@ JOB2_ROWS = [
      "borrowed from adverse-action practice as a discipline, not legal advice; "
      "78 tests"],
     ["Warehouse / intralogistics + factory / process industry",
-     "logistics-flow-studio (WarehouseTwin v3.29); logistics-digital-twin (engine)",
+     "logistics-flow-studio (WarehouseTwin v3.30); logistics-digital-twin (engine)",
      "WMS twin + factory/plant sim: keyword-generated layout, WMS flow w/ ISO 22400 "
      "KPIs, live material flow + KPI dashboard, Story Mode tour, a 933-element "
      "signature plant (32 object types), a user-definable object library, "
      "multi-way line sim (QA-split 112.5 parts/hr, ~88.1% eff.) + fluids "
      "solver (modelled, not measured), BYO CSV "
-     "import + floor-plan underlay; -48.6% pick travel; ABC ~21% > random; per-order routing (20 ops, 8 archetypes); 168/168 "
-     "self-test + 61 harnesses + 62 Python tests; engine slotting -44.2% (golden-zone 25% -> 100%), "
+     "import + floor-plan underlay; -48.6% pick travel; ABC ~21% > random; per-order routing (20 ops, 8 archetypes); 169/169 "
+     "self-test + 62 harnesses + 62 Python tests; engine slotting -44.2% (golden-zone 25% -> 100%), "
      "fill 2.0% -> 30.2%; DES -76.1% / -66.5%; pick-path routing: return +3.0% "
      "vs exact optimum, optimized layout ~46% shorter; batching: savings "
      "-71.3%, routing flips to largest-gap (+1.2%); v3.21-v3.24 plant floor -- "
